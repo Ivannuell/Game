@@ -1,0 +1,6 @@
+How a scene Should do things.
+    - Takes the scene's collection of entities 
+    - Checks every entity if they have the required components
+        -> If they have those components they are manipulated.
+
+    update method changes everything and the things that is run in the game loop
