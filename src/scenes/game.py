@@ -2,6 +2,8 @@
 from scenes.scene import Scene
 from systems.AnimationSystem import AnimationSystem
 from systems.RenderSystem import RenderSystem
+from systems.inputSystem import InputSystem
+from systems.movementSystem import MovementSystem
 from entities.player import Player
 
 
@@ -11,8 +13,11 @@ class GameScene(Scene):
 
     def on_Enter(self):
         self.systems = [
+            InputSystem(self.game.input_manager),
+            MovementSystem(),
             AnimationSystem(),
             RenderSystem(self.game.screen)
+
         ]
 
         player = Player(self.game)

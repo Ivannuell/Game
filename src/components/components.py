@@ -19,10 +19,11 @@ class Position(Component):
         self.y = y
 
 class Velocity(Component):
-    def __init__(self, dx, dy):
+    def __init__(self, speed):
         super().__init__("Velocity")
-        self.dx = dx
-        self.dy = dy
+        self.x = 0
+        self.y = 0
+        self.speed = speed
 
 class Sprite(Component):
     def __init__(self, image=None):
@@ -38,7 +39,6 @@ class Animation(Component):
         self.active_name = ""
         self.active_frame: pygame.surface.Surface
         self.anim_list = {}
-
 
 class Collider(Component):
     def __init__(self, shape):

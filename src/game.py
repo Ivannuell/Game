@@ -2,6 +2,7 @@ import pygame
 from sys import exit
 from screen import Screen
 from assetManager import AssetsManager
+from inputManager import InputManager
 
 from systems.AnimationSystem import AnimationSystem
 from systems.RenderSystem import RenderSystem
@@ -23,6 +24,7 @@ class BaseGame:
         self.current_scene: Scene = GameScene(self)
         
         self.asset_manager = AssetsManager()
+        self.input_manager = InputManager()
         
     def set_screen(self, screen: Screen):
         if self.screen:
@@ -63,3 +65,5 @@ class BaseGame:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            
+            self.input_manager.process_event(event)

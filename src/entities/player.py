@@ -1,4 +1,5 @@
 from components.components import Animation, Anim, Collider, Position, Sprite, Velocity
+from components.intents import MovementIntent
 from entities.entity import Entity
 from spritesheet import Spritesheet
 
@@ -7,7 +8,7 @@ class Player(Entity):
         super().__init__(game)
 
         self.add_component(Position(10, 10))
-        self.add_component(Velocity(0, 0))
+        self.add_component(Velocity(1200))
         self.add_component(Sprite())
         self.add_component(Animation(
             spritesheet="booster",
@@ -15,6 +16,9 @@ class Player(Entity):
                 "booster": Anim([], ((0,0,48,48), (48,0,48,48), (96,0,48,48)), 0, 0.2)
             }
         ))
+
+        self.add_component(MovementIntent())
+        # self.add_component(InputIntent())
 
         self.game = game
         self._build_Animation()
