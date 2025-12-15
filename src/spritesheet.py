@@ -8,13 +8,13 @@ class Spritesheet:
         self.bg = bg
         self.image = self.image.convert_alpha()
 
-    def get_image(self, frame: pygame.rect.Rect, flip=False, scale=None):
+    def get_image(self, frame: pygame.rect.Rect, flip=False, scale=1):
         sprite = self.image.subsurface(frame)
 
         if flip:
             sprite = pygame.transform.flip(sprite, True, False)
 
-        if scale != None:
+        if scale > 1:
             sprite = pygame.transform.scale(sprite, (frame[2] * scale, frame[2] * scale))
 
         if self.bg != None:
@@ -22,7 +22,11 @@ class Spritesheet:
 
         return sprite
 
-    def get_animation(self, frame_coords, frame_duration):
+    def get_animation(self, frame_coords, frame_duration, scale=1):
+        if len(frame_coords) == 1:
+            frame = [self.get_image(frame_coords[0], scale=scale)]
+            return Animation(frame, frame_duration)
+
         frames = [self.get_image(coords, scale=3) for coords in frame_coords]
         return Animation(frames, frame_duration)
 

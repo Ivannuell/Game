@@ -31,7 +31,7 @@ class Sprite(Component):
         self.image = image
 
 class Animation(Component):
-    def __init__(self, animation, spritesheet):
+    def __init__(self, animation, spritesheet, frame_scale=1):
         super().__init__("Animation")
         self.anim = animation
         self.spritesheet = spritesheet
@@ -39,8 +39,16 @@ class Animation(Component):
         self.active_name = ""
         self.active_frame: pygame.surface.Surface
         self.anim_list = {}
+        self.frame_scale = frame_scale
 
 class Collider(Component):
-    def __init__(self, shape):
+    def __init__(self, height, width, offset_x=0, offset_y=0):
         super().__init__("Collider")
-        self.shape = shape
+        self.height = height
+        self.width = width
+        self.offset_x = offset_x
+        self.offset_y = offset_y
+
+class Solid(Component):
+    def __init__(self):
+        super().__init__("Solid")

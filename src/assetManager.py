@@ -15,7 +15,12 @@ class AssetsManager:
         # Manually add's the asset should be done in the loading scene.
         player_spritesheet = os.path.join(
             self.assets_dir, 'Main Ship - Engines - Base Engine - Idle.png')
+        
+        obstacle = os.path.join(
+            self.assets_dir, 'Main Ship - Base - Full health.png'
+        )
         self.add_asset(player_spritesheet, 'booster')
+        self.add_asset(obstacle, 'ship')
 
     def add_asset(self, asset, asset_key):
         self.assets[asset_key] = asset

@@ -61,6 +61,7 @@ class BaseGame:
         self.screen.draw()
 
     def events(self):
+        self.input_manager.begin_frame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()

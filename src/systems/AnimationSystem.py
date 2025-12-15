@@ -6,10 +6,12 @@ from entities.entity import Entity
 class AnimationSystem:
     def update(self, entities: list[Entity], dt):
         for entity in entities:
-            sprite = entity.get_component("Sprite")
-            animation = entity.get_component("Animation")
+            try:
+                sprite = entity.get_component("Sprite")
+                animation = entity.get_component("Animation")
+            except Exception:
+                if not entity.has_component("Sprite") or not entity.has_component("Animation"):
+                    if not animation.active_anim:
+                        continue
 
-            if not sprite or not animation or not animation.active_anim:
-                continue
-     
             sprite.image = animation.active_anim.get_frame(dt)

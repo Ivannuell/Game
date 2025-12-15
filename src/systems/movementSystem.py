@@ -2,16 +2,16 @@
 from entities.entity import Entity
 
 ACCELERATION = 1200
-FRICTION = 3000
+FRICTION = 1000
 
 class MovementSystem:
     def update(self, entities: list[Entity], dt):
         for entity in entities:
-            position = entity.get_component("Position")
-            velocity = entity.get_component("Velocity")
-            movement_intent = entity.get_component("MovementIntent")
-
-            if not position or not velocity or not movement_intent:
+            try:
+                position = entity.get_component("Position")
+                velocity = entity.get_component("Velocity")
+                movement_intent = entity.get_component("MovementIntent")
+            except:
                 continue
 
 
