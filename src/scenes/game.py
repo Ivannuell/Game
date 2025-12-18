@@ -10,6 +10,7 @@ from systems.collisionSystem import CollisionSystem
 from systems.shootingSystem import ShootingSystem
 from systems.collideRectDebug import DebugCollisionRenderSystem
 from systems.lifetimeSystem import LifetimeSystem
+from systems.projectile_movementSystem import ProjectileMovementSystem
 
 from components.components import Animation, Anim, Collider, Position, Sprite, Velocity, Solid
 
@@ -27,9 +28,10 @@ class GameScene(Scene):
             InputSystem(self.game.input_manager),
             ShootingSystem(self.game),
             MovementSystem(),
+            ProjectileMovementSystem(),
             LifetimeSystem(),
             CollisionSystem(),
-            
+
             AnimationSystem(),
 
             DebugCollisionRenderSystem(self.game.screen),

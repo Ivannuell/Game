@@ -1,11 +1,14 @@
 # This needs to refactored and make it a parent class for real entities on the game.
 
 from spritesheet import Spritesheet
-from baseGame import BaseGame
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from baseGame import BaseGame
 
 class Entity:
     def __init__(self):
-        self.game: BaseGame
+        self.game: "BaseGame"
         self.components = {}
 
     def add_component(self, component):

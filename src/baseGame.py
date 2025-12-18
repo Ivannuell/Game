@@ -1,32 +1,32 @@
 import pygame
 from sys import exit
-from screen import Screen
 from assetManager import AssetsManager
 from inputManager import InputManager
-
-from systems.AnimationSystem import AnimationSystem
-from systems.RenderSystem import RenderSystem
-from entities.player import Player
-from scenes.scene import Scene
 from scenes.game import GameScene
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from screen import Screen
+    from entities.player import Player
+    from scenes.scene import Scene
+
+
 
 class BaseGame:
     def __init__(self):
-        self.screen: Screen | None = None
+        self.screen: "Screen | None" = None
         self.clock = pygame.time.Clock()
         self.delta_time = 0
         self.fps = 60
 
-        self.player: Player
-        self.animation: AnimationSystem
-        self.renderSys: RenderSystem
+        self.player: "Player"
 
-        self.current_scene: Scene = GameScene(self)
+        self.current_scene: "Scene" = GameScene(self)
         
         self.asset_manager = AssetsManager()
         self.input_manager = InputManager()
         
-    def set_screen(self, screen: Screen):
+    def set_screen(self, screen: "Screen"):
         if self.screen:
             del self.screen
             self.screen = None
@@ -40,9 +40,7 @@ class BaseGame:
 
     def initialize(self):
         self.asset_manager.load_assets()
-
         self.current_scene.on_Enter()
-
 
     def start(self):
         while True:
