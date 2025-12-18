@@ -3,8 +3,6 @@
 from entities.entity import Entity
 
 class ProjectileMovementSystem:
-
-
     def update(self, entities: list[Entity], dt):
         projectiles = []
 
@@ -16,5 +14,6 @@ class ProjectileMovementSystem:
         for projectile in projectiles:
             pos = projectile.get_component("Position")
             vel = projectile.get_component("Velocity")
+            proj = projectile.get_component("Projectile")
 
-            pos.y -= vel.speed 
+            pos.y -= vel.speed

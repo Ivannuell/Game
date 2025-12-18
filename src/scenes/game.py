@@ -1,5 +1,4 @@
 
-# from scenes.scene import Scene
 from scenes.scene import Scene
 
 from systems.AnimationSystem import AnimationSystem
@@ -11,12 +10,11 @@ from systems.shootingSystem import ShootingSystem
 from systems.collideRectDebug import DebugCollisionRenderSystem
 from systems.lifetimeSystem import LifetimeSystem
 from systems.projectile_movementSystem import ProjectileMovementSystem
+from systems.projectile_behaviourSystem import ProjectileBehaviourSystem
 
 from components.components import Animation, Anim, Collider, Position, Sprite, Velocity, Solid
 
 from entities.player import Player
-from entities.obstacle import Obstacle
-from entities.bullet import Bullet
 
 
 class GameScene(Scene):
@@ -28,6 +26,7 @@ class GameScene(Scene):
             InputSystem(self.game.input_manager),
             ShootingSystem(self.game),
             MovementSystem(),
+            ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
             LifetimeSystem(),
             CollisionSystem(),
@@ -63,11 +62,8 @@ class GameScene(Scene):
         Ship = Player(shipConfig)
         Booster = Player(boosterConfig)
 
-        # bullet = Bullet()
-
         self.entities.append(Ship)
         self.entities.append(Booster)
-        # self.entities.append(bullet)
 
         for entity in self.entities:
             entity.game = self.game

@@ -1,6 +1,5 @@
 from entities.entity import Entity
 from components.components import Animation, Anim, Collider, Position, Sprite, Velocity, Solid
-from spritesheet import Spritesheet
 
 class Obstacle(Entity):
     def __init__(self):
@@ -18,6 +17,3 @@ class Obstacle(Entity):
 
         self.add_component(Collider(48,48))
         self.add_component(Solid())
-
-        # self.game = game
-        # self._init_Entity()

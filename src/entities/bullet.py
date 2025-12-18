@@ -17,7 +17,6 @@ class Bullet(Entity):
         ))
 
         self.add_component(Collider(6,9))
-        self.add_component(Projectile())
 
         self.game = game
         self.init_Entity()

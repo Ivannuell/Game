@@ -25,7 +25,7 @@ class Player(Entity):
         self.add_component(Ship())
 
         if "Cannon" in config:
-            self.add_component(Cannon())
+            self.add_component(Cannon(0.5))
 
         # self.game = game
         # self._init_Entity()

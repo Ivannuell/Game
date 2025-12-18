@@ -19,7 +19,10 @@ class Entity:
         # return self.components.get(component_id)    
 
     def has_component(self, component_id):
-        return component_id in self.components
+        try:
+            return component_id in self.components
+        except: 
+            print(f"The entity {self} has no component {component_id}")
 
     def init_Entity(self):
         self._build_Animation()

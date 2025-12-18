@@ -49,6 +49,11 @@ class Collider(Component):
         self.offset_x = offset_x
         self.offset_y = offset_y
 
+class Projectile(Component):
+    def __init__(self, faction):
+        super().__init__("Projectile")
+        self.faction = faction
+
 # TAGS
 class Solid(Component):
     def __init__(self):
@@ -58,15 +63,12 @@ class InputControlled(Component):
     def __init__(self):
         super().__init__("InputControlled")
 
-class Projectile(Component):
-    def __init__(self):
-        super().__init__("Projectile")
-        self.traveling = False
 
 class Ship(Component):
     def __init__(self):
         super().__init__("Ship")
 
 class Cannon(Component):
-    def __init__(self):
+    def __init__(self, cooldown):
         super().__init__("Cannon")
+        self.cooldown = cooldown
