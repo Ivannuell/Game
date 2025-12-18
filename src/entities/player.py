@@ -19,7 +19,7 @@ class Player(Entity):
 
         self.add_component(MovementIntent())
         self.add_component(Collider(48,48))
-        self.add_component(Solid())
+        # self.add_component(Solid())
         self.add_component(InputControlled())
         self.add_component(FireIntent())
         self.add_component(Ship())

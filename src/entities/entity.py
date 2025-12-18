@@ -13,10 +13,17 @@ class Entity:
 
     def add_component(self, component):
         self.components[component.id] = component
+        return self
 
     def get_component(self, component_id):
         return self.components[component_id]
-        # return self.components.get(component_id)    
+
+    def remove_component(self, component_id):
+        try:
+            self.components.pop(component_id)
+        except: 
+            # print(f"The entity {self} has no component {component_id}")
+            pass
 
     def has_component(self, component_id):
         try:

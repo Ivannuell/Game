@@ -32,6 +32,13 @@ class ShootingSystem:
                         bullet = Bullet(self.game)
                         bullet.add_component(Projectile("Player"))
 
+                        pos = bullet.get_component("Position")
+                        shooter_pos = shooter.get_component("Position")
+                        shooter_col = shooter.get_component("Collider")
+
+                        pos.x = shooter_pos.x + shooter_col.width / 2
+                        pos.y = shooter_pos.y + 40
+
                         entities.append(bullet)
                         self.elapsed_time = 0
 

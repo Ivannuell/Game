@@ -1,5 +1,9 @@
 import pygame
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+
 class Component:
     def __init__(self, id):
         self.id = id
@@ -53,6 +57,11 @@ class Projectile(Component):
     def __init__(self, faction):
         super().__init__("Projectile")
         self.faction = faction
+
+class CollidedWith(Component):
+    def __init__(self): 
+        super().__init__("CollidedWith")
+        self.entities: list[Entity] = []
 
 # TAGS
 class Solid(Component):

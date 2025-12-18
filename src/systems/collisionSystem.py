@@ -1,5 +1,6 @@
 import pygame
 from entities.entity import Entity
+from components.components import CollidedWith
 
 class CollisionSystem:
     def __init__(self):
@@ -14,19 +15,25 @@ class CollisionSystem:
             is_solid = e.has_component("Solid")
             is_parts = e.has_component("Ship")
 
-            if has_velocity and is_parts:
-                continue
-            elif has_velocity:
-                dynamic_colliders.append(e)
-            elif is_solid:
+
+
+            # if has_velocity and not is_parts:
+            #     dynamic_colliders.append(e)
+
+            # if  is_solid:
+            #     static_colliders.append(e)
+
+            if is_solid:
                 static_colliders.append(e)
+            else:
+                dynamic_colliders.append(e)
 
         for dyn in dynamic_colliders:
             for stat in static_colliders:
                 if dyn is stat:
                     continue
-
                 if self.rects_collide(dyn, stat):
+                    self.register_colliders(dyn, stat)
                     self.resolve_dynamic_static(dyn, stat)
 
         for i in range(len(dynamic_colliders)):
@@ -34,8 +41,25 @@ class CollisionSystem:
                 e1 = dynamic_colliders[i]
                 e2 = dynamic_colliders[j]
 
+                if e1.has_component("InputControlled") or e2.has_component("InputControlled"):
+                    continue
+
                 if self.rects_collide(e1, e2):
+                    self.register_colliders(e1, e2)
                     self.resolve_dynamic_dynamic(e1, e2)
+
+        # print(f"dynamic: {dynamic_colliders}")
+        # print(f"static: {static_colliders}")
+        # print(f"entities: {entities}")
+        # print("")
+
+    def register_colliders(self, e1, e2):
+
+        c1 = e1.add_component(CollidedWith())
+        c2 = e2.add_component(CollidedWith())
+
+        e1.get_component("CollidedWith").entities.append(c2)
+        e2.get_component("CollidedWith").entities.append(c1)
     
 
     def rects_collide(self, e1, e2):
@@ -128,7 +152,8 @@ class CollisionSystem:
             else:
                 p1.x += half_dx
                 p2.x -= half_dx
-
+            
+            print("dynamic Collision")
             v1.x = 0
             v2.x = 0
         else:
@@ -139,5 +164,6 @@ class CollisionSystem:
                 p1.y += half_dy
                 p2.y -= half_dy
 
+            print("dynamic Collision")
             v1.y = 0
             v2.y = 0

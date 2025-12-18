@@ -1,5 +1,5 @@
 from entities.entity import Entity
-from components.components import Animation, Anim, Collider, Position, Sprite, Velocity, Solid
+from components.components import *
 
 class Obstacle(Entity):
     def __init__(self):

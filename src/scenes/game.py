@@ -8,13 +8,15 @@ from systems.movementSystem import MovementSystem
 from systems.collisionSystem import CollisionSystem
 from systems.shootingSystem import ShootingSystem
 from systems.collideRectDebug import DebugCollisionRenderSystem
+from systems.collider_cleanerSystem import CollisionCleanupSystem
 from systems.lifetimeSystem import LifetimeSystem
 from systems.projectile_movementSystem import ProjectileMovementSystem
 from systems.projectile_behaviourSystem import ProjectileBehaviourSystem
 
-from components.components import Animation, Anim, Collider, Position, Sprite, Velocity, Solid
+from components.components import *
 
 from entities.player import Player
+from entities.obstacle import Obstacle
 
 
 class GameScene(Scene):
@@ -29,6 +31,7 @@ class GameScene(Scene):
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
             LifetimeSystem(),
+            CollisionCleanupSystem(),
             CollisionSystem(),
 
             AnimationSystem(),
@@ -61,9 +64,11 @@ class GameScene(Scene):
 
         Ship = Player(shipConfig)
         Booster = Player(boosterConfig)
+        Enemy = Obstacle()
 
         self.entities.append(Ship)
         self.entities.append(Booster)
+        self.entities.append(Enemy)
 
         for entity in self.entities:
             entity.game = self.game
