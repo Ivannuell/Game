@@ -1,13 +1,11 @@
 # This needs to refactored and make it a parent class for real entities on the game.
 
-import pygame
-from entities.animatedSprite import AnimatedSprite
 from spritesheet import Spritesheet
-
+from baseGame import BaseGame
 
 class Entity:
-    def __init__(self, game):
-        self.game = game
+    def __init__(self):
+        self.game: BaseGame
         self.components = {}
 
     def add_component(self, component):
@@ -20,7 +18,7 @@ class Entity:
     def has_component(self, component_id):
         return component_id in self.components
 
-    def _init_Entity(self):
+    def init_Entity(self):
         self._build_Animation()
         self._build_Rect()
 

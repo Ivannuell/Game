@@ -3,8 +3,8 @@ from components.components import Animation, Anim, Collider, Position, Sprite, V
 from spritesheet import Spritesheet
 
 class Obstacle(Entity):
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self):
+        super().__init__()
 
         self.add_component(Position(500, 10))
         self.add_component(Sprite())
@@ -19,5 +19,5 @@ class Obstacle(Entity):
         self.add_component(Collider(48,48))
         self.add_component(Solid())
 
-        self.game = game
-        self._init_Entity()
+        # self.game = game
+        # self._init_Entity()

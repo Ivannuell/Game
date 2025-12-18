@@ -42,13 +42,31 @@ class Animation(Component):
         self.frame_scale = frame_scale
 
 class Collider(Component):
-    def __init__(self, height, width, offset_x=0, offset_y=0):
+    def __init__(self, width, height, offset_x=0, offset_y=0):
         super().__init__("Collider")
-        self.height = height
         self.width = width
+        self.height = height
         self.offset_x = offset_x
         self.offset_y = offset_y
 
+# TAGS
 class Solid(Component):
     def __init__(self):
         super().__init__("Solid")
+
+class InputControlled(Component):
+    def __init__(self):
+        super().__init__("InputControlled")
+
+class Projectile(Component):
+    def __init__(self):
+        super().__init__("Projectile")
+        self.traveling = False
+
+class Ship(Component):
+    def __init__(self):
+        super().__init__("Ship")
+
+class Cannon(Component):
+    def __init__(self):
+        super().__init__("Cannon")

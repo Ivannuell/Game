@@ -7,12 +7,15 @@ from systems.RenderSystem import RenderSystem
 from systems.inputSystem import InputSystem
 from systems.movementSystem import MovementSystem
 from systems.collisionSystem import CollisionSystem
+from systems.shootingSystem import ShootingSystem
 from systems.collideRectDebug import DebugCollisionRenderSystem
+from systems.lifetimeSystem import LifetimeSystem
 
 from components.components import Animation, Anim, Collider, Position, Sprite, Velocity, Solid
 
 from entities.player import Player
 from entities.obstacle import Obstacle
+from entities.bullet import Bullet
 
 
 class GameScene(Scene):
@@ -22,12 +25,15 @@ class GameScene(Scene):
     def on_Enter(self):
         self.systems = [
             InputSystem(self.game.input_manager),
+            ShootingSystem(self.game),
             MovementSystem(),
+            LifetimeSystem(),
             CollisionSystem(),
+            
             AnimationSystem(),
+
             DebugCollisionRenderSystem(self.game.screen),
             RenderSystem(self.game.screen)
-
         ]
 
 
@@ -37,24 +43,33 @@ class GameScene(Scene):
             "Anim": {
                 "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2)
             },
-            "col": (48,48)
+            "col": (48,48),
+            "Vel": 420,
+            "Cannon": True
         }
 
         boosterConfig = {
-            "Pos": (100, 150),
+            "Pos": (100, 100),
             "Sprite": "booster",
             "Anim": {
                 "booster": Anim([], ((0,0,48,48), (48,0,48,48), (96,0,48,48)), 0, 0.2)
             },
-            "col": (48,48)
+            "col": (48,48),
+            "Vel": 420
         }
 
-        configs = {
-            "Ship": shipConfig,
-            "Booster": boosterConfig
-        }
+        Ship = Player(shipConfig)
+        Booster = Player(boosterConfig)
 
-        Ship = Player(self.game, configs)
+        # bullet = Bullet()
+
+        self.entities.append(Ship)
+        self.entities.append(Booster)
+        # self.entities.append(bullet)
+
+        for entity in self.entities:
+            entity.game = self.game
+            entity.init_Entity()
 
     def on_Exit(self):
         self.entities.clear()

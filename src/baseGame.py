@@ -58,7 +58,8 @@ class BaseGame:
     def render(self):
         self.current_scene.draw(self.screen)
 
-        self.screen.draw()
+        if self.screen is not None:
+            self.screen.draw()
 
     def events(self):
         self.input_manager.begin_frame()

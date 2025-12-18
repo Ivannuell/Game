@@ -6,18 +6,22 @@ FRICTION = 1000
 
 class MovementSystem:
     def update(self, entities: list[Entity], dt):
+        player_cons = []
+        
         for entity in entities:
-            try:
-                position = entity.get_component("Position")
-                velocity = entity.get_component("Velocity")
-                movement_intent = entity.get_component("MovementIntent")
-            except:
-                continue
 
+            if entity.has_component("Position") and entity.has_component("Velocity") and entity.has_component("MovementIntent"):
+                player_cons.append(entity)
+
+
+        for player in player_cons:            
+            position = player.get_component("Position")
+            velocity = player.get_component("Velocity")
+            movement_intent = player.get_component("MovementIntent")
 
             target_vx = movement_intent.move_x * velocity.speed
             target_vy = movement_intent.move_y * velocity.speed
-           
+        
             if movement_intent.move_x != 0:
                 velocity.x = self.move_towards(velocity.x, target_vx, ACCELERATION * dt)
             else:

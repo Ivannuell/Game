@@ -19,8 +19,14 @@ class AssetsManager:
         obstacle = os.path.join(
             self.assets_dir, 'Main Ship - Base - Full health.png'
         )
+        
+        bullet = os.path.join(
+            self.assets_dir, 'Projectile01.png'
+        )
+        
         self.add_asset(player_spritesheet, 'booster')
         self.add_asset(obstacle, 'ship')
+        self.add_asset(bullet, 'bullet')
 
     def add_asset(self, asset, asset_key):
         self.assets[asset_key] = asset
