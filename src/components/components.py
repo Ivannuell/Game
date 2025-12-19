@@ -4,6 +4,14 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
 
+class CollisionID(enumerate):
+    Players = 0
+    Enemies = 1
+    Projectiles = 2
+    Obstacles = 3
+
+
+
 class Component:
     def __init__(self, id):
         self.id = id
@@ -81,3 +89,15 @@ class Cannon(Component):
     def __init__(self, cooldown):
         super().__init__("Cannon")
         self.cooldown = cooldown
+
+
+class CollisionIdentity(Component):
+    def __init__(self, layer: list[int], mask: list[int]):
+        super().__init__("CollisionIdentity")
+        self.layer = layer
+        self.mask = mask
+
+class FactionIdentity(Component):
+    def __init__(self, faction):
+        super().__init__("FactionIdentity")
+        self.faction = faction

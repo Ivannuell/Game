@@ -11,17 +11,7 @@ class CollisionSystem:
         dynamic_colliders = []
 
         for e in entities:
-            has_velocity = e.has_component("Velocity")
             is_solid = e.has_component("Solid")
-            is_parts = e.has_component("Ship")
-
-
-
-            # if has_velocity and not is_parts:
-            #     dynamic_colliders.append(e)
-
-            # if  is_solid:
-            #     static_colliders.append(e)
 
             if is_solid:
                 static_colliders.append(e)
@@ -32,29 +22,27 @@ class CollisionSystem:
             for stat in static_colliders:
                 if dyn is stat:
                     continue
-                if self.rects_collide(dyn, stat):
-                    self.register_colliders(dyn, stat)
-                    self.resolve_dynamic_static(dyn, stat)
+
+                for m in dyn.get_component("CollisionIdentity").mask:
+                    if m in stat.get_component("CollisionIdentity").layer:
+                        if self.rects_collide(dyn, stat):
+                            self.register_colliders(dyn, stat)
+                            self.resolve_dynamic_static(dyn, stat)
+
+                    
 
         for i in range(len(dynamic_colliders)):
             for j in range(i + 1, len(dynamic_colliders)):
                 e1 = dynamic_colliders[i]
                 e2 = dynamic_colliders[j]
 
-                if e1.has_component("InputControlled") or e2.has_component("InputControlled"):
-                    continue
-
-                if self.rects_collide(e1, e2):
-                    self.register_colliders(e1, e2)
-                    self.resolve_dynamic_dynamic(e1, e2)
-
-        # print(f"dynamic: {dynamic_colliders}")
-        # print(f"static: {static_colliders}")
-        # print(f"entities: {entities}")
-        # print("")
+                for m in e1.get_component("CollisionIdentity").mask:
+                    if m in e2.get_component("CollisionIdentity").layer:
+                        if self.rects_collide(e1, e2):
+                            self.register_colliders(e1, e2)
+                            self.resolve_dynamic_dynamic(e1, e2)
 
     def register_colliders(self, e1, e2):
-
         c1 = e1.add_component(CollidedWith())
         c2 = e2.add_component(CollidedWith())
 
