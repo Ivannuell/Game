@@ -24,6 +24,7 @@ class ShootingSystem:
       
                 
         for shooter in shooters:
+            # Should I change this for faction checking?
             if type(shooter) is Player:
                 if shooter.get_component("FireIntent").fired:
                     cooldown = shooter.get_component("Cannon").cooldown

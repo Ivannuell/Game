@@ -7,16 +7,23 @@ from systems.inputSystem import InputSystem
 from systems.movementSystem import MovementSystem
 from systems.collisionSystem import CollisionSystem
 from systems.shootingSystem import ShootingSystem
-from systems.collideRectDebug import DebugCollisionRenderSystem
 from systems.collider_cleanerSystem import CollisionCleanupSystem
 from systems.lifetimeSystem import LifetimeSystem
 from systems.projectile_movementSystem import ProjectileMovementSystem
 from systems.projectile_behaviourSystem import ProjectileBehaviourSystem
+from systems.damageSystem import DamageSystem
+from systems.healthSystem import HealthSystem
+
+from systems.debugers.collideRectDebug import DebugCollisionRenderSystem
+from systems.debugers.healthDraw_DebugerSystem import HealthDraw
+from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
 
 from components.components import *
 
+
 from entities.player import Player
 from entities.obstacle import Obstacle
+from entities.enemy import Enemy
 
 
 class GameScene(Scene):
@@ -30,13 +37,22 @@ class GameScene(Scene):
             MovementSystem(),
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
+
             LifetimeSystem(),
+
             CollisionCleanupSystem(),
             CollisionSystem(),
+            
+            DamageSystem(),
+            HealthSystem(self.game),
 
             AnimationSystem(),
 
             DebugCollisionRenderSystem(self.game.screen),
+            HealthDraw(self.game.screen),
+            OnScreenDebugSystem(self.game),
+            
+
             RenderSystem(self.game.screen)
         ]
 
@@ -64,11 +80,11 @@ class GameScene(Scene):
 
         Ship = Player(shipConfig)
         Booster = Player(boosterConfig)
-        Enemy = Obstacle()
+        enemy = Enemy()
 
         self.entities.append(Ship)
         self.entities.append(Booster)
-        self.entities.append(Enemy)
+        self.entities.append(enemy)
 
         for entity in self.entities:
             entity.game = self.game

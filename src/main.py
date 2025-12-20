@@ -2,7 +2,7 @@ import pygame
 import os
 from screen import Screen
 from baseGame import BaseGame
-
+      
 class Launcher():
     def __init__(self):
         pygame.init()

@@ -93,7 +93,6 @@ class CollisionSystem:
                 pos.x -= dx
             else:
                 pos.x += dx
-            print('Collides')
             vel.x = 0
         else:
             if r1.centery < r2.centery:
@@ -101,7 +100,6 @@ class CollisionSystem:
             else:
                 pos.y += dy
             vel.y = 0
-            print('Collides')
 
     def resolve_dynamic_dynamic(self, e1, e2):
         p1 = e1.get_component("Position")

@@ -71,6 +71,16 @@ class CollidedWith(Component):
         super().__init__("CollidedWith")
         self.entities: list[Entity] = []
 
+class Health(Component):
+    def __init__(self, health):
+        super().__init__("Health")
+        self.health = health
+
+class Damage(Component):
+    def __init__(self, damage):
+        super().__init__("Damage")
+        self.damage = damage
+
 # TAGS
 class Solid(Component):
     def __init__(self):
