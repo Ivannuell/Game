@@ -1,15 +1,19 @@
 import pygame
-from entities.entity import Entity
-from components.components import CollidedWith
+
+from components.components import *
 from systems.system import System
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+
 class CollisionSystem(System):
-    def update(self, entities: list[Entity], dt):
+    def update(self, entities: list['Entity'], dt):
         static_colliders = []
         dynamic_colliders = []
 
         for e in entities:
-            is_solid = e.has_component("Solid")
+            is_solid = e.has(Solid)
 
             if is_solid:
                 static_colliders.append(e)
@@ -21,8 +25,8 @@ class CollisionSystem(System):
                 if dyn is stat:
                     continue
 
-                for m in dyn.get_component("CollisionIdentity").mask:
-                    if m in stat.get_component("CollisionIdentity").layer:
+                for m in dyn.get(CollisionIdentity).mask:
+                    if m in stat.get(CollisionIdentity).layer:
                         if self.rects_collide(dyn, stat):
                             self.register_colliders(dyn, stat)
                             self.resolve_dynamic_static(dyn, stat)
@@ -34,36 +38,36 @@ class CollisionSystem(System):
                 e1 = dynamic_colliders[i]
                 e2 = dynamic_colliders[j]
 
-                for m in e1.get_component("CollisionIdentity").mask:
-                    if m in e2.get_component("CollisionIdentity").layer:
+                for m in e1.get(CollisionIdentity).mask:
+                    if m in e2.get(CollisionIdentity).layer:
                         if self.rects_collide(e1, e2):
                             self.register_colliders(e1, e2)
                             self.resolve_dynamic_dynamic(e1, e2)
 
     def register_colliders(self, e1, e2):
-        c1 = e1.add_component(CollidedWith())
-        c2 = e2.add_component(CollidedWith())
+        c1 = e1.add(CollidedWith())
+        c2 = e2.add(CollidedWith())
 
-        e1.get_component("CollidedWith").entities.append(c2)
-        e2.get_component("CollidedWith").entities.append(c1)
+        e1.get(CollidedWith).entities.append(c2)
+        e2.get(CollidedWith).entities.append(c1)
     
 
     def rects_collide(self, e1, e2):
-        p1 = e1.get_component("Position")
-        c1 = e1.get_component("Collider")
-        p2 = e2.get_component("Position")
-        c2 = e2.get_component("Collider")
+        p1 = e1.get(Position)
+        c1 = e1.get(Collider)
+        p2 = e2.get(Position)
+        c2 = e2.get(Collider)
 
         r1 = pygame.Rect(
-            p1.x + c1.offset_x,
-            p1.y + c1.offset_y,
+            p1.x,
+            p1.y,
             c1.width,
             c1.height
         )
 
         r2 = pygame.Rect(
-            p2.x + c2.offset_x,
-            p2.y + c2.offset_y,
+            p2.x,
+            p2.y,
             c2.width,
             c2.height
         )
@@ -71,14 +75,14 @@ class CollisionSystem(System):
         return r1.colliderect(r2)
 
 
-    def resolve_dynamic_static(self, dyn, stat):
-        pos = dyn.get_component("Position")
-        vel = dyn.get_component("Velocity")
+    def resolve_dynamic_static(self, dyn: 'Entity', stat: 'Entity'):
+        pos = dyn.get(Position)
+        vel = dyn.get(Velocity)
 
-        p1 = dyn.get_component("Position")
-        c1 = dyn.get_component("Collider")
-        p2 = stat.get_component("Position")
-        c2 = stat.get_component("Collider")
+        p1 = dyn.get(Position)
+        c1 = dyn.get(Collider)
+        p2 = stat.get(Position)
+        c2 = stat.get(Collider)
 
         r1 = pygame.Rect(p1.x, p1.y, c1.width, c1.height)
         r2 = pygame.Rect(p2.x, p2.y, c2.width, c2.height)
@@ -99,24 +103,24 @@ class CollisionSystem(System):
                 pos.y += dy
             vel.y = 0
 
-    def resolve_dynamic_dynamic(self, e1, e2):
-        p1 = e1.get_component("Position")
-        v1 = e1.get_component("Velocity")
-        c1 = e1.get_component("Collider")
+    def resolve_dynamic_dynamic(self, e1: 'Entity', e2: 'Entity'):
+        p1 = e1.get(Position)
+        v1 = e1.get(Velocity)
+        c1 = e1.get(Collider)
 
-        p2 = e2.get_component("Position")
-        v2 = e2.get_component("Velocity")
-        c2 = e2.get_component("Collider")
+        p2 = e2.get(Position)
+        v2 = e2.get(Velocity)
+        c2 = e2.get(Collider)
 
         r1 = pygame.Rect(
-            p1.x + c1.offset_x,
-            p1.y + c1.offset_y,
+            p1.x,
+            p1.y,
             c1.width,
             c1.height
         )
         r2 = pygame.Rect(
-            p2.x + c2.offset_x,
-            p2.y + c2.offset_y,
+            p2.x,
+            p2.y,
             c2.width,
             c2.height
         )

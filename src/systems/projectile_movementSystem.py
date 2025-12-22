@@ -4,6 +4,7 @@ if TYPE_CHECKING:
     from entities.entity import Entity
 
 from systems.system import System
+from components.components import *
 
 class ProjectileMovementSystem(System):
     def update(self, entities: list["Entity"], dt):
@@ -11,12 +12,12 @@ class ProjectileMovementSystem(System):
 
         for entity in entities:
 
-            if entity.has_component("Position") and entity.has_component("Projectile"):
+            if entity.has(Position) and entity.has(Projectile):
                 projectiles.append(entity)
 
         for projectile in projectiles:
-            pos = projectile.get_component("Position")
-            vel = projectile.get_component("Velocity")
-            proj = projectile.get_component("Projectile")
+            pos = projectile.get(Position)
+            vel = projectile.get(Velocity)
+            proj = projectile.get(Projectile)
 
             pos.y -= vel.speed

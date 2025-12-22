@@ -1,15 +1,12 @@
 from systems.system import System
 from entities.entity import Entity
+from components.components import *
 
 class AnimationSystem(System):
     def update(self, entities: list[Entity], dt):
         for entity in entities:
-            try:
-                sprite = entity.get_component("Sprite")
-                animation = entity.get_component("Animation")
-            except Exception:
-                if not entity.has_component("Sprite") or not entity.has_component("Animation"):
-                    if not animation.active_anim:
-                        continue
+            if entity.has(Sprite) and entity.has(Animation):
+                sprite = entity.get(Sprite)
+                animation = entity.get(Animation)
 
-            sprite.image = animation.active_anim.get_frame(dt)
+                sprite.image = animation.active_anim.get_frame(dt)

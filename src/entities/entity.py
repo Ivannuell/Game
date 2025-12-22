@@ -1,55 +1,54 @@
 # This needs to refactored and make it a parent class for real entities on the game.
 
 from spritesheet import Spritesheet
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type, TypeVar
+from components.components import *
+
+T = TypeVar("T", bound=Component)
 
 if TYPE_CHECKING:
     from baseGame import BaseGame
+    from components.components import Component
 
 class Entity:
     def __init__(self):
         self.game: "BaseGame"
-        self.components = {}
+        self.components: dict[type, Component] = {}
 
-    def add_component(self, component):
-        self.components[component.id] = component
+    def add(self, component):
+        self.components[type(component)] = component
         return self
 
-    def get_component(self, component_id):
-        return self.components[component_id]
+    def get(self, component_cls: Type[T]) -> T:
+        return self.components[component_cls] # type: ignore
 
-    def remove_component(self, component_id):
-        try:
-            self.components.pop(component_id)
-        except: 
-            # print(f"The entity {self} has no component {component_id}")
-            pass
+    def has(self, component_cls):
+        return component_cls in self.components
 
-    def has_component(self, component_id):
-        try:
-            return component_id in self.components
-        except: 
-            print(f"The entity {self} has no component {component_id}")
+    def remove(self, component_cls):
+        self.components.pop(component_cls, None)
+
 
     def init_Entity(self):
         self._build_Animation()
         self._build_Rect()
 
     def _build_Rect(self):
-        if self.has_component('Collider'):
-            col = self.get_component('Collider')
-            scale = self.get_component("Animation").frame_scale
+        if self.has(Collider):
+            col = self.get(Collider)
+            size = self.get(Size)
 
-            col.width *= scale
-            col.height *= scale
+            col.width = size.width
+            col.height = size.height
 
     def _build_Animation(self):
-        animation = self.get_component("Animation")
-        sprite = self.get_component("Sprite")
+        animation = self.get(Animation)
+        sprite = self.get(Sprite)
+        scale = self.get(Size)
 
         spritesheet = Spritesheet(self.game.asset_manager.get_asset(animation.spritesheet), True)
         for key, anim in animation.anim.items():
-            anim.frames = spritesheet.get_animation(anim.frame_coords, anim.frame_duration, scale=animation.frame_scale)
+            anim.frames = spritesheet.get_animation(anim.frame_coords, anim.frame_duration, scale=scale.scale)
             anim.name = key
             animation.anim_list[anim.name] = anim.frames
 

@@ -1,6 +1,8 @@
 import pygame
+from components.components import Component
 from entities.entity import Entity
 from systems.system import System
+from components.components import *
 
 class DebugCollisionRenderSystem(System):
     def __init__(self, enabled=True):
@@ -11,15 +13,15 @@ class DebugCollisionRenderSystem(System):
             return
 
         for e in entities:
-            if not e.has_component("Position") or not e.has_component("Collider"):
+            if not e.has(Position) or not e.has(Collider):
                 continue
 
-            pos = e.get_component("Position")
-            col = e.get_component("Collider")
+            pos = e.get(Position)
+            col = e.get(Collider)
 
             rect = pygame.Rect(
-                pos.x + col.offset_x,
-                pos.y + col.offset_y,
+                pos.x,
+                pos.y,
                 col.width,
                 col.height
             )

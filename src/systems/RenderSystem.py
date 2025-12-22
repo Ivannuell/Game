@@ -4,13 +4,14 @@ if TYPE_CHECKING:
     from screen import Screen
 
 from systems.system import System
+from components.components import *
 
 class RenderSystem(System):
     def render(self, entities: list["Entity"], screen: "Screen"):
         for entity in entities:
             try:
-                sprite = entity.get_component('Sprite')
-                position = entity.get_component('Position')
+                sprite = entity.get(Sprite)
+                position = entity.get(Position)
             except:
                 continue
 

@@ -71,7 +71,7 @@ class GameScene(Scene):
             "Pos": (100, 100),
             "Sprite": "booster",
             "Anim": {
-                "booster": Anim([], ((0,0,48,48), (48,0,48,48), (96,0,48,48)), 0, 0.2)
+                "booster": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2)
             },
             "col": (48,48),
             "Vel": 420
@@ -79,12 +79,12 @@ class GameScene(Scene):
         
 
     def on_Enter(self):
-        Ship = Player(self.shipConfig)
-        Booster = Player(self.boosterConfig)
+        Ship = Player(self.boosterConfig)
+        Booster = Player(self.shipConfig)
         enemy = Enemy()
 
-        self.entities.append(Ship)
         self.entities.append(Booster)
+        self.entities.append(Ship)
         self.entities.append(enemy)
 
         for entity in self.entities:

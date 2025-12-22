@@ -1,5 +1,6 @@
 from inputManager import InputManager
 from systems.system import System
+from components.components import *
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -18,14 +19,14 @@ class InputSystem(System):
         shooters = []
 
         for entity in entities:
-            if entity.has_component("MovementIntent") and entity.has_component("InputControlled"):
+            if entity.has(MovementIntent) and entity.has(InputControlled):
                 movers.append(entity)
 
-            if entity.has_component("FireIntent") and entity.has_component("Cannon"):
+            if entity.has(FireIntent) and entity.has(Cannon):
                 shooters.append(entity)
 
         for shooter in shooters:
-            fire = shooter.get_component("FireIntent")
+            fire = shooter.get(FireIntent)
 
             fire.fired = False
 
@@ -34,7 +35,7 @@ class InputSystem(System):
 
 
         for mover in movers:
-            movement_intent = mover.get_component("MovementIntent")
+            movement_intent = mover.get(MovementIntent)
 
             movement_intent.move_y = 0
             movement_intent.move_x = 0

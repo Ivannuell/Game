@@ -7,19 +7,19 @@ class Obstacle(Entity):
 
         self.__qualname__ = "Obstacle"
 
-        self.add_component(Animation(
-            frame_scale=3,
+        self.add(Animation(
             spritesheet="ship",
             animation = {
                 "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2)
             }
         ))
-        self.add_component(CollisionIdentity(
+        self.add(CollisionIdentity(
             layer = [CollisionID.Players, CollisionID.Enemies],
             mask = []
             
         ))
-        self.add_component(Position(500, 10))
-        self.add_component(Sprite())
-        self.add_component(Collider(48,48))
-        self.add_component(Solid())
+        self.add(Position(500, 10))
+        self.add(Sprite())
+        # self.add(Size(48,48,5))
+        self.add(Collider())
+        self.add(Solid())

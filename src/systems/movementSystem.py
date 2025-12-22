@@ -1,5 +1,6 @@
 
 from systems.system import System
+from components.components import *
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -14,14 +15,14 @@ class MovementSystem(System):
 
         for entity in entities:
 
-            if entity.has_component("Position") and entity.has_component("Velocity") and entity.has_component("MovementIntent"):
+            if entity.has(Position) and entity.has(Velocity) and entity.has(MovementIntent):
                 player_cons.append(entity)
 
 
         for player in player_cons:            
-            position = player.get_component("Position")
-            velocity = player.get_component("Velocity")
-            movement_intent = player.get_component("MovementIntent")
+            position = player.get(Position)
+            velocity = player.get(Velocity)
+            movement_intent = player.get(MovementIntent)
 
             target_vx = movement_intent.move_x * velocity.speed
             target_vy = movement_intent.move_y * velocity.speed

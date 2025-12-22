@@ -1,8 +1,11 @@
 
 from systems.system import System
+from components.components import *
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+
 
 class ProjectileBehaviourSystem(System):
     elapsed_time = 0
@@ -11,6 +14,6 @@ class ProjectileBehaviourSystem(System):
         projectiles = []
 
         for entity in entities:
-            if entity.has_component("Projectile"):
+            if entity.has(Projectile):
                 projectiles.append(entity)
 

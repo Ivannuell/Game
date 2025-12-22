@@ -8,24 +8,25 @@ class Bullet(Entity):
 
         self.__qualname__ = "Bullet"
 
-        self.add_component(Position(100, 600))
-        self.add_component(Velocity(10))
-        self.add_component(Sprite())
-        self.add_component(Animation(
+        self.add(Position(100, 600))
+        self.add(Velocity(10))
+        self.add(Size(6,9,2))
+        self.add(Sprite())
+        self.add(Animation(
             spritesheet="bullet",
             animation={
                 "bullet": Anim([], [(0, 0, 6, 9)], 0, 0.2)
             }
         ))
-        self.add_component(CollisionIdentity(
+        self.add(CollisionIdentity(
             layer=[CollisionID.Projectiles],
             mask=[CollisionID.Enemies, CollisionID.Obstacles]
 
         ))
 
-        self.add_component(Collider(6, 9))
+        self.add(Collider())
 
-        self.add_component(Damage(20))
+        self.add(Damage(20))
 
         self.game = game
         self.init_Entity()

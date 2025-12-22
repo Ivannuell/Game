@@ -15,7 +15,7 @@ class Spritesheet:
             sprite = pygame.transform.flip(sprite, True, False)
 
         if scale > 1:
-            sprite = pygame.transform.scale(sprite, (frame[2] * scale, frame[2] * scale))
+            sprite = pygame.transform.scale(sprite, (frame[2] * scale, frame[3] * scale))
 
         if self.bg != None:
             sprite.set_colorkey('black')
@@ -25,14 +25,14 @@ class Spritesheet:
     def get_animation(self, frame_coords, frame_duration, scale=1):
         if len(frame_coords) == 1:
             frame = [self.get_image(frame_coords[0], scale=scale)]
-            return Animation(frame, frame_duration)
+            return _Anim(frame, frame_duration)
 
-        frames = [self.get_image(coords, scale=3) for coords in frame_coords]
-        return Animation(frames, frame_duration)
+        frames = [self.get_image(coords, scale=scale) for coords in frame_coords]
+        return _Anim(frames, frame_duration)
 
 
 # Animations still only supports looping ones
-class Animation:
+class _Anim:
     def __init__(self, frames, frame_duration, mode=None):
         self.frames = frames
         self.frame_duration = frame_duration

@@ -7,21 +7,21 @@ class Enemy(Entity):
 
         self.__qualname__ = "Enemy"
 
-        self.add_component(Animation(
-            frame_scale=3,
+        self.add(Animation(
             spritesheet="ship",
             animation = {
                 "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2)
             }
         ))
-        self.add_component(CollisionIdentity(
+        self.add(CollisionIdentity(
             layer = [CollisionID.Players, CollisionID.Enemies],
             mask = []
             
         ))
-        self.add_component(Position(500, 100))
-        self.add_component(Sprite())
-        self.add_component(Collider(48,48))
-        self.add_component(Solid())
+        self.add(Position(500, 100))
+        self.add(Size(48,48,2))
+        self.add(Sprite())
+        self.add(Collider())
+        self.add(Solid())
 
-        self.add_component(Health(100))
+        self.add(Health(100))

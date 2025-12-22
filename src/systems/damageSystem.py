@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 from systems.system import System
+from components.components import *
 
 if TYPE_CHECKING:
     from entities.entity import Entity
@@ -14,19 +15,19 @@ class DamageSystem(System):
 
 
         for entity in entities:
-            if entity.has_component("Health"):
+            if entity.has(Health):
                 damagables.append(entity)
 
-            if entity.has_component("Damage") and entity.has_component("CollidedWith"):
+            if entity.has(Damage) and entity.has(CollidedWith):
                 damagers.append(entity)
 
         for damager in damagers:
-            others = damager.get_component("CollidedWith").entities
-            damage = damager.get_component("Damage").damage
+            others = damager.get(CollidedWith).entities
+            damage = damager.get(Damage).damage
 
             for other in others:
                 for damageble in damagables:
                     if damageble in others:
-                        damageble.get_component("Health").health -= damage
+                        damageble.get(Health).health -= damage
 
         

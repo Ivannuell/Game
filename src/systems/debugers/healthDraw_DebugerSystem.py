@@ -1,6 +1,7 @@
 from entities.entity import Entity
 import pygame
 from systems.system import System
+from components.components import *
 
 class HealthDraw(System):
 
@@ -8,9 +9,9 @@ class HealthDraw(System):
         font = pygame.font.Font(None, 20)
 
         for entity in entities:
-            if entity.has_component("Health") and entity.has_component("Position"):
-                health = entity.get_component("Health").health
-                position = entity.get_component("Position")
+            if entity.has(Health) and entity.has(Position):
+                health = entity.get(Health).health
+                position = entity.get(Position)
 
                 text = font.render(f"Health: {health}", False, "white")
                 textRect = text.get_rect()
