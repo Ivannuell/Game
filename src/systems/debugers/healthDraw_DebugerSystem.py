@@ -1,11 +1,10 @@
 from entities.entity import Entity
 import pygame
+from systems.system import System
 
-class HealthDraw:
-    def __init__(self, screen):
-        self.screen = screen
+class HealthDraw(System):
 
-    def update(self, entities: list[Entity], dt):
+    def render(self, entities: list[Entity], screen):
         font = pygame.font.Font(None, 20)
 
         for entity in entities:
@@ -18,7 +17,7 @@ class HealthDraw:
 
                 textRect.bottomleft = (position.x, position.y)
 
-                self.screen.display_surface.blit(text, textRect)
+                screen.display_surface.blit(text, textRect)
             
 
 

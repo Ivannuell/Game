@@ -1,11 +1,10 @@
 from typing import TYPE_CHECKING
-from entities.enemy import Enemy
-import random
+from systems.system import System
 
 if TYPE_CHECKING:
     from entities.entity import Entity
 
-class HealthSystem:
+class HealthSystem(System):
     def __init__(self, game):
         self.game = game
 

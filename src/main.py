@@ -1,5 +1,5 @@
+from typing import NoReturn
 import pygame
-import os
 from screen import Screen
 from baseGame import BaseGame
       
@@ -8,7 +8,7 @@ class Launcher():
         pygame.init()
         self.path = os.path.curdir
 
-    def start(self):
+    def start(self)  -> NoReturn:
         self.screen = Screen(1280, 720)
         self.game = BaseGame()
 

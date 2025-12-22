@@ -1,11 +1,15 @@
-from entities.entity import Entity
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
 
-class LifetimeSystem:
+from systems.system import System
+
+class LifetimeSystem(System):
     def __init__(self):
         pass
 
 
-    def update(self, entities: list[Entity], dt):
+    def update(self, entities: list['Entity'], dt):
         bullets: list[Entity] = []
         collided_bullets: list[Entity] = []
 

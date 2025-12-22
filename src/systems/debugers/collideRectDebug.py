@@ -1,12 +1,12 @@
 import pygame
 from entities.entity import Entity
+from systems.system import System
 
-class DebugCollisionRenderSystem:
-    def __init__(self, screen, enabled=True):
-        self.screen = screen
+class DebugCollisionRenderSystem(System):
+    def __init__(self, enabled=True):
         self.enabled = enabled
 
-    def update(self, entities: list[Entity], dt):
+    def render(self, entities: list[Entity], screen):
         if not self.enabled:
             return
 
@@ -26,7 +26,7 @@ class DebugCollisionRenderSystem:
 
             # red outline
             pygame.draw.rect(
-                self.screen.display_surface,
+                screen.display_surface,
                 (255, 0, 0),
                 rect,
                 width=1

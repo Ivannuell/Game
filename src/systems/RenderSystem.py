@@ -1,12 +1,12 @@
-import pygame 
-from screen import Screen
-from entities.entity import Entity
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+    from screen import Screen
 
-class RenderSystem:
-    def __init__(self, screen: Screen):
-        self.screen = screen
+from systems.system import System
 
-    def render(self, entities: list[Entity]):
+class RenderSystem(System):
+    def render(self, entities: list["Entity"], screen: "Screen"):
         for entity in entities:
             try:
                 sprite = entity.get_component('Sprite')
@@ -14,5 +14,5 @@ class RenderSystem:
             except:
                 continue
 
-            self.screen.display_surface.blit(sprite.image, (position.x, position.y))
+            screen.display_surface.blit(sprite.image, (position.x, position.y))
 

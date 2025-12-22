@@ -1,9 +1,12 @@
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
 
-from entities.entity import Entity
+from systems.system import System
 
-class ProjectileMovementSystem:
-    def update(self, entities: list[Entity], dt):
+class ProjectileMovementSystem(System):
+    def update(self, entities: list["Entity"], dt):
         projectiles = []
 
         for entity in entities:

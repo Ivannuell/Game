@@ -1,9 +1,7 @@
-from spritesheet import Spritesheet
-from assetManager import AssetsManager
-from components.components import Sprite, Animation
+from systems.system import System
 from entities.entity import Entity
 
-class AnimationSystem:
+class AnimationSystem(System):
     def update(self, entities: list[Entity], dt):
         for entity in entities:
             try:

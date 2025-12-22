@@ -22,15 +22,16 @@ from components.components import *
 
 
 from entities.player import Player
-from entities.obstacle import Obstacle
 from entities.enemy import Enemy
 
 
 class GameScene(Scene):
     def __init__(self, game) -> None:
         super().__init__(game)
+        self.shipConfig = {}
+        self.boosterConfig = {}
 
-    def on_Enter(self):
+    def on_Create(self):
         self.systems = [
             InputSystem(self.game.input_manager),
             ShootingSystem(self.game),
@@ -48,16 +49,14 @@ class GameScene(Scene):
 
             AnimationSystem(),
 
-            DebugCollisionRenderSystem(self.game.screen),
-            HealthDraw(self.game.screen),
+            DebugCollisionRenderSystem(),
+            HealthDraw(),
             OnScreenDebugSystem(self.game),
             
-
-            RenderSystem(self.game.screen)
+            RenderSystem()
         ]
 
-
-        shipConfig = {
+        self.shipConfig = {
             "Pos": (100, 100),
             "Sprite": "ship",
             "Anim": {
@@ -68,7 +67,7 @@ class GameScene(Scene):
             "Cannon": True
         }
 
-        boosterConfig = {
+        self.boosterConfig = {
             "Pos": (100, 100),
             "Sprite": "booster",
             "Anim": {
@@ -77,9 +76,11 @@ class GameScene(Scene):
             "col": (48,48),
             "Vel": 420
         }
+        
 
-        Ship = Player(shipConfig)
-        Booster = Player(boosterConfig)
+    def on_Enter(self):
+        Ship = Player(self.shipConfig)
+        Booster = Player(self.boosterConfig)
         enemy = Enemy()
 
         self.entities.append(Ship)
@@ -89,6 +90,12 @@ class GameScene(Scene):
         for entity in self.entities:
             entity.game = self.game
             entity.init_Entity()
+
+    def on_Pause(self):
+        return super().on_Pause()
+    
+    def on_Resume(self):
+        return super().on_Resume()
 
     def on_Exit(self):
         self.entities.clear()

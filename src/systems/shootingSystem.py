@@ -1,21 +1,22 @@
 from typing import TYPE_CHECKING
 
-from entities.entity import Entity
 from entities.bullet import Bullet
 from entities.player import Player
+from systems.system import System
 
 from components.components import Projectile
 
 
-# if TYPE_CHECKING:
+if TYPE_CHECKING:
+    from entities.entity import Entity
 
-class ShootingSystem:
+class ShootingSystem(System):
 
     def __init__(self, game):
         self.game = game
         self.elapsed_time = 0
 
-    def update(self, entities: list[Entity], dt):
+    def update(self, entities: list["Entity"], dt):
         shooters = []
         
         for entity in entities:

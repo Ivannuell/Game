@@ -5,6 +5,7 @@ class Screen:
     def __init__(self, width, height):
         self.width = width
         self.height = height
+        self.display_surface: "pygame.surface.Surface"
 
     def show(self):
         self.display_surface = pygame.display.set_mode((self.width, self.height))

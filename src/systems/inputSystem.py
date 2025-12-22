@@ -1,13 +1,19 @@
 from inputManager import InputManager
-from entities.entity import Entity
+from systems.system import System
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+
+
 import pygame
 
 
-class InputSystem:
+class InputSystem(System):
     def __init__(self, inputManager: InputManager) -> None:
         self.inputManager = inputManager
 
-    def update(self, entities: list[Entity], dt):
+    def update(self, entities: list["Entity"], dt):
         movers = []
         shooters = []
 

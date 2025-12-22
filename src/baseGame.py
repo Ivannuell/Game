@@ -3,12 +3,13 @@ from sys import exit
 from assetManager import AssetsManager
 from inputManager import InputManager
 from scenes.game import GameScene
-from typing import TYPE_CHECKING
+from scenes.scene_Manager import SceneManager
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from screen import Screen
-    from entities.player import Player
-    from scenes.scene import Scene
+
 
 
 
@@ -19,10 +20,7 @@ class BaseGame:
         self.delta_time = 0
         self.fps = 60
 
-        self.player: "Player"
-
-        self.current_scene: "Scene" = GameScene(self)
-        
+        self.scene_manager = SceneManager(self)
         self.asset_manager = AssetsManager()
         self.input_manager = InputManager()
         
@@ -40,30 +38,14 @@ class BaseGame:
 
     def initialize(self):
         self.asset_manager.load_assets()
-        self.current_scene.on_Enter()
+        self.scene_manager.push(GameScene(self))
 
     def start(self):
         while True:
             self.delta_time = self.clock.tick(self.fps) / 1000
 
-            self.events()
-            self.update()
-            self.render()
+            self.scene_manager.handle_input(pygame.event.get())
+            self.scene_manager.update(self.delta_time)
+            self.scene_manager.render(self.screen)
 
-    def update(self):
-        self.current_scene.update(self.delta_time)
-
-    def render(self):
-        self.current_scene.draw(self.screen)
-
-        if self.screen is not None:
-            self.screen.draw()
-
-    def events(self):
-        self.input_manager.begin_frame()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            
-            self.input_manager.process_event(event)
+            if self.screen is not None: self.screen.draw()

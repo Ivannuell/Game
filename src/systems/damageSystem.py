@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING
+from systems.system import System
 
 if TYPE_CHECKING:
     from entities.entity import Entity
 
 
-class DamageSystem:
+class DamageSystem(System):
 
 
     def update(self, entities: list["Entity"], dt):

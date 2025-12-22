@@ -1,11 +1,9 @@
 import pygame
 from entities.entity import Entity
 from components.components import CollidedWith
+from systems.system import System
 
-class CollisionSystem:
-    def __init__(self):
-        pass
-
+class CollisionSystem(System):
     def update(self, entities: list[Entity], dt):
         static_colliders = []
         dynamic_colliders = []
