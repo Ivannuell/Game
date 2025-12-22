@@ -46,7 +46,7 @@ class Entity:
         sprite = self.get(Sprite)
         scale = self.get(Size)
 
-        spritesheet = Spritesheet(self.game.asset_manager.get_asset(animation.spritesheet), True)
+        spritesheet = self.game.asset_manager.get_spritesheet(animation.spritesheet)
         for key, anim in animation.anim.items():
             anim.frames = spritesheet.get_animation(anim.frame_coords, anim.frame_duration, scale=scale.scale)
             anim.name = key

@@ -3,6 +3,7 @@ from sys import exit
 from assetManager import AssetsManager
 from inputManager import InputManager
 from scenes.game import GameScene
+from scenes.preload import Preload
 from scenes.scene_Manager import SceneManager
 
 
@@ -37,8 +38,7 @@ class BaseGame:
         self.initialize()
 
     def initialize(self):
-        self.asset_manager.load_assets()
-        self.scene_manager.push(GameScene(self))
+        self.scene_manager.push(Preload(self))
 
     def start(self):
         while True:

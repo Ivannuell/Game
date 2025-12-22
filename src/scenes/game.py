@@ -79,6 +79,7 @@ class GameScene(Scene):
         
 
     def on_Enter(self):
+        print("On Game")
         Ship = Player(self.boosterConfig)
         Booster = Player(self.shipConfig)
         enemy = Enemy()
