@@ -9,6 +9,7 @@ class Scene(ABC):
         self.entities = []
         self.systems = []
         self.game = game
+        self.disabledSystems = []
     
     @abstractmethod
     def on_Create(self):
@@ -38,13 +39,15 @@ class Scene(ABC):
 
     def update(self, dt):
         for system in self.systems:
-            if hasattr(system, "update"):
-                system.update(self.entities, dt)
+            if system.Enabled:
+                if hasattr(system, "update"):
+                    system.update(self.entities, dt)
 
     def render(self, screen):
         for system in self.systems:
-            if hasattr(system, "render"):
-                system.render(self.entities, screen)
+            if system.Enabled:
+                if hasattr(system, "render"):
+                    system.render(self.entities, screen)
 
     @property
     def blocks_input(self) -> bool:

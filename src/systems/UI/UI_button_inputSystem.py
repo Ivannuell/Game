@@ -1,16 +1,13 @@
-from ctypes import pointer
 from typing import TYPE_CHECKING
-
-from entities.UI.button import Button
-from entities.UI.executable import Executable
-from scenes.game import GameScene
 if TYPE_CHECKING:
     from baseGame import BaseGame
+    from entities.entity import Entity
 
 
-from entities.entity import Entity
+from entities.UI.executable import Executable
+from scenes.game import GameScene
 import pygame
-from components.components import Clickable, Command, CommandType, PointerState, Position, Size
+from components.components import *
 from systems.system import System
 
 
@@ -28,16 +25,20 @@ class UI_Button_InputSystem(System):
                 if pointerState.clicked:
                     print("Clicked")
 
-                if buttonID == "PLAY" and pointerState.clicked:
+                if buttonID == "PLAY" and pointerState.released:
                     exe = Executable()
                     exe.add(Command(CommandType.CHANGE_SCENE, GameScene(self.game)))
                     entities.append(exe)
 
-                if buttonID == "EXIT" and pointerState.clicked:
+                if buttonID == "EXIT" and pointerState.released:
                     exe = Executable()
                     exe.add(Command(CommandType.EXIT))
                     entities.append(exe)
 
+                if buttonID == "RESUME" and pointerState.released:
+                    exe = Executable()
+                    exe.add(Command(CommandType.RESUME))
+                    entities.append(exe)
 
                       
 

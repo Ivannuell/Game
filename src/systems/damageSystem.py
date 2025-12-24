@@ -7,7 +7,8 @@ if TYPE_CHECKING:
 
 
 class DamageSystem(System):
-
+    def __init__(self) -> None:
+        super().__init__()
 
     def update(self, entities: list["Entity"], dt):
         damagers: list[Entity] = []

@@ -10,6 +10,9 @@ ACCELERATION = 1200
 FRICTION = 1000
 
 class MovementSystem(System):
+    def __init__(self) -> None:
+        super().__init__()
+        
     def update(self, entities: list["Entity"], dt):
         player_cons = []
 

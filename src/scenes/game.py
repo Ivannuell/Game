@@ -4,6 +4,7 @@ from scenes.scene import Scene
 from systems.AnimationSystem import AnimationSystem
 from systems.RenderSystem import RenderSystem
 from systems.Game_inputSystem import InputSystem
+from systems.UI.commandSystem import CommandSystem
 from systems.movementSystem import MovementSystem
 from systems.collisionSystem import CollisionSystem
 from systems.shootingSystem import ShootingSystem
@@ -33,7 +34,8 @@ class GameScene(Scene):
 
     def on_Create(self):
         self.systems = [
-            InputSystem(self.game.input_manager),
+            InputSystem(self.game.input_manager, self.game),
+            CommandSystem(self.game),
             ShootingSystem(self.game),
             MovementSystem(),
             ProjectileBehaviourSystem(),
@@ -76,10 +78,17 @@ class GameScene(Scene):
             "col": (48,48),
             "Vel": 420
         }
+
+        
         
 
     def on_Enter(self):
         print("On Game")
+
+        for system in self.systems:
+            if type(system) in self.disabledSystems:
+                system.Enabled = False
+
         Ship = Player(self.boosterConfig)
         Booster = Player(self.shipConfig)
         enemy = Enemy()
@@ -93,10 +102,30 @@ class GameScene(Scene):
             entity.init_Entity()
 
     def on_Pause(self):
-        return super().on_Pause()
+        self.disabledSystems = [
+            InputSystem,
+            ShootingSystem,
+            MovementSystem,
+            ProjectileBehaviourSystem,
+            ProjectileMovementSystem,
+
+            LifetimeSystem,
+
+            CollisionCleanupSystem,
+            CollisionSystem,
+            
+            DamageSystem,
+            HealthSystem,
+
+            AnimationSystem,
+
+            DebugCollisionRenderSystem,
+            HealthDraw,
+            OnScreenDebugSystem,
+        ]
     
     def on_Resume(self):
-        return super().on_Resume()
+        self.disabledSystems = []
 
     def on_Exit(self):
         self.entities.clear()

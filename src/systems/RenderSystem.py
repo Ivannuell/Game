@@ -7,6 +7,8 @@ from systems.system import System
 from components.components import *
 
 class RenderSystem(System):
+    def __init__(self) -> None:
+        super().__init__()
     def render(self, entities: list["Entity"], screen: "Screen"):
         for entity in entities:
             try:

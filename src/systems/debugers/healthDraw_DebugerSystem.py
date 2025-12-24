@@ -4,6 +4,8 @@ from systems.system import System
 from components.components import *
 
 class HealthDraw(System):
+    def __init__(self) -> None:
+        super().__init__()
 
     def render(self, entities: list[Entity], screen):
         font = pygame.font.Font(None, 20)

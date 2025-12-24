@@ -6,6 +6,7 @@ from components.components import *
 
 class DebugCollisionRenderSystem(System):
     def __init__(self, enabled=True):
+        super().__init__()
         self.enabled = enabled
 
     def render(self, entities: list[Entity], screen):

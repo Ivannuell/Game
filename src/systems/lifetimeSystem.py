@@ -6,8 +6,8 @@ from systems.system import System
 from components.components import *
 
 class LifetimeSystem(System):
-    def __init__(self):
-        pass
+    def __init__(self) -> None:
+        super().__init__()
 
 
     def update(self, entities: list['Entity'], dt):

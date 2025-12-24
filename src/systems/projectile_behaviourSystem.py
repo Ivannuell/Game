@@ -8,7 +8,8 @@ if TYPE_CHECKING:
 
 
 class ProjectileBehaviourSystem(System):
-    elapsed_time = 0
+    def __init__(self) -> None:
+        super().__init__()
 
     def update(self, entities: list["Entity"], dt):
         projectiles = []

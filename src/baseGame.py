@@ -2,7 +2,6 @@ import pygame
 from sys import exit
 from assetManager import AssetsManager
 from inputManager import InputManager
-from scenes.game import GameScene
 from scenes.preload import Preload
 from scenes.scene_Manager import SceneManager
 
@@ -10,8 +9,6 @@ from scenes.scene_Manager import SceneManager
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from screen import Screen
-
-
 
 
 class BaseGame:

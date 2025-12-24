@@ -30,3 +30,7 @@ class ButtonDisplaySystem(System):
                     pygame.draw.rect(screen.display_surface, 'white', rect)
                     text = font.render("EXIT", False, 'black')
                     screen.display_surface.blit(text, (rect.centerx - text.width/2, rect.centery - text.height/2))
+                if clickable.buttonID == "RESUME":
+                    pygame.draw.rect(screen.display_surface, 'yellow', rect)
+                    text = font.render("EXIT", False, 'black')
+                    screen.display_surface.blit(text, (rect.centerx - text.width/2, rect.centery - text.height/2))

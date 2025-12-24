@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+
+
 
 from components.components import Position, Size
 from entities.UI.button import Button
@@ -8,10 +9,10 @@ from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
 from systems.UI.button_displaySystem import ButtonDisplaySystem
 from systems.UI.commandSystem import CommandSystem
 
-class MainMenu(Scene):
+
+class Pause(Scene):
     def __init__(self, game) -> None:
         super().__init__(game)
-
 
     def on_Create(self):
         self.systems = [
@@ -23,30 +24,23 @@ class MainMenu(Scene):
         ]
     
     def on_Enter(self):
+        resume = Button("RESUME")
+        resume.get(Position).x = self.game.screen.display_surface.get_width() / 2 - resume.get(Size).width / 2
+        resume.get(Position).y = 100
 
-        for system in self.systems:
-            if type(system) in self.disabledSystems:
-                system.Enabled = False
+        exit = Button('EXIT')
+        exit.get(Position).x = self.game.screen.display_surface.get_width() / 2 - exit.get(Size).width / 2
+        exit.get(Position).y = 250
 
-        
-        button1 = Button('PLAY')
-        button1.get(Position).x = self.game.screen.display_surface.get_width() / 2 - button1.get(Size).width / 2
-        button1.get(Position).y = 100
-
-        button2 = Button('EXIT')
-        button2.get(Position).x = self.game.screen.display_surface.get_width() / 2 - button2.get(Size).width / 2
-        button2.get(Position).y = 250
+        self.entities.append(resume)
+        self.entities.append(exit)
 
 
-        self.entities.append(button1)
-        self.entities.append(button2)
-
-    
     def on_Exit(self):
-        return super().on_Exit()
+        self.entities.clear()
     
     def on_Pause(self):
-        return super().on_Pause()
+        return super().on_Pause()   
     
     def on_Resume(self):
         return super().on_Resume()

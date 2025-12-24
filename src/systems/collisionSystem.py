@@ -8,6 +8,8 @@ if TYPE_CHECKING:
     from entities.entity import Entity
 
 class CollisionSystem(System):
+    def __init__(self) -> None:
+        super().__init__()
     def update(self, entities: list['Entity'], dt):
         static_colliders = []
         dynamic_colliders = []
@@ -25,6 +27,9 @@ class CollisionSystem(System):
                 if dyn is stat:
                     continue
 
+                if not dyn.has(CollisionIdentity):
+                    continue
+
                 for m in dyn.get(CollisionIdentity).mask:
                     if m in stat.get(CollisionIdentity).layer:
                         if self.rects_collide(dyn, stat):
@@ -37,6 +42,9 @@ class CollisionSystem(System):
             for j in range(i + 1, len(dynamic_colliders)):
                 e1 = dynamic_colliders[i]
                 e2 = dynamic_colliders[j]
+
+                if not e2.has(CollisionIdentity) or not e1.has(CollisionIdentity):
+                    continue
 
                 for m in e1.get(CollisionIdentity).mask:
                     if m in e2.get(CollisionIdentity).layer:

@@ -28,6 +28,8 @@ class CollisionID(Enum):
 class CommandType(Enum):
     CHANGE_SCENE = 1
     EXIT = 2
+    PAUSE = 3
+    RESUME = 4
 
 class Anim:
     def __init__(self, frames, frame_coords, frame_index, frame_duration):

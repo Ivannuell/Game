@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 class ShootingSystem(System):
 
     def __init__(self, game):
+        super().__init__()
         self.game = game
         self.elapsed_time = 0
 

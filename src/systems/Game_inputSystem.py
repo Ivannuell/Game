@@ -1,18 +1,23 @@
-from inputManager import InputManager
-from systems.system import System
-from components.components import *
-
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+
+from entities.UI.executable import Executable
+from inputManager import InputManager
+from systems.system import System
+from components.components import *
+# from scenes.pause import Pause
+
 
 
 import pygame
 
 
 class InputSystem(System):
-    def __init__(self, inputManager: InputManager) -> None:
+    def __init__(self, inputManager: InputManager, game) -> None:
+        super().__init__()
         self.inputManager = inputManager
+        self.game = game
 
     def update(self, entities: list["Entity"], dt):
         movers = []
@@ -24,6 +29,14 @@ class InputSystem(System):
 
             if entity.has(FireIntent) and entity.has(Cannon):
                 shooters.append(entity)
+
+         # TESTING
+        if pygame.K_ESCAPE in self.inputManager.keys_down:
+            cmd = Executable()
+            cmd.add(Command(CommandType.PAUSE))
+            entities.append(cmd)
+            self.inputManager.keys_down.remove(pygame.K_ESCAPE)
+        # --------------
 
         for shooter in shooters:
             fire = shooter.get(FireIntent)

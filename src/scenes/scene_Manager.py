@@ -1,6 +1,8 @@
 from types import LambdaType
 from typing import TYPE_CHECKING
 
+from scenes.game import GameScene
+from scenes.pause import Pause
 from scenes.scene import Scene
 if TYPE_CHECKING:
     from scenes.scene import Scene
@@ -17,6 +19,13 @@ class SceneManager:
 
 
     def push(self, scene):
+
+        # Temporary solutions fix tommorow
+        if scene == "PAUSE":
+            print(scene)
+            scene = Pause(self.game)
+        # --------------------------------
+
         self._pending_op_stack.append(lambda: self._do_push(scene))
         
     def pop(self):

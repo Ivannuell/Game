@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 class OnScreenDebugSystem(System):
     def __init__(self, game):
+        super().__init__()
         self.game = game
         self.font = pygame.font.Font(None, 20)
         self.timer = 0

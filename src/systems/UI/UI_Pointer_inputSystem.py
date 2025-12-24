@@ -1,8 +1,11 @@
 
-import os
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+
 import pygame
 from components.components import PointerState, Position, Size
-from entities.entity import Entity
 from systems.system import System
 
 
@@ -11,7 +14,7 @@ class UI_Pointer_InputSystem(System):
         super().__init__()
         self.game = game
 
-    def update(self, entities: list[Entity], dt: float):
+    def update(self, entities: 'list[Entity]', dt: float):
         mouse_pos = self.game.input_manager.mouse_pos
         mouse_down = self.game.input_manager.mouse_buttons[0]
 
