@@ -6,9 +6,6 @@ if TYPE_CHECKING:
     from entities.entity import Entity
 
 class HealthSystem(System):
-    def __init__(self, game):
-        self.game = game
-
     def update(self, entities: list["Entity"], dt):
         for entity in entities:
             if entity.has(Health):

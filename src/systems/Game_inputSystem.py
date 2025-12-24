@@ -48,3 +48,6 @@ class InputSystem(System):
                 movement_intent.move_y += 1
             if pygame.K_w in self.inputManager.keys_down:
                 movement_intent.move_y -= 1
+
+
+        

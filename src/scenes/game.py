@@ -3,7 +3,7 @@ from scenes.scene import Scene
 
 from systems.AnimationSystem import AnimationSystem
 from systems.RenderSystem import RenderSystem
-from systems.inputSystem import InputSystem
+from systems.Game_inputSystem import InputSystem
 from systems.movementSystem import MovementSystem
 from systems.collisionSystem import CollisionSystem
 from systems.shootingSystem import ShootingSystem
@@ -45,7 +45,7 @@ class GameScene(Scene):
             CollisionSystem(),
             
             DamageSystem(),
-            HealthSystem(self.game),
+            HealthSystem(),
 
             AnimationSystem(),
 

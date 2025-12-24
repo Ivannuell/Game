@@ -25,6 +25,10 @@ class CollisionID(Enum):
     Projectiles = 2
     Obstacles = 3
 
+class CommandType(Enum):
+    CHANGE_SCENE = 1
+    EXIT = 2
+
 class Anim:
     def __init__(self, frames, frame_coords, frame_index, frame_duration):
         self.name: str = ''
@@ -135,6 +139,29 @@ class CollisionIdentity(Component):
         self.layer: list[CollisionID] = layer
         self.mask: list[CollisionID] = mask
 
+
+@ComponentRegistry.register
+class PointerState(Component):
+    def __init__(self):
+        self.hovering = False
+
+        # entity-specific press ownership
+        self.pressed = False  
+
+        # one-frame events
+        self.entered = False
+        self.exited = False
+        self.clicked = False
+        self.released = False
+
+    def reset_frame(self):
+        self.entered = False
+        self.exited = False
+        self.clicked = False
+        self.released = False
+
+
+
 @ComponentRegistry.register
 class FactionIdentity(Component):
     def __init__(self, faction):
@@ -144,10 +171,26 @@ class FactionIdentity(Component):
 @ComponentRegistry.register
 class MovementIntent(Component):
     def __init__(self):
+        super().__init__
         self.move_x = 0
         self.move_y = 0
 
 @ComponentRegistry.register   
 class FireIntent(Component):
     def __init__(self):
+        super().__init__
         self.fired = False
+
+@ComponentRegistry.register
+class Clickable(Component):
+    def __init__(self, buttonID) -> None:
+        super().__init__()
+        self.buttonID = buttonID
+
+
+@ComponentRegistry.register
+class Command(Component):
+    def __init__(self, type: CommandType, payload=None) -> None:
+        super().__init__()
+        self.type = type
+        self.payload = payload

@@ -28,7 +28,6 @@ class Entity:
     def remove(self, component_cls):
         self.components.pop(component_cls, None)
 
-
     def init_Entity(self):
         self._build_Animation()
         self._build_Rect()
