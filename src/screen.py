@@ -1,6 +1,5 @@
 from ctypes import resize
 import pygame
-import spritesheet
 
 class Screen:
     def __init__(self, width, height):

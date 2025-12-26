@@ -11,11 +11,11 @@ class RenderSystem(System):
         super().__init__()
     def render(self, entities: list["Entity"], screen: "Screen"):
         for entity in entities:
-            try:
-                sprite = entity.get(Sprite)
-                position = entity.get(Position)
-            except:
+            if not entity.has(Sprite, Position):
                 continue
+            
+            sprite = entity.get(Sprite)
+            position = entity.get(Position)
 
             screen.display_surface.blit(sprite.image, (position.x, position.y))
 

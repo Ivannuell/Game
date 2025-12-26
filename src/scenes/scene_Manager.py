@@ -1,9 +1,13 @@
+from enum import Enum
 from types import LambdaType
 from typing import TYPE_CHECKING
 
+from references import SceneList
 from scenes.game import GameScene
+from scenes.mainMenu import MainMenu
 from scenes.pause import Pause
-from scenes.scene import Scene
+from scenes.preload import Preload
+
 if TYPE_CHECKING:
     from scenes.scene import Scene
 
@@ -17,26 +21,30 @@ class SceneManager:
         self._input_frozen = False
         self._update_frozen = False
 
+        self.scene_registry: dict[SceneList, Scene] = {
+            SceneList.PAUSE: Pause(self.game),
+            SceneList.GAME: GameScene(self.game),
+            SceneList.MAIN_MENU: MainMenu(self.game),
+            SceneList.PRELOAD: Preload(self.game)
+        }
+        
 
-    def push(self, scene):
 
-        # Temporary solutions fix tommorow
-        if scene == "PAUSE":
-            print(scene)
-            scene = Pause(self.game)
-        # --------------------------------
-
-        self._pending_op_stack.append(lambda: self._do_push(scene))
+    def push(self, scene: SceneList):
+        self._pending_op_stack.append(lambda: self._do_push(self.scene_registry.get(scene)))
         
     def pop(self):
         self._pending_op_stack.append(lambda: self._do_pop())
 
-    def replace(self, scene):
-        self._pending_op_stack.append(lambda: self._do_replace(scene))
+    def replace(self, scene: SceneList):
+        self._pending_op_stack.append(lambda: self._do_replace(self.scene_registry.get(scene)))
         
 
 
-    def _do_push(self, scene: "Scene"):
+    def _do_push(self, scene: "Scene | None"):
+        if scene is None:
+            raise Exception("Scene should be in the SceneList")
+
         if self._stack:
             self._stack[-1].on_Pause()
 
@@ -56,7 +64,10 @@ class SceneManager:
             self._stack[-1].on_Resume()
 
 
-    def _do_replace(self, scene: "Scene"):
+    def _do_replace(self, scene: "Scene | None"):
+        if scene is None:
+            raise Exception("Scene should be in the SceneList")
+
         self._do_pop()
         self._do_push(scene)
 

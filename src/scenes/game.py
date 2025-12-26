@@ -14,13 +14,11 @@ from systems.projectile_movementSystem import ProjectileMovementSystem
 from systems.projectile_behaviourSystem import ProjectileBehaviourSystem
 from systems.damageSystem import DamageSystem
 from systems.healthSystem import HealthSystem
-
 from systems.debugers.collideRectDebug import DebugCollisionRenderSystem
 from systems.debugers.healthDraw_DebugerSystem import HealthDraw
 from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
 
 from components.components import *
-
 
 from entities.player import Player
 from entities.enemy import Enemy
@@ -78,8 +76,6 @@ class GameScene(Scene):
             "col": (48,48),
             "Vel": 420
         }
-
-        
         
 
     def on_Enter(self):
@@ -116,8 +112,6 @@ class GameScene(Scene):
             
             DamageSystem,
             HealthSystem,
-
-            AnimationSystem,
 
             DebugCollisionRenderSystem,
             HealthDraw,

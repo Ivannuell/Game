@@ -1,14 +1,13 @@
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from entities.entity import Entity
 
 from entities.UI.executable import Executable
+from scenes.scene_Manager import SceneList
 from inputManager import InputManager
 from systems.system import System
 from components.components import *
-# from scenes.pause import Pause
-
-
 
 import pygame
 
@@ -30,10 +29,10 @@ class InputSystem(System):
             if entity.has(FireIntent) and entity.has(Cannon):
                 shooters.append(entity)
 
-         # TESTING
+        # TESTING
         if pygame.K_ESCAPE in self.inputManager.keys_down:
             cmd = Executable()
-            cmd.add(Command(CommandType.PAUSE))
+            cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
             entities.append(cmd)
             self.inputManager.keys_down.remove(pygame.K_ESCAPE)
         # --------------

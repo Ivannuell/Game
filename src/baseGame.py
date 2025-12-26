@@ -1,14 +1,15 @@
-import pygame
-from sys import exit
-from assetManager import AssetsManager
-from inputManager import InputManager
-from scenes.preload import Preload
-from scenes.scene_Manager import SceneManager
-
-
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from screen import Screen
+
+    
+import pygame
+from assetManager import AssetsManager
+from inputManager import InputManager
+from scenes.scene_Manager import SceneManager
+
+from references import SceneList
+
 
 
 class BaseGame:
@@ -18,15 +19,14 @@ class BaseGame:
         self.delta_time = 0
         self.fps = 60
 
-        self.scene_manager = SceneManager(self)
-        self.asset_manager = AssetsManager()
-        self.input_manager = InputManager()
+        self.scene_manager: SceneManager = SceneManager(self)
+        self.asset_manager: AssetsManager = AssetsManager()
+        self.input_manager: InputManager = InputManager()
         
     def set_screen(self, screen: "Screen"):
         if self.screen:
             del self.screen
             self.screen = None
-
         self.screen = screen
 
         if self.screen:
@@ -35,7 +35,7 @@ class BaseGame:
         self.initialize()
 
     def initialize(self):
-        self.scene_manager.push(Preload(self))
+        self.scene_manager.push(SceneList.PRELOAD)
 
     def start(self):
         while True:

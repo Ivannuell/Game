@@ -1,6 +1,6 @@
+from references import SceneList
 from scenes import mainMenu
 from scenes.scene import Scene
-from scenes.game import GameScene
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from baseGame import BaseGame
@@ -15,7 +15,7 @@ class Preload(Scene):
     
     def on_Enter(self):
         print("On preload")
-        self.game.scene_manager.replace(mainMenu.MainMenu(self.game))
+        self.game.scene_manager.replace(SceneList.MAIN_MENU)
     
     def on_Exit(self):
         return super().on_Exit()

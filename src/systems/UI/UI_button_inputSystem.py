@@ -1,13 +1,15 @@
 from typing import TYPE_CHECKING
+
+from references import SceneList
+
 if TYPE_CHECKING:
     from baseGame import BaseGame
     from entities.entity import Entity
 
-
 from entities.UI.executable import Executable
-from scenes.game import GameScene
-import pygame
+
 from components.components import *
+
 from systems.system import System
 
 
@@ -22,12 +24,9 @@ class UI_Button_InputSystem(System):
                 pointerState = entity.get(PointerState)
                 buttonID = entity.get(Clickable).buttonID
 
-                if pointerState.clicked:
-                    print("Clicked")
-
                 if buttonID == "PLAY" and pointerState.released:
                     exe = Executable()
-                    exe.add(Command(CommandType.CHANGE_SCENE, GameScene(self.game)))
+                    exe.add(Command(CommandType.CHANGE_SCENE, SceneList.GAME))
                     entities.append(exe)
 
                 if buttonID == "EXIT" and pointerState.released:

@@ -1,9 +1,11 @@
 
+import pygame
+from scenes.scene import Scene
 
+from entities.UI.button import Button
 
 from components.components import Position, Size
-from entities.UI.button import Button
-from scenes.scene import Scene
+
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
 from systems.UI.button_displaySystem import ButtonDisplaySystem
@@ -24,6 +26,8 @@ class Pause(Scene):
         ]
     
     def on_Enter(self):
+        
+
         resume = Button("RESUME")
         resume.get(Position).x = self.game.screen.display_surface.get_width() / 2 - resume.get(Size).width / 2
         resume.get(Position).y = 100

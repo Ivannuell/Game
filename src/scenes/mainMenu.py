@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING
+from scenes.scene import Scene
 
 from components.components import Position, Size
+
 from entities.UI.button import Button
-from scenes.scene import Scene
+
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
 from systems.UI.button_displaySystem import ButtonDisplaySystem

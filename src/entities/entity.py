@@ -13,17 +13,27 @@ if TYPE_CHECKING:
 class Entity:
     def __init__(self):
         self.game: "BaseGame"
-        self.components: dict[type, Component] = {}
+        self.components: "dict[type, Component]" = {}
 
     def add(self, component):
+        if self.components is None:
+            return
+        
         self.components[type(component)] = component
         return self
 
     def get(self, component_cls: Type[T]) -> T:
         return self.components[component_cls] # type: ignore
 
-    def has(self, component_cls):
-        return component_cls in self.components
+    def has(self, *component_classes):
+        if not component_classes:
+            raise ValueError("has() requires at least one component class")
+
+        if not self.components:
+            return False
+
+        return all(comp in self.components for comp in component_classes)
+
 
     def remove(self, component_cls):
         self.components.pop(component_cls, None)
