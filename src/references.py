@@ -5,3 +5,6 @@ class SceneList(Enum):
     GAME = 1
     MAIN_MENU = 2
     PRELOAD = 3
+
+ACCELERATION = 1200
+FRICTION = 1000

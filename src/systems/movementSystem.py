@@ -1,4 +1,5 @@
 
+from references import ACCELERATION, FRICTION
 from systems.system import System
 from components.components import *
 
@@ -6,8 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
 
-ACCELERATION = 1200
-FRICTION = 1000
+
 
 class MovementSystem(System):
     def __init__(self) -> None:
@@ -18,7 +18,7 @@ class MovementSystem(System):
 
         for entity in entities:
 
-            if entity.has(Position) and entity.has(Velocity) and entity.has(MovementIntent):
+            if entity.has(Position, Velocity, MovementIntent):
                 player_cons.append(entity)
 
 

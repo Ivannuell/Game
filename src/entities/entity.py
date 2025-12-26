@@ -25,7 +25,7 @@ class Entity:
     def get(self, component_cls: Type[T]) -> T:
         return self.components[component_cls] # type: ignore
 
-    def has(self, *component_classes):
+    def has(self, *component_classes: Type[T]):
         if not component_classes:
             raise ValueError("has() requires at least one component class")
 

@@ -177,6 +177,10 @@ class MovementIntent(Component):
         self.move_x = 0
         self.move_y = 0
 
+    def reset(self):
+        self.move_x = 0
+        self.move_y = 0
+
 @ComponentRegistry.register   
 class FireIntent(Component):
     def __init__(self):
@@ -196,3 +200,11 @@ class Command(Component):
         super().__init__()
         self.type = type
         self.payload = payload
+
+
+@ComponentRegistry.register
+class EnemyIntent(Component):
+    def __init__(self) -> None:
+        super().__init__()
+        self.move = "LEFT"
+        self.shoot = False
