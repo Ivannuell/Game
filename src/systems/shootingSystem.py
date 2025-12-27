@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from entities.bullet import Bullet
+from entities.enemy import Enemy
 from entities.player import Player
 from systems.system import System
 
@@ -16,24 +17,26 @@ class ShootingSystem(System):
         super().__init__()
         self.game = game
         self.elapsed_time = 0
+        self.last = 0
+        self.current = 0
 
     def update(self, entities: list["Entity"], dt):
         shooters = []
         
         for entity in entities:
-            if entity.has(FireIntent) and entity.has(Cannon):
+            if entity.has(FireIntent, Cannon):
                 shooters.append(entity)
       
-                
         for shooter in shooters:
-            # Should I change this for faction checking?
-            if type(shooter) is Player:
+            shooter.get(Cannon).time_left += dt
+            if shooter.get(FactionIdentity).faction == "PLAYER":
                 if shooter.get(FireIntent).fired:
-                    cooldown = shooter.get(Cannon).cooldown
+                    cooldown = shooter.get(Cannon)
 
-                    if self.elapsed_time >= cooldown:
+                    if cooldown.time_left >= cooldown.cooldown:
                         bullet = Bullet(self.game)
-                        bullet.add(Projectile(Player))
+                        bullet.add(Projectile())
+                        bullet.add(FactionIdentity("PLAYER"))
 
                         pos = bullet.get(Position)
                         shooter_pos = shooter.get(Position)
@@ -43,8 +46,29 @@ class ShootingSystem(System):
                         pos.y = shooter_pos.y + shooter_size.height / 2
 
                         entities.append(bullet)
-                        self.elapsed_time = 0
+                        cooldown.time_left = 0
 
-        self.elapsed_time += dt
+                    shooter.get(FireIntent).fired = False
+
+            if shooter.get(FactionIdentity).faction == "ENEMY":
+                if shooter.get(FireIntent).fired:
+                    cooldown = shooter.get(Cannon)
+
+                    if cooldown.time_left >= cooldown.cooldown:
+                        bullet = Bullet(self.game)
+                        bullet.add(Projectile())
+                        bullet.add(FactionIdentity("ENEMY"))
+
+                        pos = bullet.get(Position)
+                        shooter_pos = shooter.get(Position)
+                        shooter_size = shooter.get(Size)
+
+                        pos.x = shooter_pos.x + (shooter_size.width / 2 - bullet.get(Size).width / 2)
+                        pos.y = shooter_pos.y + shooter_size.height / 2
+
+                        entities.append(bullet)
+                        cooldown.time_left = 0
+
+                shooter.get(FireIntent).fired = False
 
 

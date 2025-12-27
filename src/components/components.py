@@ -91,9 +91,9 @@ class Collider(Component):
 
 @ComponentRegistry.register
 class Projectile(Component):
-    def __init__(self, faction):
+    def __init__(self):
         super().__init__()
-        self.faction = faction
+        self.faction = ""
 
 @ComponentRegistry.register
 class CollidedWith(Component):
@@ -133,6 +133,7 @@ class Cannon(Component):
     def __init__(self, cooldown):
         super().__init__()
         self.cooldown = cooldown
+        self.time_left = 0
 
 @ComponentRegistry.register
 class CollisionIdentity(Component):

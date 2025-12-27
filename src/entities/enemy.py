@@ -26,5 +26,10 @@ class Enemy(Entity):
         self.add(Solid())
 
         self.add(Health(100))
+
         self.add(EnemyIntent())
         self.add(MovementIntent())
+        self.add(FireIntent())
+        self.add(Cannon(0.1))
+
+        self.add(FactionIdentity("ENEMY"))

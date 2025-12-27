@@ -30,6 +30,9 @@ class CollisionSystem(System):
                 if not dyn.has(CollisionIdentity):
                     continue
 
+                if dyn.get(FactionIdentity).faction == dyn.get(FactionIdentity).faction:
+                    continue
+
                 for m in dyn.get(CollisionIdentity).mask:
                     if m in stat.get(CollisionIdentity).layer:
                         if self.rects_collide(dyn, stat):
@@ -44,6 +47,9 @@ class CollisionSystem(System):
                 e2 = dynamic_colliders[j]
 
                 if not e2.has(CollisionIdentity) or not e1.has(CollisionIdentity):
+                    continue
+
+                if e1.get(FactionIdentity).faction == e2.get(FactionIdentity).faction:
                     continue
 
                 for m in e1.get(CollisionIdentity).mask:

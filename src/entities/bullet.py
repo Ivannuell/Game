@@ -20,7 +20,7 @@ class Bullet(Entity):
         ))
         self.add(CollisionIdentity(
             layer=[CollisionID.Projectiles],
-            mask=[CollisionID.Enemies, CollisionID.Obstacles]
+            mask=[CollisionID.Enemies, CollisionID.Obstacles, CollisionID.Players]
 
         ))
 

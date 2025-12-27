@@ -23,10 +23,10 @@ class InputSystem(System):
         shooters = []
 
         for entity in entities:
-            if entity.has(MovementIntent) and entity.has(InputControlled):
+            if entity.has(MovementIntent, InputControlled):
                 movers.append(entity)
 
-            if entity.has(FireIntent) and entity.has(Cannon):
+            if entity.has(FireIntent, Cannon):
                 shooters.append(entity)
 
         # TESTING
@@ -39,8 +39,6 @@ class InputSystem(System):
 
         for shooter in shooters:
             fire = shooter.get(FireIntent)
-
-            fire.fired = False
 
             if pygame.K_SPACE in self.inputManager.keys_down:
                 fire.fired = True

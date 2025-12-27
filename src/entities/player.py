@@ -23,11 +23,14 @@ class Player(Entity):
         self.add(InputControlled())
         self.add(FireIntent())
         self.add(Ship())
+        self.add(FactionIdentity("PLAYER"))
         self.add(CollisionIdentity(
             layer = [CollisionID.Players], 
-            mask = [CollisionID.Enemies] 
+            mask = [CollisionID.Enemies, CollisionID.Projectiles] 
         ))
 
         if "Cannon" in config:
             self.add(Cannon(0.3))
+
+        self.add(Health(500))
     

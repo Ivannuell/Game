@@ -9,18 +9,34 @@ class HealthDraw(System):
 
     def render(self, entities: list[Entity], screen):
         font = pygame.font.Font(None, 20)
+        projectiles = []
 
         for entity in entities:
-            if entity.has(Health) and entity.has(Position):
+            if entity.has(Projectile):
+                projectiles.append(entity)
+
+            if entity.has(Health, Position, FactionIdentity):
                 health = entity.get(Health).health
                 position = entity.get(Position)
+                faction = entity.get(FactionIdentity).faction
 
-                text = font.render(f"Health: {health}", False, "white")
+                text = font.render(f"Health: {health} \nFaction: {faction}", False, "white")
                 textRect = text.get_rect()
 
                 textRect.bottomleft = (position.x, position.y)
 
                 screen.display_surface.blit(text, textRect)
+
+        for proj in projectiles:
+            faction = proj.get(FactionIdentity).faction
+            pos = proj.get(Position)
+
+            text = font.render(f"Faction: {faction}", False, "white")
+            textRect = text.get_rect()
+
+            textRect.bottomleft = (pos.x, pos.y)
+
+            screen.display_surface.blit(text, textRect)
             
 
 

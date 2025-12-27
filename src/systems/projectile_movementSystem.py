@@ -13,7 +13,6 @@ class ProjectileMovementSystem(System):
         projectiles = []
 
         for entity in entities:
-
             if entity.has(Position) and entity.has(Projectile):
                 projectiles.append(entity)
 
@@ -22,4 +21,8 @@ class ProjectileMovementSystem(System):
             vel = projectile.get(Velocity)
             proj = projectile.get(Projectile)
 
-            pos.y -= vel.speed
+
+            if projectile.get(FactionIdentity).faction == "PLAYER":
+                pos.y -= vel.speed
+            elif projectile.get(FactionIdentity).faction == "ENEMY":
+                pos.y += vel.speed

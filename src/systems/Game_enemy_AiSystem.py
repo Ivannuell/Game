@@ -1,8 +1,8 @@
 
 
+import random
 from typing import TYPE_CHECKING
 
-from references import ACCELERATION, FRICTION
 if TYPE_CHECKING:
     from entities.entity import Entity
 
@@ -20,7 +20,6 @@ class Enemy_AI_MovementSystem(System):
             if entity.has(EnemyIntent, MovementIntent, Position, Velocity):
                 move = entity.get(EnemyIntent)
                 pos = entity.get(Position)
-                velocity = entity.get(Velocity)
                 movement = entity.get(MovementIntent)
 
                 movement.reset()
@@ -35,15 +34,20 @@ class Enemy_AI_MovementSystem(System):
                 if move.move == "RIGHT":
                     movement.move_x += 1
 
-                
+
+class Enemy_AI_ShootingSystem(System):
+    def __init__(self) -> None:
+        super().__init__()
+        self.randomPosisitons = [random.randint(100, 1100) for e in range(100)]
+
+    def update(self, entities: 'list[Entity]', dt):
+        for entity in entities:
+            if entity.has(EnemyIntent, FireIntent, Position):
+                pos = entity.get(Position).x
+
+                if int(pos) in self.randomPosisitons:
+                    entity.get(FireIntent).fired = True
 
                 
 
-    @staticmethod
-    def move_towards(current, target, max_delta):
-        if current < target:
-            return min(current + max_delta, target)
-        if current > target: 
-            return max(current - max_delta, target)
-        return target
 

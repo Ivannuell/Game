@@ -2,7 +2,7 @@
 from scenes.scene import Scene
 
 from systems.AnimationSystem import AnimationSystem
-from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem
+from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
 from systems.RenderSystem import RenderSystem
 from systems.Game_inputSystem import InputSystem
 from systems.UI.commandSystem import CommandSystem
@@ -38,6 +38,7 @@ class GameScene(Scene):
             ShootingSystem(self.game),
             MovementSystem(),
             Enemy_AI_MovementSystem(),
+            Enemy_AI_ShootingSystem(),
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
 
