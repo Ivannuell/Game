@@ -22,7 +22,6 @@ class Player(Entity):
         self.add(Collider())
         self.add(InputControlled())
         self.add(FireIntent())
-        self.add(Ship())
         self.add(FactionIdentity("PLAYER"))
         self.add(CollisionIdentity(
             layer = [CollisionID.Players], 
@@ -33,4 +32,3 @@ class Player(Entity):
             self.add(Cannon(0.3))
 
         self.add(Health(500))
-    

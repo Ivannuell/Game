@@ -24,20 +24,20 @@ class CollisionSystem(System):
 
         for dyn in dynamic_colliders:
             for stat in static_colliders:
+
                 if dyn is stat:
                     continue
 
                 if not dyn.has(CollisionIdentity):
                     continue
 
-                if dyn.get(FactionIdentity).faction == dyn.get(FactionIdentity).faction:
+                if dyn.get(FactionIdentity).faction == stat.get(FactionIdentity).faction:
                     continue
 
-                for m in dyn.get(CollisionIdentity).mask:
-                    if m in stat.get(CollisionIdentity).layer:
-                        if self.rects_collide(dyn, stat):
-                            self.register_colliders(dyn, stat)
-                            self.resolve_dynamic_static(dyn, stat)
+                if self.can_collide(dyn, stat):
+                    if self.rects_collide(dyn, stat):
+                        self.register_colliders(dyn, stat)
+                        self.resolve_dynamic_static(dyn, stat)
 
                     
 
@@ -52,11 +52,19 @@ class CollisionSystem(System):
                 if e1.get(FactionIdentity).faction == e2.get(FactionIdentity).faction:
                     continue
 
-                for m in e1.get(CollisionIdentity).mask:
-                    if m in e2.get(CollisionIdentity).layer:
-                        if self.rects_collide(e1, e2):
-                            self.register_colliders(e1, e2)
-                            self.resolve_dynamic_dynamic(e1, e2)
+                if self.can_collide(e1,e2):
+                    if self.rects_collide(e1, e2):
+                        self.register_colliders(e1, e2)
+                        self.resolve_dynamic_dynamic(e1, e2)
+
+    @staticmethod
+    def can_collide(a, b):
+        return (
+            any(m in b.get(CollisionIdentity).layer for m in a.get(CollisionIdentity).mask)
+            and
+            any(m in a.get(CollisionIdentity).layer for m in b.get(CollisionIdentity).mask)
+        )
+
 
     def register_colliders(self, e1, e2):
         c1 = e1.add(CollidedWith())

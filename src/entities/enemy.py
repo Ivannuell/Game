@@ -14,16 +14,15 @@ class Enemy(Entity):
             }
         ))
         self.add(CollisionIdentity(
-            layer = [CollisionID.Players, CollisionID.Enemies],
-            mask = []
-            
+            layer = [CollisionID.Enemies],
+            mask = [CollisionID.Players, CollisionID.Projectiles]
         ))
         self.add(Position(500, 100))
         self.add(Velocity(360))
         self.add(Size(48,48,2))
         self.add(Sprite())
         self.add(Collider())
-        self.add(Solid())
+        # self.add(Solid())
 
         self.add(Health(100))
 

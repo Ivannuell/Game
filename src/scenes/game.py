@@ -52,8 +52,8 @@ class GameScene(Scene):
 
             AnimationSystem(),
 
-            DebugCollisionRenderSystem(),
-            HealthDraw(),
+            DebugCollisionRenderSystem(enabled=True),
+            HealthDraw(Projectiles=True, Entity=True),
             OnScreenDebugSystem(self.game),
             
             RenderSystem()
@@ -83,16 +83,17 @@ class GameScene(Scene):
 
     def on_Enter(self):
         print("On Game")
-
         for system in self.systems:
             if type(system) in self.disabledSystems:
                 system.Enabled = False
 
-        Ship = Player(self.boosterConfig)
-        Booster = Player(self.shipConfig)
+        Booster = Player(self.boosterConfig)
+        Ship = Player(self.shipConfig)
+        # Booster.remove(Collider)
+
         enemy = Enemy()
 
-        self.entities.append(Booster)
+        # self.entities.append(Booster)
         self.entities.append(Ship)
         self.entities.append(enemy)
 

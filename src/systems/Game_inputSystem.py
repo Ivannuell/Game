@@ -26,7 +26,7 @@ class InputSystem(System):
             if entity.has(MovementIntent, InputControlled):
                 movers.append(entity)
 
-            if entity.has(FireIntent, Cannon):
+            if entity.has(FireIntent, Cannon, InputControlled):
                 shooters.append(entity)
 
         # TESTING

@@ -5,7 +5,7 @@ from systems.system import System
 from components.components import *
 
 class DebugCollisionRenderSystem(System):
-    def __init__(self, enabled=True):
+    def __init__(self, enabled=False):
         super().__init__()
         self.enabled = enabled
 
