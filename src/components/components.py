@@ -30,6 +30,7 @@ class CommandType(Enum):
     EXIT = 2
     PAUSE = 3
     RESUME = 4
+    RESTART = 5
 
 class Anim:
     def __init__(self, frames, frame_coords, frame_index, frame_duration):
@@ -73,6 +74,7 @@ class Sprite(Component):
     def __init__(self, image: pygame.Surface | None = None):
         super().__init__()
         self.image: pygame.Surface = image # type: ignore
+        self.original: pygame.Surface = image # type: ignore
 
 @ComponentRegistry.register
 class Size(Component):
@@ -163,6 +165,18 @@ class PointerState(Component):
         self.clicked = False
         self.released = False
 
+class Orbit(Component):
+    def __init__(self, center, radius, speed, angle=0):
+        super().__init__()
+        self.center = center      # Entity reference
+        self.radius = radius
+        self.speed = speed        # radians/sec
+        self.angle = angle
+
+class Rotation(Component):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rad_angle = 0
 
 
 @ComponentRegistry.register

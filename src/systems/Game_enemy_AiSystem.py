@@ -24,9 +24,9 @@ class Enemy_AI_MovementSystem(System):
 
                 movement.reset()
 
-                if pos.x < 100:
+                if pos.x < 50:
                     move.move = "RIGHT"
-                if pos.x > 1100: 
+                if pos.x > 500: 
                     move.move = "LEFT"
 
                 if move.move == "LEFT":
@@ -38,7 +38,7 @@ class Enemy_AI_MovementSystem(System):
 class Enemy_AI_ShootingSystem(System):
     def __init__(self) -> None:
         super().__init__()
-        self.randomPosisitons = [random.randint(100, 1100) for e in range(100)]
+        self.randomPosisitons = [random.randint(100, 1100) for e in range(20)]
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:

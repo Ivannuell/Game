@@ -39,6 +39,11 @@ class UI_Button_InputSystem(System):
                     exe.add(Command(CommandType.RESUME))
                     entities.append(exe)
 
+                if buttonID == "RESTART" and pointerState.released:
+                    exe = Executable()
+                    exe.add(Command(CommandType.RESTART, SceneList.GAME))
+                    entities.append(exe)
+
                       
 
                 

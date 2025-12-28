@@ -36,3 +36,9 @@ class CommandSystem(System):
                 elif command.type == CommandType.RESUME:
                     self.game.scene_manager.pop()
                     entities.remove(entity)
+
+                elif command.type == CommandType.RESTART:
+                    self.game.scene_manager.pop()
+                    self.game.scene_manager.replace(command.payload)
+                    entities.remove(entity)
+

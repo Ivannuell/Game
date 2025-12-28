@@ -1,4 +1,5 @@
 
+from entities.obstacle import Obstacle
 from scenes.scene import Scene
 
 from systems.AnimationSystem import AnimationSystem
@@ -8,6 +9,7 @@ from systems.Game_inputSystem import InputSystem
 from systems.UI.commandSystem import CommandSystem
 from systems.movementSystem import MovementSystem
 from systems.collisionSystem import CollisionSystem
+from systems.orbit_movementSystem import OrbitSystem
 from systems.shootingSystem import ShootingSystem
 from systems.collider_cleanerSystem import CollisionCleanupSystem
 from systems.lifetimeSystem import LifetimeSystem
@@ -25,7 +27,7 @@ from entities.player import Player
 from entities.enemy import Enemy
 
 
-class GameScene(Scene):
+class PlayScene(Scene):
     def __init__(self, game) -> None:
         super().__init__(game)
         self.shipConfig = {}
@@ -37,8 +39,9 @@ class GameScene(Scene):
             CommandSystem(self.game),
             ShootingSystem(self.game),
             MovementSystem(),
-            Enemy_AI_MovementSystem(),
-            Enemy_AI_ShootingSystem(),
+            OrbitSystem(),
+            # Enemy_AI_MovementSystem(),
+            # Enemy_AI_ShootingSystem(),
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
 
@@ -52,8 +55,8 @@ class GameScene(Scene):
 
             AnimationSystem(),
 
-            DebugCollisionRenderSystem(enabled=True),
-            HealthDraw(Projectiles=True, Entity=True),
+            DebugCollisionRenderSystem(enabled=False),
+            HealthDraw(Projectiles=False, Entity=False),
             OnScreenDebugSystem(self.game),
             
             RenderSystem()
@@ -91,11 +94,16 @@ class GameScene(Scene):
         Ship = Player(self.shipConfig)
         # Booster.remove(Collider)
 
+
         enemy = Enemy()
+        obs = Obstacle()
+        Ship.get(Orbit).center = obs
 
         # self.entities.append(Booster)
         self.entities.append(Ship)
-        self.entities.append(enemy)
+        self.entities.append(obs)
+        # self.entities.append(enemy)
+
 
         for entity in self.entities:
             entity.game = self.game
@@ -126,4 +134,5 @@ class GameScene(Scene):
         self.disabledSystems = []
 
     def on_Exit(self):
+        self.disabledSystems = []
         self.entities.clear()

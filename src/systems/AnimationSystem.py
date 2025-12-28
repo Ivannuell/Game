@@ -16,3 +16,4 @@ class AnimationSystem(System):
                 animation = entity.get(Animation)
 
                 sprite.image = animation.active_anim.get_frame(dt)
+                sprite.original = animation.active_anim.get_frame(dt)

@@ -27,6 +27,7 @@ class Bullet(Entity):
         self.add(Collider())
 
         self.add(Damage(20))
+        self.add(Rotation())
 
         self.game = game
         self.init_Entity()

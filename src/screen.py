@@ -8,7 +8,7 @@ class Screen:
         self.display_surface: "pygame.surface.Surface"
 
     def show(self):
-        self.display_surface = pygame.display.set_mode((self.width, self.height), vsync=1, flags=pygame.SCALED)
+        self.display_surface = pygame.display.set_mode((self.width, self.height), vsync=1)
         
         print('Screen Added')
 

@@ -3,7 +3,7 @@ from types import LambdaType
 from typing import TYPE_CHECKING
 
 from references import SceneList
-from scenes.game import GameScene
+from scenes.play import PlayScene
 from scenes.mainMenu import MainMenu
 from scenes.pause import Pause
 from scenes.preload import Preload
@@ -23,7 +23,7 @@ class SceneManager:
 
         self.scene_registry: dict[SceneList, Scene] = {
             SceneList.PAUSE: Pause(self.game),
-            SceneList.GAME: GameScene(self.game),
+            SceneList.GAME: PlayScene(self.game),
             SceneList.MAIN_MENU: MainMenu(self.game),
             SceneList.PRELOAD: Preload(self.game)
         }

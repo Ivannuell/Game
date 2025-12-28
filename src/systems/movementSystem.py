@@ -22,26 +22,26 @@ class MovementSystem(System):
                 player_cons.append(entity)
 
 
-        for player in player_cons:            
-            position = player.get(Position)
-            velocity = player.get(Velocity)
-            movement_intent = player.get(MovementIntent)
+        # for player in player_cons:            
+        #     position = player.get(Position)
+        #     velocity = player.get(Velocity)
+        #     movement_intent = player.get(MovementIntent)
 
-            target_vx = movement_intent.move_x * velocity.speed
-            target_vy = movement_intent.move_y * velocity.speed
+        #     target_vx = movement_intent.move_x * velocity.speed
+        #     target_vy = movement_intent.move_y * velocity.speed
         
-            if movement_intent.move_x != 0:
-                velocity.x = self.move_towards(velocity.x, target_vx, ACCELERATION * dt)
-            else:
-                velocity.x = self.move_towards(velocity.x, 0, FRICTION * dt)
+        #     if movement_intent.move_x != 0:
+        #         velocity.x = self.move_towards(velocity.x, target_vx, ACCELERATION * dt)
+        #     else:
+        #         velocity.x = self.move_towards(velocity.x, 0, FRICTION * dt)
 
-            if movement_intent.move_y != 0:
-                velocity.y = self.move_towards(velocity.y, target_vy, ACCELERATION * dt)
-            else:
-                velocity.y = self.move_towards(velocity.y, 0, FRICTION * dt)
+        #     if movement_intent.move_y != 0:
+        #         velocity.y = self.move_towards(velocity.y, target_vy, ACCELERATION * dt)
+        #     else:
+        #         velocity.y = self.move_towards(velocity.y, 0, FRICTION * dt)
 
-            position.x += velocity.x * dt
-            position.y += velocity.y * dt
+        #     position.x += velocity.x * dt
+        #     position.y += velocity.y * dt
 
     @staticmethod
     def move_towards(current, target, max_delta):

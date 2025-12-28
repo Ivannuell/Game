@@ -18,8 +18,10 @@ class Obstacle(Entity):
             mask = []
             
         ))
-        self.add(Position(500, 10))
+
+        self.add(Position(200, 500))
         self.add(Sprite())
-        # self.add(Size(48,48,5))
+        self.add(Size(48,48))
         self.add(Collider())
         self.add(Solid())
+        self.add(FactionIdentity("Obstacle"))

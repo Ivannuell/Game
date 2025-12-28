@@ -58,6 +58,7 @@ class ShootingSystem(System):
                         bullet = Bullet(self.game)
                         bullet.add(Projectile())
                         bullet.add(FactionIdentity("ENEMY"))
+                        bullet.add(Rotation())
 
                         pos = bullet.get(Position)
                         shooter_pos = shooter.get(Position)
