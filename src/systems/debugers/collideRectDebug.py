@@ -20,6 +20,9 @@ class DebugCollisionRenderSystem(System):
             pos = e.get(Position)
             col = e.get(Collider)
 
+            if col.width is None or col.height is None:
+                continue
+
             rect = pygame.Rect(
                 pos.x - col.width / 2,
                 pos.y - col.height / 2,

@@ -22,6 +22,9 @@ class CollisionSystem(System):
             else:
                 dynamic_colliders.append(e)
 
+
+
+
         for dyn in dynamic_colliders:
             for stat in static_colliders:
 
@@ -38,7 +41,6 @@ class CollisionSystem(System):
                     if self.rects_collide(dyn, stat):
                         self.register_colliders(dyn, stat)
                         self.resolve_dynamic_static(dyn, stat)
-
                     
 
         for i in range(len(dynamic_colliders)):
@@ -56,6 +58,10 @@ class CollisionSystem(System):
                     if self.rects_collide(e1, e2):
                         self.register_colliders(e1, e2)
                         self.resolve_dynamic_dynamic(e1, e2)
+
+
+
+                        
 
     @staticmethod
     def can_collide(a, b):

@@ -100,16 +100,18 @@ class PlayScene(Scene):
 
                 
         Ship = Player(self.shipConfig)
-
         obs = Obstacle()
+
+        obs.get(Collider).width = 50
+        obs.get(Collider).height = 50
+
+
         Ship.get(Orbit).center = obs
         self.game.camera.target = Ship
 
+
         self.entities.append(Ship)
         self.entities.append(obs)
-
-
-
         for entity in self.entities:
             entity.game = self.game
             entity.init_Entity()

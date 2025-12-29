@@ -47,8 +47,9 @@ class Entity:
             col = self.get(Collider)
             size = self.get(Size)
 
-            col.width = size.width
-            col.height = size.height
+            if col.width is None or col.height is None:
+                col.width = size.width
+                col.height = size.height
 
     def _build_Animation(self):
         animation = self.get(Animation)
