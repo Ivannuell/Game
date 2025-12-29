@@ -61,6 +61,13 @@ class Position(Component):
         self.x = x
         self.y = y
 
+class ViewPosition(Component):
+    def __init__(self):
+        super().__init__()
+        self.x = 0
+        self.y = 0
+
+
 @ComponentRegistry.register
 class Velocity(Component):
     def __init__(self, speed):

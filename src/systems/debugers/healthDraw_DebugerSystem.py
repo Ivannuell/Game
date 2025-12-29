@@ -4,10 +4,11 @@ from systems.system import System
 from components.components import *
 
 class HealthDraw(System):
-    def __init__(self, Projectiles=False, Entity=False) -> None:
+    def __init__(self, Projectiles=False, Entity=False, Orbit=False) -> None:
         super().__init__()
         self.Projectiles = Projectiles
         self.Entity = Entity
+        self.Orbit = Orbit
 
     def render(self, entities: list[Entity], screen):
         font = pygame.font.Font(None, 20)
@@ -21,6 +22,15 @@ class HealthDraw(System):
 
             if entity.has(Health, Position, FactionIdentity):
                 collection.append(entity)
+
+            if entity.has(Orbit):
+                if self.Orbit:
+                    pos = entity.get(Orbit).center.get(Position)
+                    size = entity.get(Orbit).center.get(Size)
+                    pygame.draw.circle(screen.display_surface, "green", (pos.x, pos.y), 5)
+                    pygame.draw.circle(screen.display_surface, "yellow", (pos.x, pos.y), entity.get(Orbit).radius, 1)
+
+
         if self.Projectiles:
             for entity in collection:
                 health = entity.get(Health).health

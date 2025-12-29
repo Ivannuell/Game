@@ -15,13 +15,15 @@ class Obstacle(Entity):
         ))
         self.add(CollisionIdentity(
             layer = [CollisionID.Players, CollisionID.Enemies],
-            mask = []
+            mask = [CollisionID.Players]
             
         ))
 
-        self.add(Position(200, 500))
+        self.add(Position(270, 480))
         self.add(Sprite())
-        self.add(Size(48,48))
+        self.add(Size(48,48, 4))
         self.add(Collider())
         self.add(Solid())
         self.add(FactionIdentity("Obstacle"))
+        self.add(Rotation())
+        self.add(ViewPosition())

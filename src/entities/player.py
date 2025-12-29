@@ -32,5 +32,6 @@ class Player(Entity):
             self.add(Cannon(0.3))
 
         self.add(Health(500))
-        self.add(Orbit('', 100, 1))
+        self.add(Orbit('', 200, 1))
         self.add(Rotation())
+        self.add(ViewPosition())

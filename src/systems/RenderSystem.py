@@ -7,19 +7,32 @@ if TYPE_CHECKING:
 from systems.system import System
 from components.components import *
 
-class RenderSystem(System):
-    def __init__(self) -> None:
-        super().__init__()
-    def render(self, entities: list["Entity"], screen: "Screen"):
-        for entity in entities:
-            if not entity.has(Sprite, Position):
-                continue
-            
-            sprite = entity.get(Sprite)
-            position = entity.get(Position)
-            if entity.has(Rotation):
-                angle = entity.get(Rotation).rad_angle
-                sprite.image = pygame.transform.rotate(sprite.original,-math.degrees(angle))
 
-            screen.display_surface.blit(sprite.image, (position.x, position.y))
+class RenderSystem(System):
+    def __init__(self, game) -> None:
+        super().__init__()
+        self.game = game
+
+    def render(self, entities, screen):
+        for e in entities:
+            if not e.has(Sprite, ViewPosition, Position):
+                continue
+
+            sprite = e.get(Sprite)
+            view = e.get(ViewPosition)
+            pos = e.get(Position)
+
+            image = sprite.image
+
+            if e.has(Rotation):
+                image = pygame.transform.rotate(
+                    image,
+                    -math.degrees(e.get(Rotation).rad_angle - self.game.camera.rotation)
+                )
+
+            rect = image.get_rect(center=(view.x, view.y))
+            # rect = image.get_rect(center=(pos.x, pos.y))
+            # rect = image.get_rect(topleft=(view.x, view.y))
+            screen.display_surface.blit(image, rect)
+
 

@@ -21,8 +21,8 @@ class DebugCollisionRenderSystem(System):
             col = e.get(Collider)
 
             rect = pygame.Rect(
-                pos.x,
-                pos.y,
+                pos.x - col.width / 2,
+                pos.y - col.height / 2,
                 col.width,
                 col.height
             )

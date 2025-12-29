@@ -1,4 +1,6 @@
 from typing import TYPE_CHECKING
+
+from Camera import Camera
 if TYPE_CHECKING:
     from screen import Screen
 
@@ -22,6 +24,7 @@ class BaseGame:
         self.scene_manager: SceneManager = SceneManager(self)
         self.asset_manager: AssetsManager = AssetsManager()
         self.input_manager: InputManager = InputManager()
+        self.camera = Camera()
         
     def set_screen(self, screen: "Screen"):
         if self.screen:

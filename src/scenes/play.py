@@ -2,6 +2,7 @@
 from entities.obstacle import Obstacle
 from scenes.scene import Scene
 
+from systems.CameraSystem import CameraSystem
 from systems.AnimationSystem import AnimationSystem
 from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
 from systems.RenderSystem import RenderSystem
@@ -25,6 +26,7 @@ from components.components import *
 
 from entities.player import Player
 from entities.enemy import Enemy
+from systems.transform_cameraSystem import CameraTransformSystem
 
 
 class PlayScene(Scene):
@@ -55,11 +57,16 @@ class PlayScene(Scene):
 
             AnimationSystem(),
 
-            DebugCollisionRenderSystem(enabled=False),
-            HealthDraw(Projectiles=False, Entity=False),
+            CameraSystem(self.game.camera),
+
+            DebugCollisionRenderSystem(enabled=True),
+            HealthDraw(Projectiles=True, Entity=True, Orbit=True),
             OnScreenDebugSystem(self.game),
             
-            RenderSystem()
+            # RenderSystem(self.game.camera, (200, 500)),
+            CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2)),
+            # CameraTransformSystem(self.game.camera, (0,0)),
+            RenderSystem(self.game)
         ]
 
         self.shipConfig = {
@@ -86,23 +93,21 @@ class PlayScene(Scene):
 
     def on_Enter(self):
         print("On Game")
+        print((self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2))
         for system in self.systems:
             if type(system) in self.disabledSystems:
                 system.Enabled = False
 
-        Booster = Player(self.boosterConfig)
+                
         Ship = Player(self.shipConfig)
-        # Booster.remove(Collider)
 
-
-        enemy = Enemy()
         obs = Obstacle()
         Ship.get(Orbit).center = obs
+        self.game.camera.target = Ship
 
-        # self.entities.append(Booster)
         self.entities.append(Ship)
         self.entities.append(obs)
-        # self.entities.append(enemy)
+
 
 
         for entity in self.entities:

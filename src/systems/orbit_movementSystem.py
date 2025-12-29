@@ -16,12 +16,14 @@ class OrbitSystem(System):
             pos = e.get(Position)
             rot = e.get(Rotation)
             center = orbit.center.get(Position)
+            center_size = orbit.center.get(Size)
 
             orbit.angle += orbit.speed * dt
 
             # Position
             ox = math.cos(orbit.angle) * orbit.radius
             oy = math.sin(orbit.angle) * orbit.radius
+
             pos.x = center.x + ox
             pos.y = center.y + oy
 

@@ -31,5 +31,6 @@ class Enemy(Entity):
         self.add(FireIntent())
         self.add(Cannon(0.1))
         self.add(Rotation())
+        self.add(ViewPosition())
 
         self.add(FactionIdentity("ENEMY"))

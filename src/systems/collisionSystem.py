@@ -64,6 +64,16 @@ class CollisionSystem(System):
             and
             any(m in a.get(CollisionIdentity).layer for m in b.get(CollisionIdentity).mask)
         )
+    
+    @staticmethod
+    def make_rect(pos, collider):
+        return pygame.Rect(
+            pos.x - collider.width / 2,
+            pos.y - collider.height / 2,
+            collider.width,
+            collider.height
+        )
+
 
 
     def register_colliders(self, e1, e2):
@@ -80,19 +90,9 @@ class CollisionSystem(System):
         p2 = e2.get(Position)
         c2 = e2.get(Collider)
 
-        r1 = pygame.Rect(
-            p1.x,
-            p1.y,
-            c1.width,
-            c1.height
-        )
+        r1 = self.make_rect(p1, c1)
+        r2 = self.make_rect(p2, c2)
 
-        r2 = pygame.Rect(
-            p2.x,
-            p2.y,
-            c2.width,
-            c2.height
-        )
 
         return r1.colliderect(r2)
 
@@ -106,8 +106,9 @@ class CollisionSystem(System):
         p2 = stat.get(Position)
         c2 = stat.get(Collider)
 
-        r1 = pygame.Rect(p1.x, p1.y, c1.width, c1.height)
-        r2 = pygame.Rect(p2.x, p2.y, c2.width, c2.height)
+        r1 = self.make_rect(p1, c1)
+        r2 = self.make_rect(p2, c2)
+
 
         dx = min(r1.right - r2.left, r2.right - r1.left)
         dy = min(r1.bottom - r2.top, r2.bottom - r1.top)
@@ -134,18 +135,8 @@ class CollisionSystem(System):
         v2 = e2.get(Velocity)
         c2 = e2.get(Collider)
 
-        r1 = pygame.Rect(
-            p1.x,
-            p1.y,
-            c1.width,
-            c1.height
-        )
-        r2 = pygame.Rect(
-            p2.x,
-            p2.y,
-            c2.width,
-            c2.height
-        )
+        r1 = self.make_rect(p1, c1)
+        r2 = self.make_rect(p2, c2)
 
         # penetration depths
         dx = min(r1.right - r2.left, r2.right - r1.left)
