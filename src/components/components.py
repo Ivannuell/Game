@@ -153,8 +153,19 @@ class CollisionIdentity(Component):
 
 
 @ComponentRegistry.register
+class UiElement(Component):
+    def __init__(self) -> None:
+        super().__init__()
+
+class SystemEntity(Component):
+    def __init__(self) -> None:
+        super().__init__()
+
+
+@ComponentRegistry.register
 class PointerState(Component):
     def __init__(self):
+        super().__init__()
         self.hovering = False
 
         # entity-specific press ownership

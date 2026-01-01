@@ -14,7 +14,11 @@ pygame.font.init()
 font = pygame.Font(None, 50)
 
 class ButtonDisplaySystem(System):
+    def __init__(self) -> None:
+        super().__init__()
+
     def render(self, entities: list['Entity'], screen):
+
         rect = pygame.Rect(0,0,screen.display_surface.get_width(), screen.display_surface.get_height())
         pygame.draw.rect(screen.display_surface, (0,0,0,120), rect)
 
@@ -43,4 +47,10 @@ class ButtonDisplaySystem(System):
                     pygame.draw.rect(screen.display_surface, 'green', rect)
                     text = font.render("RESTART", False, 'black')
                     screen.display_surface.blit(text, (rect.centerx - text.width/2, rect.centery - text.height/2))
+
+                if clickable.buttonID == "PAUSE":
+                    pygame.draw.rect(screen.display_surface, 'green', rect)
+                    text = font.render("||", False, 'black')
+                    screen.display_surface.blit(text, (rect.centerx - text.width/2, rect.centery - text.height/2))
+                    
 

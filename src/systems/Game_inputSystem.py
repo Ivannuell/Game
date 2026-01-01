@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
 
-from entities.UI.executable import Executable
+from entities.system_Entities.executable import Executable
 from scenes.scene_Manager import SceneList
 from inputManager import InputManager
 from systems.system import System

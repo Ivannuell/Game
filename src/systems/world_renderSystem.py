@@ -4,7 +4,7 @@ if TYPE_CHECKING:
     from entities.entity import Entity
     from screen import Screen
 
-from entities.camera import CameraEntity
+from entities.system_Entities.camera import CameraEntity
 from systems.system import System
 from components.components import *
 
@@ -45,7 +45,7 @@ class WorldRenderSystem(System):
             screen_center = screen.display_surface.get_rect().center
 
             screen_x = view.x * camera.zoom + screen_center[0]
-            screen_y = view.y * camera.zoom + screen_center[1]
+            screen_y = view.y * camera.zoom + screen_center[1] + 200
 
             rect = image.get_rect(center=(screen_x, screen_y))
 

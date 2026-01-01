@@ -39,8 +39,6 @@ class Entity:
         self.components.pop(component_cls, None)
 
     def init_Entity(self):
-        if self.has(Zoom):
-            return
         self._build_Animation()
         self._build_Rect()
 
@@ -54,6 +52,9 @@ class Entity:
                 col.height = size.height
 
     def _build_Animation(self):
+        if not self.has(Animation):
+            return
+        
         animation = self.get(Animation)
         sprite = self.get(Sprite)
         scale = self.get(Size)

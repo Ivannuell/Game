@@ -1,11 +1,15 @@
 
-from entities.camera import CameraEntity
+from entities.UI.button import Button
+from entities.system_Entities.camera import CameraEntity
 from entities.obstacle import Obstacle
 from scenes.scene import Scene
 
 from systems.CameraSystem import CameraSystem
 from systems.AnimationSystem import AnimationSystem
 from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
+from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
+from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
+from systems.UI.button_displaySystem import ButtonDisplaySystem
 from systems.world_renderSystem import WorldRenderSystem
 from systems.Game_inputSystem import InputSystem
 from systems.UI.commandSystem import CommandSystem
@@ -39,12 +43,13 @@ class PlayScene(Scene):
     def on_Create(self):
         self.systems = [
             InputSystem(self.game.input_manager, self.game),
+            UI_Pointer_InputSystem(self.game),
+            UI_Button_InputSystem(self.game),
             CommandSystem(self.game),
             ShootingSystem(self.game),
-            MovementSystem(),
+            # MovementSystem(),
+
             OrbitSystem(),
-            # Enemy_AI_MovementSystem(),
-            # Enemy_AI_ShootingSystem(),
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
 
@@ -60,13 +65,12 @@ class PlayScene(Scene):
 
             CameraSystem(self.game.camera),
 
+            ButtonDisplaySystem(),
             DebugCollisionRenderSystem(enabled=True),
             HealthDraw(Projectiles=True, Entity=True, Orbit=True),
             OnScreenDebugSystem(self.game),
             
-            # RenderSystem(self.game.camera, (200, 500)),
-            CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2)),
-            # CameraTransformSystem(self.game.camera, (0,0)),
+            CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
             WorldRenderSystem(self.game)
         ]
 
@@ -100,11 +104,14 @@ class PlayScene(Scene):
                 system.Enabled = False
 
         cam = CameraEntity()
+        pause = Button("PAUSE")
+        pause.get(Size).width = 50
+        pause.get(Size).height = 50
+        pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
+        pause.get(Position).y = 10
                 
         Ship = Player(self.shipConfig)
         obs = Obstacle()
-
-
         obs.get(Collider).width = 50
         obs.get(Collider).height = 50
 
@@ -113,12 +120,19 @@ class PlayScene(Scene):
         self.game.camera.target = Ship
 
 
+
+
         self.entities.append(Ship)
         self.entities.append(obs)
+
         self.entities.append(cam)
+        self.entities.append(pause)
 
         for entity in self.entities:
             entity.game = self.game
+            if entity.has(SystemEntity):
+                continue
+
             entity.init_Entity()
 
     def on_Pause(self):

@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from baseGame import BaseGame
     from entities.entity import Entity
 
-from entities.UI.executable import Executable
+from entities.system_Entities.executable import Executable
 
 from components.components import *
 
@@ -43,6 +43,12 @@ class UI_Button_InputSystem(System):
                     exe = Executable()
                     exe.add(Command(CommandType.RESTART, SceneList.GAME))
                     entities.append(exe)
+
+                if buttonID == "PAUSE" and pointerState.released:
+                    cmd = Executable()
+                    cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
+                    entities.append(cmd)
+
 
                       
 

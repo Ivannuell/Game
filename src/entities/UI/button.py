@@ -1,6 +1,6 @@
 
 
-from components.components import Clickable, PointerState, Position, Size
+from components.components import *
 from entities.entity import Entity
 
 
@@ -11,3 +11,4 @@ class Button(Entity):
         self.add(Position(0, 300))
         self.add(Size(300, 100))
         self.add(PointerState())
+        self.add(UiElement())

@@ -6,7 +6,7 @@ import pygame
 
 from components.components import Command, CommandType
 
-from entities.UI.executable import Executable
+from entities.system_Entities.executable import Executable
 
 from systems.system import System
 

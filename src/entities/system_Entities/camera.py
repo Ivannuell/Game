@@ -7,3 +7,4 @@ class CameraEntity(Entity):
     def __init__(self):
         super().__init__()
         self.add(Zoom())
+        self.add(SystemEntity())
