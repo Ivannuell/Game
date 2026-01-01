@@ -18,8 +18,14 @@ class CameraTransformSystem(System):
             if not e.has(Position, ViewPosition):
                 continue
 
+
+
             pos = e.get(Position)
             view = e.get(ViewPosition)
+
+            if e is self.camera.target:
+                view.x = 0
+                view.y = 0
 
             # World → camera space
             dx = pos.x - self.camera.x
@@ -29,5 +35,8 @@ class CameraTransformSystem(System):
             cam_y = dx * sin_r + dy * cos_r
 
             # Camera → screen space
-            view.x = self.cx + cam_x
-            view.y = self.cy + cam_y
+            view.x = cam_x
+            view.y = cam_y
+            # # Camera → screen space
+            # view.x = self.cx + cam_x
+            # view.y = self.cy + cam_y

@@ -4,3 +4,4 @@ class Camera:
         self.y = 0.0
         self.rotation = 0.0  # radians
         self.target = None
+        self.scale = 1

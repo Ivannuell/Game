@@ -1,11 +1,12 @@
 
+from entities.camera import CameraEntity
 from entities.obstacle import Obstacle
 from scenes.scene import Scene
 
 from systems.CameraSystem import CameraSystem
 from systems.AnimationSystem import AnimationSystem
 from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
-from systems.RenderSystem import RenderSystem
+from systems.world_renderSystem import WorldRenderSystem
 from systems.Game_inputSystem import InputSystem
 from systems.UI.commandSystem import CommandSystem
 from systems.movementSystem import MovementSystem
@@ -66,7 +67,7 @@ class PlayScene(Scene):
             # RenderSystem(self.game.camera, (200, 500)),
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2)),
             # CameraTransformSystem(self.game.camera, (0,0)),
-            RenderSystem(self.game)
+            WorldRenderSystem(self.game)
         ]
 
         self.shipConfig = {
@@ -98,9 +99,11 @@ class PlayScene(Scene):
             if type(system) in self.disabledSystems:
                 system.Enabled = False
 
+        cam = CameraEntity()
                 
         Ship = Player(self.shipConfig)
         obs = Obstacle()
+
 
         obs.get(Collider).width = 50
         obs.get(Collider).height = 50
@@ -112,6 +115,8 @@ class PlayScene(Scene):
 
         self.entities.append(Ship)
         self.entities.append(obs)
+        self.entities.append(cam)
+
         for entity in self.entities:
             entity.game = self.game
             entity.init_Entity()

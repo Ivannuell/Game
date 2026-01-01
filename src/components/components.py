@@ -230,3 +230,11 @@ class EnemyIntent(Component):
         super().__init__()
         self.move = "LEFT"
         self.shoot = False
+
+
+class Zoom(Component):
+    def __init__(self) -> None:
+        super().__init__()
+        self.zoom = 2.0
+        self.min_zoom = 1.0
+        self.max_zoom = 3.0

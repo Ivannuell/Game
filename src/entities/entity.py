@@ -39,6 +39,8 @@ class Entity:
         self.components.pop(component_cls, None)
 
     def init_Entity(self):
+        if self.has(Zoom):
+            return
         self._build_Animation()
         self._build_Rect()
 
