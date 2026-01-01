@@ -7,7 +7,7 @@ class InputManager:
         self.keys_released = set()
         self.mouse_pos = (0, 0)
         self.mouse_buttons = (False, False, False)
-        # self.mouse_wheel_scroll = 0
+        self.wheel_delta = 0
 
     def begin_frame(self):
         self.keys_pressed.clear()
@@ -31,5 +31,5 @@ class InputManager:
         elif event.type == pygame.MOUSEBUTTONUP:
             self.mouse_buttons = (False, False, False)
 
-        # elif event.type == pygame.MOUSEWHEEL:
-        #     self.mouse_wheel_scroll = event
+        elif event.type == pygame.MOUSEWHEEL:
+            self.wheel_delta = event.y

@@ -10,6 +10,7 @@ from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_Shooti
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
 from systems.UI.button_displaySystem import ButtonDisplaySystem
+from systems.camera_zoomSystem import CameraZoomSystem
 from systems.world_renderSystem import WorldRenderSystem
 from systems.Game_inputSystem import InputSystem
 from systems.UI.commandSystem import CommandSystem
@@ -43,6 +44,7 @@ class PlayScene(Scene):
     def on_Create(self):
         self.systems = [
             InputSystem(self.game.input_manager, self.game),
+            CameraZoomSystem(self.game.input_manager),
             UI_Pointer_InputSystem(self.game),
             UI_Button_InputSystem(self.game),
             CommandSystem(self.game),

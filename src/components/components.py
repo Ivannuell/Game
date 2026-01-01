@@ -246,6 +246,8 @@ class EnemyIntent(Component):
 class Zoom(Component):
     def __init__(self) -> None:
         super().__init__()
-        self.zoom = 2.0
-        self.min_zoom = 1.0
+        self.zoom = 1.0
+        self.target_zoom = 1.0
+        self.min_zoom = 0.5
         self.max_zoom = 3.0
+        self.zoom_step = 1.1

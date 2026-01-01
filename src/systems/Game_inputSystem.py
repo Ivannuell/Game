@@ -50,16 +50,16 @@ class InputSystem(System):
             movement_intent.move_y = 0
             movement_intent.move_x = 0
 
-            if pygame.K_a in self.inputManager.keys_down:
-                movement_intent.move_x -= 1
+            # if pygame.K_a in self.inputManager.keys_down:
+            #     movement_intent.move_x -= 1
             if pygame.K_d in self.inputManager.keys_down:
                 # movement_intent.move_x += 1
                 mover.get(Orbit).radius -= 1
-            if pygame.K_s in self.inputManager.keys_down:
+            if pygame.K_a in self.inputManager.keys_down:
                 # movement_intent.move_y += 1
                 mover.get(Orbit).radius += 1
-            if pygame.K_w in self.inputManager.keys_down:
-                movement_intent.move_y -= 1
+            # if pygame.K_w in self.inputManager.keys_down:
+            #     movement_intent.move_y -= 1
 
 
         
