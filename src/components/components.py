@@ -85,7 +85,7 @@ class Sprite(Component):
 
 @ComponentRegistry.register
 class Size(Component):
-    def __init__(self, width, height, scale=1):
+    def __init__(self, width, height, scale=1.0):
         super().__init__()
         self.scale = scale
         self.width = width * scale
@@ -194,7 +194,7 @@ class Orbit(Component):
 class Rotation(Component):
     def __init__(self) -> None:
         super().__init__()
-        self.rad_angle = 0
+        self.rad_angle: float = 0
 
 
 @ComponentRegistry.register

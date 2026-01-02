@@ -3,6 +3,7 @@
 
 import math
 from components.components import *
+from helper import SPRITE_FORWARD_OFFSET
 from systems.system import System
 
 
@@ -30,7 +31,6 @@ class OrbitSystem(System):
             dx = math.sin(orbit.angle)
             dy = -math.cos(orbit.angle)
 
-            SPRITE_FORWARD_OFFSET = -math.pi / 2  # sprite faces up
             rot.rad_angle = math.atan2(dy, dx) + SPRITE_FORWARD_OFFSET
 
 

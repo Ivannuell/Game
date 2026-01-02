@@ -1,5 +1,5 @@
 
-from references import ACCELERATION, FRICTION
+from helper import ACCELERATION, FRICTION
 from systems.system import System
 from components.components import *
 

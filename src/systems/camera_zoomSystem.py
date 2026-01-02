@@ -28,8 +28,6 @@ class CameraZoomSystem(System):
                     min(zoom.target_zoom, zoom.max_zoom)
                 )
 
-                print(self.inputManager.wheel_delta)
-
                 # Smooth zoom
                 zoom.zoom += (zoom.target_zoom - zoom.zoom) * 15 * dt
 

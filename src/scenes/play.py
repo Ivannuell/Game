@@ -2,6 +2,7 @@
 from entities.UI.button import Button
 from entities.system_Entities.camera import CameraEntity
 from entities.obstacle import Obstacle
+from helper import SPRITE_FORWARD_OFFSET, get_Angle
 from scenes.scene import Scene
 
 from systems.CameraSystem import CameraSystem
@@ -113,19 +114,23 @@ class PlayScene(Scene):
         pause.get(Position).y = 10
                 
         Ship = Player(self.shipConfig)
-        obs = Obstacle()
-        obs.get(Collider).width = 50
-        obs.get(Collider).height = 50
+        Base = Obstacle()
+        Base.get(Collider).width = 50
+        Base.get(Collider).height = 50
 
+        enemy = Enemy()
+        enemy.get(Position).x = 50
+        enemy.get(Position).y = 100
+        enemy.get(Size).width = 20
+        enemy.get(Size).height = 20
+        enemy.get(Rotation).rad_angle = get_Angle(enemy, Base) - SPRITE_FORWARD_OFFSET
 
-        Ship.get(Orbit).center = obs
+        Ship.get(Orbit).center = Base
         self.game.camera.target = Ship
 
-
-
-
         self.entities.append(Ship)
-        self.entities.append(obs)
+        self.entities.append(Base)
+        self.entities.append(enemy)
 
         self.entities.append(cam)
         self.entities.append(pause)

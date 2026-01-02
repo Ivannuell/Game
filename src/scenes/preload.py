@@ -1,4 +1,4 @@
-from references import SceneList
+from helper import SceneList
 from scenes import mainMenu
 from scenes.scene import Scene
 from typing import TYPE_CHECKING

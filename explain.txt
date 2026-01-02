@@ -4,3 +4,13 @@ How a scene Should do things.
         -> If they have those components they are manipulated.
 
     update method changes everything and the things that is run in the game loop
+
+
+SPAWNING ENEMY
+
+I want enemy to spawn outside a radius that is set away from the base.
+
+move inward towards the base. 
+
+
+next is enemy spawner..
