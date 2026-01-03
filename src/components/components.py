@@ -72,8 +72,8 @@ class ViewPosition(Component):
 class Velocity(Component):
     def __init__(self, speed):
         super().__init__()
-        self.x = 0
-        self.y = 0
+        self.x: float = 0
+        self.y: float = 0
         self.speed = speed
 
 @ComponentRegistry.register
@@ -87,7 +87,7 @@ class Sprite(Component):
 class Size(Component):
     def __init__(self, width, height, scale=1.0):
         super().__init__()
-        self.scale = scale
+        self.scale: float = scale
         self.width = width * scale
         self.height = height * scale
 
@@ -195,6 +195,7 @@ class Rotation(Component):
     def __init__(self) -> None:
         super().__init__()
         self.rad_angle: float = 0
+        self.target_angle: float = 0
 
 
 @ComponentRegistry.register
@@ -202,6 +203,7 @@ class FactionIdentity(Component):
     def __init__(self, faction):
         super().__init__()
         self.faction = faction
+        self.owner: Entity | None = None
 
 @ComponentRegistry.register
 class MovementIntent(Component):

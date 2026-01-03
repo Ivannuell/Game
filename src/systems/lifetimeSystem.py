@@ -24,10 +24,10 @@ class LifetimeSystem(System):
 
 
         # Checks if bullets have move out of the screen
-        for bullet in bullets:
-            pos = bullet.get(Position)
-            if pos.y <= 0 or pos.y >= 720:
-                entities.remove(bullet)
+        # for bullet in bullets:
+        #     pos = bullet.get(Position)
+        #     if pos.y <= 0 or pos.y >= 720:
+        #         entities.remove(bullet)
 
 
         for bullet in collided_bullets:

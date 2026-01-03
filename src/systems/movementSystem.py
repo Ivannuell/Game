@@ -1,5 +1,6 @@
 
-from helper import ACCELERATION, FRICTION
+import math
+from helper import ACCELERATION, FRICTION, MIN_SPEED, SPRITE_FORWARD_OFFSET, clamp_min_speed
 from systems.system import System
 from components.components import *
 
@@ -18,30 +19,41 @@ class MovementSystem(System):
 
         for entity in entities:
 
-            if entity.has(Position, Velocity, MovementIntent):
+            if entity.has(Position, Velocity, MovementIntent, InputControlled):
                 player_cons.append(entity)
 
 
-        # for player in player_cons:            
-        #     position = player.get(Position)
-        #     velocity = player.get(Velocity)
-        #     movement_intent = player.get(MovementIntent)
+        for player in player_cons:            
+            position = player.get(Position)
+            velocity = player.get(Velocity)
+            movement_intent = player.get(MovementIntent)
+            rotation = player.get(Rotation)
 
-        #     target_vx = movement_intent.move_x * velocity.speed
-        #     target_vy = movement_intent.move_y * velocity.speed
+            target_vx = movement_intent.move_x * math.cos(rotation.rad_angle + SPRITE_FORWARD_OFFSET) *  velocity.speed
+            target_vy = movement_intent.move_y * -math.sin(rotation.rad_angle + SPRITE_FORWARD_OFFSET) * velocity.speed
+            # target_vx = movement_intent.move_x * velocity.speed
+            # target_vy = movement_intent.move_y * velocity.speed
         
-        #     if movement_intent.move_x != 0:
-        #         velocity.x = self.move_towards(velocity.x, target_vx, ACCELERATION * dt)
-        #     else:
-        #         velocity.x = self.move_towards(velocity.x, 0, FRICTION * dt)
+            if movement_intent.move_x != 0:
+                velocity.x = self.move_towards(velocity.x , target_vx, ACCELERATION * dt)
+            else:
+                velocity.x = self.move_towards(velocity.x, 0, FRICTION * dt)
 
-        #     if movement_intent.move_y != 0:
-        #         velocity.y = self.move_towards(velocity.y, target_vy, ACCELERATION * dt)
-        #     else:
-        #         velocity.y = self.move_towards(velocity.y, 0, FRICTION * dt)
+            if movement_intent.move_y != 0:
+                velocity.y = self.move_towards(velocity.y, target_vy, ACCELERATION * dt)
+            else:
+                velocity.y = self.move_towards(velocity.y, 0, FRICTION * dt)
 
-        #     position.x += velocity.x * dt
-        #     position.y += velocity.y * dt
+
+            if movement_intent.move_x == 0 and movement_intent.move_y == 0:
+                velocity.x, velocity.y = clamp_min_speed(
+                    velocity.x,
+                    velocity.y,
+                    MIN_SPEED
+                )
+
+            position.x += velocity.x * dt 
+            position.y += velocity.y * dt 
 
     @staticmethod
     def move_towards(current, target, max_delta):

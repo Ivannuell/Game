@@ -1,8 +1,10 @@
 
+import math
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
 
+from helper import SPRITE_FORWARD_OFFSET
 from systems.system import System
 from components.components import *
 
@@ -13,16 +15,13 @@ class ProjectileMovementSystem(System):
         projectiles = []
 
         for entity in entities:
-            if entity.has(Position) and entity.has(Projectile):
+            if entity.has(Position, Projectile):
                 projectiles.append(entity)
+
 
         for projectile in projectiles:
             pos = projectile.get(Position)
             vel = projectile.get(Velocity)
-            proj = projectile.get(Projectile)
 
-
-            if projectile.get(FactionIdentity).faction == "PLAYER":
-                pos.y -= vel.speed
-            elif projectile.get(FactionIdentity).faction == "ENEMY":
-                pos.y += vel.speed
+            pos.x += vel.x * dt
+            pos.y += vel.y * dt

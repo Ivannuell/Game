@@ -1,6 +1,8 @@
+from math import e
 import pygame
 
 from components.components import *
+from helper import MIN_SPEED, clamp_min_speed
 from systems.system import System
 
 from typing import TYPE_CHECKING
@@ -124,13 +126,13 @@ class CollisionSystem(System):
                 pos.x -= dx
             else:
                 pos.x += dx
-            vel.x = 0
+            vel.x *= -1
         else:
             if r1.centery < r2.centery:
                 pos.y -= dy
             else:
                 pos.y += dy
-            vel.y = 0
+            vel.y *= -1
 
     def resolve_dynamic_dynamic(self, e1: 'Entity', e2: 'Entity'):
         p1 = e1.get(Position)
@@ -160,8 +162,8 @@ class CollisionSystem(System):
                 p1.x += half_dx
                 p2.x -= half_dx
             
-            print("dynamic Collision")
-            v1.x = 0
+            print(f"dynamic Collision: {e1.__qualname__} -> {e2.__qualname__}")
+            v1.x = (v1.x * -1) / 3
             v2.x = 0
         else:
             if r1.centery < r2.centery:
@@ -171,6 +173,6 @@ class CollisionSystem(System):
                 p1.y += half_dy
                 p2.y -= half_dy
 
-            print("dynamic Collision")
-            v1.y = 0
+            print(f"dynamic Collision {e1.__qualname__} -> {e2.__qualname__}")
+            v1.y = (v1.y * -1) / 3
             v2.y = 0

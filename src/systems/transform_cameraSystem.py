@@ -17,9 +17,7 @@ class CameraTransformSystem(System):
         for e in entities:
             if not e.has(Position, ViewPosition):
                 continue
-
-
-
+            
             pos = e.get(Position)
             view = e.get(ViewPosition)
 

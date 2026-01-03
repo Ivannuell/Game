@@ -48,9 +48,6 @@ class WorldRenderSystem(System):
             screen_y = view.y * camera.zoom + screen_center[1] + 200
 
             rect = image.get_rect(center=(screen_x, screen_y))
-
-
-            # rect = image.get_rect(center=(view.x, view.y))
             screen.display_surface.blit(image, rect)
 
 

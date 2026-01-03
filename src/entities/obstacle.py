@@ -15,7 +15,7 @@ class Obstacle(Entity):
         ))
         self.add(CollisionIdentity(
             layer = [CollisionID.Players, CollisionID.Enemies],
-            mask = [CollisionID.Players]
+            mask = []
             
         ))
 

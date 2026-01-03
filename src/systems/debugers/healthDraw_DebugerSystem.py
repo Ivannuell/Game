@@ -25,29 +25,29 @@ class HealthDraw(System):
 
             if entity.has(Orbit):
                 if self.Orbit:
-                    pos = entity.get(Orbit).center.get(Position)
+                    pos = entity.get(Orbit).center.get(ViewPosition)
                     size = entity.get(Orbit).center.get(Size)
                     pygame.draw.circle(screen.display_surface, "green", (pos.x, pos.y), 5)
                     pygame.draw.circle(screen.display_surface, "yellow", (pos.x, pos.y), entity.get(Orbit).radius, 1)
 
 
-        if self.Projectiles:
+        if self.Entity:
             for entity in collection:
                 health = entity.get(Health).health
-                position = entity.get(Position)
+                position = entity.get(ViewPosition)
                 faction = entity.get(FactionIdentity).faction
 
                 text = font.render(f"Health: {health} \nFaction: {faction}", False, "white")
                 textRect = text.get_rect()
 
-                textRect.bottomleft = (position.x, position.y)
+                textRect.bottomleft = (position.x + screen.display_surface.get_width() / 2, position.y + screen.display_surface.get_height() / 2 + 200)
 
                 screen.display_surface.blit(text, textRect)
 
-        if self.Entity:
+        if self.Projectiles:
             for proj in projectiles:
                 faction = proj.get(FactionIdentity).faction
-                pos = proj.get(Position)
+                pos = proj.get(ViewPosition)
 
                 text = font.render(f"Faction: {faction}", False, "white")
                 textRect = text.get_rect()

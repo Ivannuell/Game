@@ -48,11 +48,14 @@ class PlayScene(Scene):
             CameraZoomSystem(self.game.input_manager),
             UI_Pointer_InputSystem(self.game),
             UI_Button_InputSystem(self.game),
+
             CommandSystem(self.game),
             ShootingSystem(self.game),
-            # MovementSystem(),
 
-            OrbitSystem(),
+            Enemy_AI_MovementSystem(),
+            MovementSystem(),
+
+            # OrbitSystem(),
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
 
@@ -69,11 +72,12 @@ class PlayScene(Scene):
             CameraSystem(self.game.camera),
 
             ButtonDisplaySystem(),
+            CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
+
             DebugCollisionRenderSystem(enabled=True),
-            HealthDraw(Projectiles=True, Entity=True, Orbit=True),
+            # HealthDraw(Projectiles=True, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
-            CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
             WorldRenderSystem(self.game)
         ]
 
@@ -92,7 +96,7 @@ class PlayScene(Scene):
             "Pos": (100, 100),
             "Sprite": "booster",
             "Anim": {
-                "booster": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2)
+                "booster-idle": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2)
             },
             "col": (48,48),
             "Vel": 420
@@ -113,24 +117,33 @@ class PlayScene(Scene):
         pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
         pause.get(Position).y = 10
                 
-        Ship = Player(self.shipConfig)
         Base = Obstacle()
-        Base.get(Collider).width = 50
-        Base.get(Collider).height = 50
+
+        Ship = Player(self.shipConfig)
+        Booster = Player(self.boosterConfig)
 
         enemy = Enemy()
         enemy.get(Position).x = 50
         enemy.get(Position).y = 100
-        enemy.get(Size).width = 20
-        enemy.get(Size).height = 20
+        enemy.get(Size).width = 60
+        enemy.get(Size).height = 60
         enemy.get(Rotation).rad_angle = get_Angle(enemy, Base) - SPRITE_FORWARD_OFFSET
+
+        enemy2 = Enemy()
+        enemy2.get(Position).x = 200
+        enemy2.get(Position).y = 100
+        enemy2.get(Size).width = 60
+        enemy2.get(Size).height = 60
+        enemy2.get(Rotation).rad_angle = get_Angle(enemy2, Base) - SPRITE_FORWARD_OFFSET
 
         Ship.get(Orbit).center = Base
         self.game.camera.target = Ship
 
         self.entities.append(Ship)
+        self.entities.append(Booster)
         self.entities.append(Base)
         self.entities.append(enemy)
+        self.entities.append(enemy2)
 
         self.entities.append(cam)
         self.entities.append(pause)

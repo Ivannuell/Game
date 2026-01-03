@@ -8,7 +8,7 @@ class Spritesheet:
         self.bg = bg
         self.image = self.image.convert_alpha()
 
-    def get_image(self, frame: pygame.rect.Rect, flip=False, scale=1):
+    def get_image(self, frame: pygame.rect.Rect, flip=False, scale=1.0):
         sprite = self.image.subsurface(frame)
 
         if flip:
@@ -22,7 +22,7 @@ class Spritesheet:
 
         return sprite
 
-    def get_animation(self, frame_coords, frame_duration, scale=1):
+    def get_animation(self, frame_coords, frame_duration, scale=1.0):
         if len(frame_coords) == 1:
             frame = [self.get_image(frame_coords[0], scale=scale)]
             return _Anim(frame, frame_duration)
