@@ -103,6 +103,7 @@ class Projectile(Component):
     def __init__(self):
         super().__init__()
         self.faction = ""
+        self.timeout = 1.5
 
 @ComponentRegistry.register
 class CollidedWith(Component):

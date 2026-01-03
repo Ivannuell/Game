@@ -74,18 +74,27 @@ class ShootingSystem(System):
                         bullet.add(Projectile())
                         bullet.add(FactionIdentity("ENEMY"))
                         bullet.add(Rotation())
+                        bullet.add(Velocity(900))
 
                         pos = bullet.get(Position)
+                        vel = bullet.get(Velocity)
+
                         shooter_pos = shooter.get(Position)
                         shooter_size = shooter.get(Size)
+                        angle = shooter.get(Rotation).rad_angle + SPRITE_FORWARD_OFFSET
 
-                        pos.x = shooter_pos.x + (shooter_size.width / 2 - bullet.get(Size).width / 2)
-                        pos.y = shooter_pos.y + shooter_size.height / 2
+                        pos.x = shooter_pos.x 
+                        pos.y = shooter_pos.y
+
+                        bullet.get(Rotation).rad_angle = angle + SPRITE_FORWARD_OFFSET
                         bullet.get(FactionIdentity).owner = shooter
+
+                        vel.x = math.cos(angle) * vel.speed
+                        vel.y = math.sin(angle) * vel.speed
 
                         entities.append(bullet)
                         cooldown.time_left = 0
 
-                shooter.get(FireIntent).fired = False
+                # shooter.get(FireIntent).fired = False
 
 

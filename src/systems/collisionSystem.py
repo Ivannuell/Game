@@ -1,8 +1,9 @@
 from math import e
+from turtle import Vec2D
 import pygame
 
 from components.components import *
-from helper import MIN_SPEED, clamp_min_speed
+from helper import MIN_SPEED, clamp_min_speed, clamp_value
 from systems.system import System
 
 from typing import TYPE_CHECKING
@@ -163,8 +164,11 @@ class CollisionSystem(System):
                 p2.x -= half_dx
             
             print(f"dynamic Collision: {e1.__qualname__} -> {e2.__qualname__}")
-            v1.x = (v1.x * -1) / 3
-            v2.x = 0
+            v1.x = (v2.x * -1) / 3
+            v2.x = (v1.x * -1) / 3
+
+            v1.x = clamp_value(v1.x, max(v1.x, v2.x), 100)
+            v2.x = clamp_value(v2.x, max(v1.x, v2.x), 100)
         else:
             if r1.centery < r2.centery:
                 p1.y -= half_dy
@@ -174,5 +178,8 @@ class CollisionSystem(System):
                 p2.y -= half_dy
 
             print(f"dynamic Collision {e1.__qualname__} -> {e2.__qualname__}")
-            v1.y = (v1.y * -1) / 3
-            v2.y = 0
+            v1.y = (v2.y * -1) / 3
+            v2.y = (v1.y * -1) / 3
+
+            v1.y = clamp_value(v1.y, max(v1.y, v2.y), 100)
+            v2.y = clamp_value(v2.y, max(v1.y, v2.y), 100)

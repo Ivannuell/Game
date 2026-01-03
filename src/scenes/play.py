@@ -53,6 +53,7 @@ class PlayScene(Scene):
             ShootingSystem(self.game),
 
             Enemy_AI_MovementSystem(),
+            Enemy_AI_ShootingSystem(),
             MovementSystem(),
 
             # OrbitSystem(),
@@ -136,7 +137,7 @@ class PlayScene(Scene):
         enemy2.get(Size).height = 60
         enemy2.get(Rotation).rad_angle = get_Angle(enemy2, Base) - SPRITE_FORWARD_OFFSET
 
-        Ship.get(Orbit).center = Base
+        # Ship.get(Orbit).center = Base
         self.game.camera.target = Ship
 
         self.entities.append(Ship)
