@@ -18,7 +18,7 @@ class Enemy(Entity):
             mask = [CollisionID.Players, CollisionID.Projectiles]
         ))
         self.add(Position(500, 100))
-        self.add(Velocity(360))
+        self.add(Velocity(200))
         self.add(Size(48,48,2))
         self.add(Sprite())
         self.add(Collider())

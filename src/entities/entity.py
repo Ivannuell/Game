@@ -1,4 +1,3 @@
-# This needs to refactored and make it a parent class for real entities on the game.
 
 from spritesheet import Spritesheet
 from typing import TYPE_CHECKING, Type, TypeVar

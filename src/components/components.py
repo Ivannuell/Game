@@ -3,6 +3,7 @@ import pygame
 
 
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from entities.entity import Entity
     from spritesheet import _Anim
@@ -48,11 +49,25 @@ class Animation(Component):
     def __init__(self, animation, spritesheet):
         super().__init__()
         self.anim = animation
+        self.anim_list = {}
         self.spritesheet = spritesheet
         self.active_anim : _Anim
         self.active_name = ""
         self.active_frame: pygame.surface.Surface
-        self.anim_list = {}
+
+    def get_anim(self, anim_name):
+        try:
+            return self.anim_list[anim_name]
+        except:
+            return self.active_anim
+        
+@ComponentRegistry.register
+class AnimationState(Component):
+    def __init__(self):
+        super().__init__()
+        self.state = 0
+        self.previous = 0
+        self.locked = False
 
 @ComponentRegistry.register
 class Position(Component):
@@ -66,6 +81,18 @@ class ViewPosition(Component):
         super().__init__()
         self.x = 0
         self.y = 0
+
+@ComponentRegistry.register
+class Parent(Component):
+    def __init__(self) -> None:
+        super().__init__()
+        self.entity: Entity
+
+class OffsetPosition(Component):
+    def __init__(self, x=0, y=0):
+        super().__init__()
+        self.x = x
+        self.y = y
 
 
 @ComponentRegistry.register

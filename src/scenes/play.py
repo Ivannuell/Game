@@ -1,12 +1,14 @@
 
 from entities.UI.button import Button
+from entities.playerPart import PlayerPart
 from entities.system_Entities.camera import CameraEntity
 from entities.obstacle import Obstacle
 from helper import SPRITE_FORWARD_OFFSET, get_Angle
 from scenes.scene import Scene
 
 from systems.CameraSystem import CameraSystem
-from systems.AnimationSystem import AnimationSystem
+from systems.AnimationSystem import Playback_AnimationSystem, State_AnimationSystem
+from systems.Game_ParentFollowSystem import ParentFollowSystem
 from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
@@ -51,10 +53,13 @@ class PlayScene(Scene):
 
             CommandSystem(self.game),
             ShootingSystem(self.game),
+            Enemy_AI_ShootingSystem(),
+            State_AnimationSystem(),
+
 
             Enemy_AI_MovementSystem(),
-            Enemy_AI_ShootingSystem(),
             MovementSystem(),
+            ParentFollowSystem(),
 
             # OrbitSystem(),
             ProjectileBehaviourSystem(),
@@ -68,14 +73,14 @@ class PlayScene(Scene):
             DamageSystem(),
             HealthSystem(),
 
-            AnimationSystem(),
+            Playback_AnimationSystem(),
 
             CameraSystem(self.game.camera),
 
             ButtonDisplaySystem(),
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
 
-            DebugCollisionRenderSystem(enabled=True),
+            # DebugCollisionRenderSystem(enabled=True),
             # HealthDraw(Projectiles=True, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
@@ -97,7 +102,8 @@ class PlayScene(Scene):
             "Pos": (100, 100),
             "Sprite": "booster",
             "Anim": {
-                "booster-idle": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2)
+                "booster-idle": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2),
+                "booster-move": Anim([], [(0,48,48,48), (48,48,48,48), (96,48,48,48), (144,48,48,48)], 0, 0.2)
             },
             "col": (48,48),
             "Vel": 420
@@ -118,13 +124,16 @@ class PlayScene(Scene):
         pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
         pause.get(Position).y = 10
                 
+
+
         Base = Obstacle()
 
-        Ship = Player(self.shipConfig)
-        Booster = Player(self.boosterConfig)
+        Ship_main = Player(self.shipConfig)
+        Ship_Booster = PlayerPart(self.boosterConfig)
+        Ship_Booster.get(Parent).entity = Ship_main
 
         enemy = Enemy()
-        enemy.get(Position).x = 50
+        enemy.get(Position).x = 400
         enemy.get(Position).y = 100
         enemy.get(Size).width = 60
         enemy.get(Size).height = 60
@@ -137,11 +146,11 @@ class PlayScene(Scene):
         enemy2.get(Size).height = 60
         enemy2.get(Rotation).rad_angle = get_Angle(enemy2, Base) - SPRITE_FORWARD_OFFSET
 
-        # Ship.get(Orbit).center = Base
-        self.game.camera.target = Ship
 
-        self.entities.append(Ship)
-        self.entities.append(Booster)
+        self.game.camera.target = Ship_main
+
+        self.entities.append(Ship_main)
+        self.entities.append(Ship_Booster)
         self.entities.append(Base)
         self.entities.append(enemy)
         self.entities.append(enemy2)

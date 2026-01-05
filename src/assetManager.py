@@ -14,7 +14,7 @@ class AssetsManager:
 
         # Manually add's the asset should be done in the loading scene.
         booster = os.path.join(
-            self.assets_dir, 'Main Ship - Engines - Base Engine - Idle.png')
+            self.assets_dir, 'booster.png')
         
         ship = os.path.join(
             self.assets_dir, 'Main Ship - Base - Full health.png'

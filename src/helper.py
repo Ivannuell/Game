@@ -9,11 +9,18 @@ class SceneList(Enum):
     GAME = 1
     MAIN_MENU = 2
     PRELOAD = 3
+class AnimationStateList(Enum):
+    IDLE = 0
+    MOVE = 1
+    
 
 ACCELERATION = 1200
 FRICTION = 1000
+ENEMY_ACCELARATION = 1000
+
 SPRITE_FORWARD_OFFSET = -math.pi / 2
-MIN_SPEED = 300
+MIN_SPEED = 100
+
 
 
 def get_Angle(source: Entity, target: Entity) -> float:
@@ -35,3 +42,11 @@ def clamp_min_speed(vx, vy, min_speed):
 
     scale = min_speed / speed
     return vx * scale, vy * scale
+
+
+def move_towards(current, target, max_delta):
+    if current < target:
+        return min(current + max_delta, target)
+    if current > target: 
+        return max(current - max_delta, target)
+    return target

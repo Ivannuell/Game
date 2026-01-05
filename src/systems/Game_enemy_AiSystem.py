@@ -4,7 +4,7 @@ import math
 import random
 from typing import TYPE_CHECKING
 
-from helper import SPRITE_FORWARD_OFFSET
+from helper import ENEMY_ACCELARATION, SPRITE_FORWARD_OFFSET, move_towards
 
 if TYPE_CHECKING:
     from entities.entity import Entity
@@ -23,9 +23,17 @@ class Enemy_AI_MovementSystem(System):
             if entity.has(EnemyIntent, MovementIntent, Position, Velocity):
                 pos = entity.get(Position)
                 rotation = entity.get(Rotation)
+                vel = entity.get(Velocity)
 
-                pos.x += math.cos(rotation.rad_angle + SPRITE_FORWARD_OFFSET) * (dt + 1.2)
-                pos.y += math.sin(rotation.rad_angle + SPRITE_FORWARD_OFFSET) * (dt + 1.2)
+                targetx = math.cos(rotation.rad_angle + SPRITE_FORWARD_OFFSET) * vel.speed
+                targety = math.sin(rotation.rad_angle + SPRITE_FORWARD_OFFSET) * vel.speed
+
+                vel.x = move_towards(vel.x, targetx, ENEMY_ACCELARATION)
+                vel.y = move_towards(vel.y, targety, ENEMY_ACCELARATION)
+
+                pos.x += vel.x * dt
+                pos.y += vel.y * dt
+
 
 class Enemy_AI_ShootingSystem(System):
     def __init__(self) -> None:

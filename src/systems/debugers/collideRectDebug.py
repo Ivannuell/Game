@@ -43,11 +43,9 @@ class DebugCollisionRenderSystem(System):
                 colliders.append(e)
 
         for e in colliders:
-            pos = e.get(Position)
             viewpos = e.get(ViewPosition)
             col = e.get(Collider)
             screen_center = screen.display_surface.get_rect().center
-            rotation = e.get(Rotation)
 
             if col.width is None or col.height is None:
                 continue

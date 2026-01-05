@@ -14,6 +14,7 @@ class Player(Entity):
             spritesheet=config["Sprite"],
             animation = config["Anim"]
         ))
+        self.add(AnimationState())
         self.add(Position(config["Pos"][0], config["Pos"][1]))
         self.add(Velocity(config["Vel"]))
         self.add(Size(48,48))

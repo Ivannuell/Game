@@ -136,6 +136,9 @@ class CollisionSystem(System):
             vel.y *= -1
 
     def resolve_dynamic_dynamic(self, e1: 'Entity', e2: 'Entity'):
+        if not e1.has(Position, Velocity, Collider) or not e2.has(Position, Velocity, Collider):
+            return
+
         p1 = e1.get(Position)
         v1 = e1.get(Velocity)
         c1 = e1.get(Collider)
