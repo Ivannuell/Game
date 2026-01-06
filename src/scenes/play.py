@@ -1,11 +1,15 @@
 
+import math
+from EnemyFactory import EnemyFactory, EnemyList
+from entities.Spawn_Patterns.EnemyPatterns import Line_SpawnPattern
 from entities.UI.button import Button
 from entities.playerPart import PlayerPart
+from entities.system_Entities.Spawner import SpawnerEntity
 from entities.system_Entities.camera import CameraEntity
 from entities.obstacle import Obstacle
-from helper import SPRITE_FORWARD_OFFSET, get_Angle
 from scenes.scene import Scene
 
+from systems.SpawnerSystem import SpawnerSystem
 from systems.CameraSystem import CameraSystem
 from systems.AnimationSystem import Playback_AnimationSystem, State_AnimationSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
@@ -56,6 +60,7 @@ class PlayScene(Scene):
             Enemy_AI_ShootingSystem(),
             State_AnimationSystem(),
 
+            SpawnerSystem(self.game),
 
             Enemy_AI_MovementSystem(),
             MovementSystem(),
@@ -81,14 +86,14 @@ class PlayScene(Scene):
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
 
             # DebugCollisionRenderSystem(enabled=True),
-            # HealthDraw(Projectiles=True, Entity=True, Orbit=False),
+            # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
             WorldRenderSystem(self.game)
         ]
 
         self.shipConfig = {
-            "Pos": (100, 100),
+            "Pos": (0, 0),
             "Sprite": "ship",
             "Anim": {
                 "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2)
@@ -124,27 +129,16 @@ class PlayScene(Scene):
         pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
         pause.get(Position).y = 10
                 
-
-
         Base = Obstacle()
+        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 0), 0, 0.5, Base.get(Position)))
+        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(100, 0), 0, 0.5, Base.get(Position)))
+
 
         Ship_main = Player(self.shipConfig)
         Ship_Booster = PlayerPart(self.boosterConfig)
         Ship_Booster.get(Parent).entity = Ship_main
 
-        enemy = Enemy()
-        enemy.get(Position).x = 400
-        enemy.get(Position).y = 100
-        enemy.get(Size).width = 60
-        enemy.get(Size).height = 60
-        enemy.get(Rotation).rad_angle = get_Angle(enemy, Base) - SPRITE_FORWARD_OFFSET
-
-        enemy2 = Enemy()
-        enemy2.get(Position).x = 200
-        enemy2.get(Position).y = 100
-        enemy2.get(Size).width = 60
-        enemy2.get(Size).height = 60
-        enemy2.get(Rotation).rad_angle = get_Angle(enemy2, Base) - SPRITE_FORWARD_OFFSET
+ 
 
 
         self.game.camera.target = Ship_main
@@ -152,8 +146,9 @@ class PlayScene(Scene):
         self.entities.append(Ship_main)
         self.entities.append(Ship_Booster)
         self.entities.append(Base)
-        self.entities.append(enemy)
-        self.entities.append(enemy2)
+
+        self.entities.append(spawn_line)
+        self.entities.append(spawn_line2)
 
         self.entities.append(cam)
         self.entities.append(pause)

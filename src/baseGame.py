@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
 from Camera import Camera
+from EnemyFactory import EnemyFactory
+from registries.SceneList import SceneList
 if TYPE_CHECKING:
     from screen import Screen
 
@@ -10,8 +12,6 @@ from assetManager import AssetsManager
 from inputManager import InputManager
 from scenes.scene_Manager import SceneManager
 
-from helper import SceneList
-
 
 
 class BaseGame:
@@ -20,7 +20,9 @@ class BaseGame:
         self.clock = pygame.time.Clock()
         self.delta_time = 0
         self.fps = 60
+        
 
+        self.spawner = EnemyFactory(self)
         self.scene_manager: SceneManager = SceneManager(self)
         self.asset_manager: AssetsManager = AssetsManager()
         self.input_manager: InputManager = InputManager()

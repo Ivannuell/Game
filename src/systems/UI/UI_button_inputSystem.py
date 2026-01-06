@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from helper import SceneList
+from registries.SceneList import SceneList
 
 if TYPE_CHECKING:
     from baseGame import BaseGame

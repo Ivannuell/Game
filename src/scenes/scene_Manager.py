@@ -2,7 +2,7 @@ from enum import Enum
 from types import LambdaType
 from typing import TYPE_CHECKING
 
-from helper import SceneList
+from registries.SceneList import SceneList
 from scenes.play import PlayScene
 from scenes.mainMenu import MainMenu
 from scenes.pause import Pause

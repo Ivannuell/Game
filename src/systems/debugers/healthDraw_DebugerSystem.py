@@ -36,8 +36,10 @@ class HealthDraw(System):
                 health = entity.get(Health).health
                 position = entity.get(ViewPosition)
                 faction = entity.get(FactionIdentity).faction
+                world_pos = entity.get(Position)
+                angle = entity.get(Rotation)
 
-                text = font.render(f"Health: {health} \nFaction: {faction}", False, "white")
+                text = font.render(f"Health: {health} \nFaction: {faction} \nPos: {round(world_pos.x, 1), round(world_pos.y, 1)} \n Angle: {angle.rad_angle}", False, "white")
                 textRect = text.get_rect()
 
                 textRect.bottomleft = (position.x + screen.display_surface.get_width() / 2, position.y + screen.display_surface.get_height() / 2 + 200)

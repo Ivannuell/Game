@@ -1,13 +1,14 @@
 
-from spritesheet import Spritesheet
 from typing import TYPE_CHECKING, Type, TypeVar
 from components.components import *
 
-T = TypeVar("T", bound=Component)
 
 if TYPE_CHECKING:
     from baseGame import BaseGame
     from components.components import Component
+T = TypeVar("T", bound=Component)
+
+
 
 class Entity:
     def __init__(self):

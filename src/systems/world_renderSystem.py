@@ -1,5 +1,7 @@
 import math
 from typing import TYPE_CHECKING
+
+from helper import SPRITE_FORWARD_OFFSET
 if TYPE_CHECKING:
     from entities.entity import Entity
     from screen import Screen
@@ -32,6 +34,9 @@ class WorldRenderSystem(System):
         for e in visibles: 
             sprite = e.get(Sprite)
             view = e.get(ViewPosition)
+
+            
+
 
             image = sprite.image
 

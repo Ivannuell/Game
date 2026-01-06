@@ -4,9 +4,11 @@ import pygame
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
     from entities.entity import Entity
     from spritesheet import _Anim
+    from entities.Spawn_Patterns.EnemyPatterns import SpawnPattern
 
 class ComponentRegistry:
     _components = {}
@@ -75,6 +77,10 @@ class Position(Component):
         super().__init__()
         self.x = x
         self.y = y
+
+    def set(self, position: pygame.Vector2):
+        self.x = position.x
+        self.y = position.y
 
 class ViewPosition(Component):
     def __init__(self):
@@ -272,7 +278,7 @@ class EnemyIntent(Component):
         self.move = "LEFT"
         self.shoot = False
 
-
+@ComponentRegistry.register
 class Zoom(Component):
     def __init__(self) -> None:
         super().__init__()
@@ -281,3 +287,10 @@ class Zoom(Component):
         self.min_zoom = 0.5
         self.max_zoom = 3.0
         self.zoom_step = 1.1
+        
+@ComponentRegistry.register
+class EnemySpawner(Component):
+    def __init__(self, pattern) -> None:
+        super().__init__()
+        self.pattern: 'SpawnPattern' = pattern
+

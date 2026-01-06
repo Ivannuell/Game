@@ -43,6 +43,7 @@ class DebugCollisionRenderSystem(System):
                 colliders.append(e)
 
         for e in colliders:
+            pos = e.get(Position)
             viewpos = e.get(ViewPosition)
             col = e.get(Collider)
             screen_center = screen.display_surface.get_rect().center
