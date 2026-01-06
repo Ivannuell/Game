@@ -1,9 +1,10 @@
+from functools import lru_cache
 from typing import TYPE_CHECKING
 
-from registries.AnimationStateList import AnimationStateList
 if TYPE_CHECKING:
     from entities.entity import Entity
 
+from registries.AnimationStateList import AnimationStateList
 from helper import MIN_SPEED
 from systems.system import System
 from components.components import *

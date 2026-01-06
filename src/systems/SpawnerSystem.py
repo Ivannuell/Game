@@ -7,7 +7,7 @@ from pygame import Vector2
 
 from registries.EnemyList import EnemyList
 
-from components.components import EnemySpawner, Position, Rotation
+from components.components import Destroy, EnemySpawner, Position, Rotation
 
 from systems.system import System
 
@@ -38,7 +38,7 @@ class SpawnerSystem(System):
                 entities.append(self.spawnEnemy(event))
 
             if pattern.is_done():
-                entities.remove(entity)
+                entity.add(Destroy)
 
                 
 

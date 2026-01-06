@@ -5,4 +5,5 @@ from entities.entity import Entity
 class Executable(Entity):
     def __init__(self):
         super().__init__()
+        self.alive = True
         self.add(SystemEntity())

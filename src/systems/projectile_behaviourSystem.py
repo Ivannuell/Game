@@ -1,4 +1,5 @@
 
+from entities.bullet import Bullet
 from systems.system import System
 from components.components import *
 
@@ -12,9 +13,15 @@ class ProjectileBehaviourSystem(System):
         super().__init__()
 
     def update(self, entities: list["Entity"], dt):
-        projectiles = []
+        # projectiles = []
 
-        for entity in entities:
-            if entity.has(Projectile):
-                projectiles.append(entity)
+        # for entity in entities:
+        #     if entity.has(Projectile):
+        #         projectiles.append(entity)
+
+        pass
+
+
+    
+        
 

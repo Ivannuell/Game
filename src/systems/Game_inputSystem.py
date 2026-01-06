@@ -1,7 +1,7 @@
 import math
 from typing import TYPE_CHECKING
 
-from helper import clamp_value
+from helper import SPRITE_FORWARD_OFFSET, clamp_value
 
 if TYPE_CHECKING:
     from entities.entity import Entity
@@ -56,10 +56,10 @@ class InputSystem(System):
 
             if pygame.K_a in self.inputManager.keys_down:
                 # movement_intent.move_x -= 1
-                rotation.target_angle -= 0.05
+                rotation.target_angle -= 0.04 + SPRITE_FORWARD_OFFSET
             if pygame.K_d in self.inputManager.keys_down:
                 # movement_intent.move_x += 1
-                rotation.target_angle += 0.05
+                rotation.target_angle += 0.04 + SPRITE_FORWARD_OFFSET
 
             # if pygame.K_s in self.inputManager.keys_down:
             #     movement_intent.move_y += 1

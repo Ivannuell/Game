@@ -35,3 +35,4 @@ class Player(Entity):
         self.add(Health(500))
         self.add(Rotation())
         self.add(ViewPosition())
+

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
 
+from entities.bullet import Bullet
 from systems.system import System
 from components.components import *
 
@@ -11,30 +12,27 @@ class LifetimeSystem(System):
 
 
     def update(self, entities: list['Entity'], dt):
-        bullets: list[Entity] = []
+        bullets: list[Bullet] = []
         collided_bullets: list[Entity] = []
 
         for entity in entities:
             if entity.has(Projectile):
-                bullets.append(entity)
+                bullets.append(entity) #type: ignore
 
         for entity in entities:
             if entity.has(Projectile) and entity.has(CollidedWith):
                 collided_bullets.append(entity)
 
-
         
         for bullet in bullets:
-
-            timeleft = bullet.get(Projectile)
-            timeleft.timeout -= dt
-            if timeleft.timeout <= 0:
-                entities.remove(bullet)
-
+            bullet.get(Projectile).timeout -= dt
+            if bullet.get(Projectile).timeout <= 0:
+                bullet.active = False 
+    
 
         for bullet in collided_bullets:
             others = bullet.get(CollidedWith).entities
 
             for other in others:
                 if bullet.get(FactionIdentity).faction != other.get(FactionIdentity).faction:
-                    entities.remove(bullet)
+                    bullet.active = False #type: ignore     a

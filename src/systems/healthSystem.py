@@ -13,4 +13,4 @@ class HealthSystem(System):
             if entity.has(Health):
                 health = entity.get(Health).health
                 if health <= 0:
-                    entities.remove(entity)    
+                    entity.add(Destroy)

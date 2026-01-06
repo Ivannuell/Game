@@ -29,9 +29,6 @@ class Entity:
         if not component_classes:
             raise ValueError("has() requires at least one component class")
 
-        if not self.components:
-            return False
-
         return all(comp in self.components for comp in component_classes)
 
 

@@ -9,6 +9,7 @@ from entities.system_Entities.camera import CameraEntity
 from entities.obstacle import Obstacle
 from scenes.scene import Scene
 
+from systems.CleanupSystem import CleanupSystem
 from systems.SpawnerSystem import SpawnerSystem
 from systems.CameraSystem import CameraSystem
 from systems.AnimationSystem import Playback_AnimationSystem, State_AnimationSystem
@@ -50,6 +51,7 @@ class PlayScene(Scene):
 
     def on_Create(self):
         self.systems = [
+            
             InputSystem(self.game.input_manager, self.game),
             CameraZoomSystem(self.game.input_manager),
             UI_Pointer_InputSystem(self.game),
@@ -66,11 +68,12 @@ class PlayScene(Scene):
             MovementSystem(),
             ParentFollowSystem(),
 
-            # OrbitSystem(),
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
 
             LifetimeSystem(),
+
+            CleanupSystem(),
 
             CollisionCleanupSystem(),
             CollisionSystem(),
@@ -89,7 +92,7 @@ class PlayScene(Scene):
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
-            WorldRenderSystem(self.game)
+            WorldRenderSystem(self.game),
         ]
 
         self.shipConfig = {

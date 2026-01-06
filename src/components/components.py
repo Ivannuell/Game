@@ -1,4 +1,5 @@
 from enum import Enum
+from functools import lru_cache
 import pygame
 
 
@@ -103,7 +104,7 @@ class OffsetPosition(Component):
 
 @ComponentRegistry.register
 class Velocity(Component):
-    def __init__(self, speed):
+    def __init__(self, speed = 0):
         super().__init__()
         self.x: float = 0
         self.y: float = 0
@@ -136,7 +137,11 @@ class Projectile(Component):
     def __init__(self):
         super().__init__()
         self.faction = ""
-        self.timeout = 1.5
+        self.timeout = 1
+        
+
+    def reset(self):
+        self.timeout = 1
 
 @ComponentRegistry.register
 class CollidedWith(Component):
@@ -234,7 +239,7 @@ class Rotation(Component):
 
 @ComponentRegistry.register
 class FactionIdentity(Component):
-    def __init__(self, faction):
+    def __init__(self, faction = ""):
         super().__init__()
         self.faction = faction
         self.owner: Entity | None = None
@@ -294,3 +299,8 @@ class EnemySpawner(Component):
         super().__init__()
         self.pattern: 'SpawnPattern' = pattern
 
+
+@ComponentRegistry.register
+class Destroy(Component):
+    def __init__(self) -> None:
+        super().__init__()

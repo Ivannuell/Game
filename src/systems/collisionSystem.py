@@ -37,6 +37,10 @@ class CollisionSystem(System):
                 if not dyn.has(CollisionIdentity):
                     continue
 
+                if not dyn.has(FactionIdentity) or not stat.has(FactionIdentity):
+                    continue
+
+
                 if dyn.get(FactionIdentity).faction == stat.get(FactionIdentity).faction:
                     continue
 
@@ -52,6 +56,9 @@ class CollisionSystem(System):
                 e2 = dynamic_colliders[j]
 
                 if not e2.has(CollisionIdentity) or not e1.has(CollisionIdentity):
+                    continue
+
+                if not e2.has(FactionIdentity) or not e1.has(FactionIdentity):
                     continue
 
                 if e1.get(FactionIdentity).faction == e2.get(FactionIdentity).faction:
