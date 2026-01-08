@@ -22,8 +22,7 @@ class Enemy(Entity):
         self.add(Size(48,48,2))
         self.add(Sprite())
         self.add(Collider())
-        # self.add(Solid())
-
+        self.add(CollidedWith())
         self.add(Health(100))
 
         self.add(EnemyIntent())

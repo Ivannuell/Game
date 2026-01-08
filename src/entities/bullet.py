@@ -17,8 +17,7 @@ class Bullet(Entity):
         ))
         self.add(CollisionIdentity(
             layer=[CollisionID.Projectiles],
-            # mask=[CollisionID.Enemies, CollisionID.Obstacles, CollisionID.Players]
-            mask=[]
+            mask=[CollisionID.Enemies, CollisionID.Obstacles, CollisionID.Players] 
 
         ))
         self.add(Size(6,9))
@@ -31,6 +30,7 @@ class Bullet(Entity):
         self.add(FactionIdentity())
         self.add(Rotation())
         self.add(Velocity())
+        self.add(CollidedWith())
 
         self.game = game
         self.init_Entity()
@@ -39,8 +39,9 @@ class Bullet(Entity):
         pos = self.get(Position)
         vel = self.get(Velocity)
         proj = self.get(Projectile)
-        shooter_pos = shooter.get(Position)
         rotation = self.get(Rotation)
+        
+        shooter_pos = shooter.get(Position)
 
         proj.reset()
         angle = shooter.get(Rotation).rad_angle
@@ -55,6 +56,4 @@ class Bullet(Entity):
         vel.x = math.cos(angle) * vel.speed
         vel.y = math.sin(angle) * vel.speed
 
-        speed = math.hypot(vel.x, vel.y)
-        assert abs(speed - vel.speed) < 0.01, f"Bad velocity reset: {speed}"
         self.active = True

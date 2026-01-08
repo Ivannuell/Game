@@ -29,6 +29,8 @@ class Player(Entity):
             mask = [CollisionID.Enemies, CollisionID.Projectiles] 
         ))
 
+        self.add(CollidedWith())
+
         if "Cannon" in config:
             self.add(Cannon(0.3))
 

@@ -14,6 +14,7 @@ class Entity:
     def __init__(self):
         self.game: "BaseGame"
         self.components: "dict[type, Component]" = {}
+        self.__qualname__ = "Entity"
 
     def add(self, component):
         if self.components is None:

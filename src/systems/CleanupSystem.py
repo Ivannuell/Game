@@ -14,10 +14,8 @@ from systems.system import System
 class CleanupSystem(System):
     def __init__(self) -> None:
         super().__init__()
-        print("Cleanup")
 
     def update(self, entities: 'list[Entity]', dt):
-        # entities[:] = [e for e in entities if not e.has(Destroy)]
         new_entities = []
     
         for entity in entities:
@@ -29,7 +27,6 @@ class CleanupSystem(System):
                 new_entities.append(entity)
         
         entities[:] = new_entities
-        print(len(entities))
 
 
 

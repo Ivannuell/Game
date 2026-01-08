@@ -23,17 +23,12 @@ class CollisionSystem(System):
             else:
                 dynamic_colliders.append(e)
 
-
-        print(static_colliders)
-        print(dynamic_colliders)
-
-
-
+            if e.has(CollidedWith):
+                e.get(CollidedWith).entities.clear()
 
 
         for dyn in dynamic_colliders:
             for stat in static_colliders:
-
                 if dyn is stat:
                     continue
 
@@ -42,7 +37,6 @@ class CollisionSystem(System):
 
                 if not dyn.has(FactionIdentity) or not stat.has(FactionIdentity):
                     continue
-
 
                 if dyn.get(FactionIdentity).faction == stat.get(FactionIdentity).faction:
                     continue
@@ -71,9 +65,6 @@ class CollisionSystem(System):
                     if self.rects_collide(e1, e2):
                         self.register_colliders(e1, e2)
                         self.resolve_dynamic_dynamic(e1, e2)
-
-
-
                         
 
     @staticmethod
@@ -96,11 +87,11 @@ class CollisionSystem(System):
 
 
     def register_colliders(self, e1, e2):
-        c1 = e1.add(CollidedWith())
-        c2 = e2.add(CollidedWith())
+        if not e1.has(CollidedWith) and not e2.has(CollidedWith):
+            return
 
-        e1.get(CollidedWith).entities.append(c2)
-        e2.get(CollidedWith).entities.append(c1)
+        e1.get(CollidedWith).entities.append(e2)
+        e2.get(CollidedWith).entities.append(e1)
     
 
     def rects_collide(self, e1, e2):
@@ -177,11 +168,14 @@ class CollisionSystem(System):
                 p2.x -= half_dx
             
             print(f"dynamic Collision: {e1.__qualname__} -> {e2.__qualname__}")
-            v1.x = (v2.x * -1) / 3
-            v2.x = (v1.x * -1) / 3
+            copy_x1 = v1.x
+            copy_x2 = v2.x
 
-            v1.x = clamp_value(v1.x, max(v1.x, v2.x), 100)
-            v2.x = clamp_value(v2.x, max(v1.x, v2.x), 100)
+            v1.x = (copy_x2 * -1) / 3
+            v2.x = (copy_x1 * -1) / 3
+
+            # v1.x = clamp_value(v1.x, max(v1.x, v2.x), 100)
+            # v2.x = clamp_value(v2.x, max(v1.x, v2.x), 100)
         else:
             if r1.centery < r2.centery:
                 p1.y -= half_dy
@@ -191,8 +185,11 @@ class CollisionSystem(System):
                 p2.y -= half_dy
 
             print(f"dynamic Collision {e1.__qualname__} -> {e2.__qualname__}")
-            v1.y = (v2.y * -1) / 3
-            v2.y = (v1.y * -1) / 3
+            copy_y1 = v1.y
+            copy_y2 = v2.y
 
-            v1.y = clamp_value(v1.y, max(v1.y, v2.y), 100)
-            v2.y = clamp_value(v2.y, max(v1.y, v2.y), 100)
+            v1.y = (copy_y2 * -1) / 3
+            v2.y = (copy_y1* -1) / 3
+
+            # v1.y = clamp_value(v1.y, max(v1.y, v2.y), 100)
+            # v2.y = clamp_value(v2.y, max(v1.y, v2.y), 100)

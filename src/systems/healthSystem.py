@@ -8,9 +8,10 @@ if TYPE_CHECKING:
 class HealthSystem(System):
     def __init__(self) -> None:
         super().__init__()
+
     def update(self, entities: list["Entity"], dt):
         for entity in entities:
             if entity.has(Health):
                 health = entity.get(Health).health
                 if health <= 0:
-                    entity.add(Destroy)
+                    entity.add(Destroy())

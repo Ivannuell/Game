@@ -26,5 +26,6 @@ class PlayerPart(Entity):
             layer=[CollisionID.Players],
             mask=[CollisionID.Enemies, CollisionID.Projectiles]
         ))
+        self.add(CollidedWith())
         # self.add(Rotation())
                    

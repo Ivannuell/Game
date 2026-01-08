@@ -17,7 +17,6 @@ class ProjectilePool:
         self.Proj_Pool: list[Bullet] = [Bullet(self.game) for _ in range(100)]
 
     def get(self) -> Bullet | None:
-        print("length = ", len([e for e in self.Proj_Pool if e.active]))
         for b in self.Proj_Pool:
             if not b.active:
                 return b
@@ -47,7 +46,7 @@ class ShootingSystem(System):
 
                     if cooldown.time_left >= cooldown.cooldown:
                         bullet = self.Projectiles.get()
-                        if bullet is None: break
+                        if bullet is None: continue
 
                         bullet.spawn(shooter)
 
@@ -62,7 +61,7 @@ class ShootingSystem(System):
 
                     if cooldown.time_left >= cooldown.cooldown:
                         bullet = self.Projectiles.get()
-                        if bullet is None: break
+                        if bullet is None: continue
                         
                         bullet.spawn(shooter)
 

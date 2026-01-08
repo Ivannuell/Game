@@ -18,7 +18,7 @@ class Obstacle(Entity):
             mask = []
             
         ))
-
+        self.add(CollidedWith())
         self.add(Position(270, 480))
         self.add(Sprite())
         self.add(Size(48,48, 4))
