@@ -18,12 +18,15 @@ class CollisionSystem(System):
         dynamic_colliders = []
 
         for e in entities:
-            is_solid = e.has(Solid)
-
-            if is_solid:
+            if e.has(Collider) and not e.has(Velocity):
                 static_colliders.append(e)
             else:
                 dynamic_colliders.append(e)
+
+
+        print(static_colliders)
+        print(dynamic_colliders)
+
 
 
 

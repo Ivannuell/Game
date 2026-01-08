@@ -13,7 +13,6 @@ class PlayerPart(Entity):
         self.add(OffsetPosition())
         self.add(Size(48, 48))
         self.add(InputControlled())
-        self.add(Solid())
         self.add(Collider())
         self.add(Velocity(config["Vel"]))
         self.add(Sprite())

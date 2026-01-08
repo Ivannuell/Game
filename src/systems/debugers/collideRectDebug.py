@@ -2,12 +2,11 @@ import math
 import pygame
 from components.components import Component
 from entities.entity import Entity
-from helper import SPRITE_FORWARD_OFFSET
 from systems.system import System
 from components.components import *
 
 def draw_forward_debug(surface, position, rotation, length=40, color=(0, 255, 0)):
-    angle = rotation.rad_angle + SPRITE_FORWARD_OFFSET
+    angle = rotation.rad_angle
 
     end = (
         position.x + math.cos(angle) * length,

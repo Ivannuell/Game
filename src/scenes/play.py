@@ -9,7 +9,9 @@ from entities.system_Entities.camera import CameraEntity
 from entities.obstacle import Obstacle
 from scenes.scene import Scene
 
+import screen
 from systems.CleanupSystem import CleanupSystem
+from systems.RotationSystem import RotationSystem
 from systems.SpawnerSystem import SpawnerSystem
 from systems.CameraSystem import CameraSystem
 from systems.AnimationSystem import Playback_AnimationSystem, State_AnimationSystem
@@ -53,6 +55,7 @@ class PlayScene(Scene):
         self.systems = [
             
             InputSystem(self.game.input_manager, self.game),
+            RotationSystem(),
             CameraZoomSystem(self.game.input_manager),
             UI_Pointer_InputSystem(self.game),
             UI_Button_InputSystem(self.game),
@@ -73,10 +76,10 @@ class PlayScene(Scene):
 
             LifetimeSystem(),
 
-            CleanupSystem(),
 
-            CollisionCleanupSystem(),
             CollisionSystem(),
+            CollisionCleanupSystem(),
+            CleanupSystem(),
             
             DamageSystem(),
             HealthSystem(),
@@ -133,9 +136,10 @@ class PlayScene(Scene):
         pause.get(Position).y = 10
                 
         Base = Obstacle()
-        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 0), 0, 0.5, Base.get(Position)))
-        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(100, 0), 0, 0.5, Base.get(Position)))
+        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 0), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(100, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
 
+        
 
         Ship_main = Player(self.shipConfig)
         Ship_Booster = PlayerPart(self.boosterConfig)

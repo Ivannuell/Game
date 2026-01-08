@@ -1,6 +1,6 @@
 
 import math
-from helper import ACCELERATION, FRICTION, MIN_SPEED, SPRITE_FORWARD_OFFSET, clamp_min_speed, clamp_value, move_towards
+from helper import ACCELERATION, move_towards
 from systems.system import System
 from components.components import *
 
@@ -29,8 +29,8 @@ class MovementSystem(System):
             movement_intent = player.get(MovementIntent)
             rotation = player.get(Rotation)
 
-            target_vx = movement_intent.move_x * math.cos(rotation.rad_angle + SPRITE_FORWARD_OFFSET) *  velocity.speed
-            target_vy = movement_intent.move_y * -math.sin(rotation.rad_angle + SPRITE_FORWARD_OFFSET) * velocity.speed
+            target_vx = movement_intent.move_x * math.cos(rotation.rad_angle) *  velocity.speed
+            target_vy = movement_intent.move_y * -math.sin(rotation.rad_angle) * velocity.speed
         
             if movement_intent.move_x != 0:
                 velocity.x = move_towards(velocity.x , target_vx, ACCELERATION * dt)

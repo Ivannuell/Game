@@ -1,10 +1,8 @@
-import math
 from typing import TYPE_CHECKING
 
 from entities.bullet import Bullet
 from entities.enemy import Enemy
 from entities.player import Player
-from helper import SPRITE_FORWARD_OFFSET
 from systems.system import System
 
 from components.components import *
@@ -16,15 +14,14 @@ if TYPE_CHECKING:
 class ProjectilePool:
     def __init__(self, game) -> None:
         self.game = game
-        self.Proj_Pool: list[Bullet] = [Bullet(self.game) for _ in range(50)]
+        self.Proj_Pool: list[Bullet] = [Bullet(self.game) for _ in range(100)]
 
     def get(self) -> Bullet | None:
+        print("length = ", len([e for e in self.Proj_Pool if e.active]))
         for b in self.Proj_Pool:
             if not b.active:
                 return b
         return None
-
-
 
 class ShootingSystem(System):
     def __init__(self, game):
@@ -42,6 +39,7 @@ class ShootingSystem(System):
       
         for shooter in shooters:
             shooter.get(Cannon).time_left += dt
+            
 
             if shooter.get(FactionIdentity).faction == "PLAYER":
                 if shooter.get(FireIntent).fired:
@@ -49,7 +47,8 @@ class ShootingSystem(System):
 
                     if cooldown.time_left >= cooldown.cooldown:
                         bullet = self.Projectiles.get()
-                        if bullet is None: continue
+                        if bullet is None: break
+
                         bullet.spawn(shooter)
 
                         entities.append(bullet)
@@ -63,7 +62,7 @@ class ShootingSystem(System):
 
                     if cooldown.time_left >= cooldown.cooldown:
                         bullet = self.Projectiles.get()
-                        if bullet is None: continue
+                        if bullet is None: break
                         
                         bullet.spawn(shooter)
 

@@ -1,7 +1,7 @@
 import math
 from typing import TYPE_CHECKING
 
-from helper import SPRITE_FORWARD_OFFSET, clamp_value
+from entities.player import Player
 
 if TYPE_CHECKING:
     from entities.entity import Entity
@@ -29,6 +29,7 @@ class InputSystem(System):
             if entity.has(MovementIntent, InputControlled):
                 movers.append(entity)
 
+
             if entity.has(FireIntent, Cannon, InputControlled):
                 shooters.append(entity)
 
@@ -54,25 +55,21 @@ class InputSystem(System):
             movement_intent.move_y = 0
             movement_intent.move_x = 0
 
-            if pygame.K_a in self.inputManager.keys_down:
-                # movement_intent.move_x -= 1
-                rotation.target_angle -= 0.04 + SPRITE_FORWARD_OFFSET
-            if pygame.K_d in self.inputManager.keys_down:
-                # movement_intent.move_x += 1
-                rotation.target_angle += 0.04 + SPRITE_FORWARD_OFFSET
+            # rotation.set_target(rotation.target_angle)
 
-            # if pygame.K_s in self.inputManager.keys_down:
-            #     movement_intent.move_y += 1
-            #     movement_intent.move_x -= 1
+            if pygame.K_a in self.inputManager.keys_down:
+                rotation.target_angle -= (2 * dt)
+            if pygame.K_d in self.inputManager.keys_down:
+                rotation.target_angle += (2 * dt) 
+
+
             if pygame.K_w in self.inputManager.keys_down:
                 movement_intent.move_y -= 1
                 movement_intent.move_x += 1
 
-            rotation.rad_angle += (rotation.target_angle - rotation.rad_angle) * dt * 9
 
-            # if pygame.K_a in self.inputManager.keys_down:
-            #     mover.get(Orbit).radius += 1
-            # if pygame.K_d in self.inputManager.keys_down:
-            #     mover.get(Orbit).radius -= 1
+            # rotation.set_target(rotation.rad_angle)
+
+            # rotation.rad_angle += ((rotation.target_angle) - (rotation.rad_angle)) * (dt * 9)
 
         

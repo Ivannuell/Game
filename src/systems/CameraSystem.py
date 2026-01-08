@@ -19,4 +19,4 @@ class CameraSystem(System):
         self.camera.y = target_pos.y
 
         # Follow rotation for forward orientation
-        self.camera.rotation = target_rot.rad_angle
+        self.camera.rotation = target_rot.rad_angle - SPRITE_FORWARD_OFFSET

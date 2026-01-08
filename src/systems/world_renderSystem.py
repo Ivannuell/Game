@@ -1,11 +1,11 @@
 import math
 from typing import TYPE_CHECKING
 
-from helper import SPRITE_FORWARD_OFFSET
 if TYPE_CHECKING:
     from entities.entity import Entity
     from screen import Screen
 
+from entities.player import Player
 from entities.system_Entities.camera import CameraEntity
 from systems.system import System
 from components.components import *
@@ -41,10 +41,18 @@ class WorldRenderSystem(System):
             image = sprite.image
 
             if e.has(Rotation):
+                rotation =  -math.degrees(e.get(Rotation).rad_angle - SPRITE_FORWARD_OFFSET - self.game.camera.rotation)
+
+                if type(e) is CameraEntity:
+                    rotation += SPRITE_FORWARD_OFFSET
+
+
                 image = pygame.transform.rotate(
                     image,
-                    -math.degrees(e.get(Rotation).rad_angle - self.game.camera.rotation)
+                    rotation
                 )
+                    
+                
 
             image = pygame.transform.scale_by(image, camera.zoom)
             screen_center = screen.display_surface.get_rect().center

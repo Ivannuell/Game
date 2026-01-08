@@ -5,6 +5,8 @@ import pygame
 
 from typing import TYPE_CHECKING
 
+from helper import SPRITE_FORWARD_OFFSET
+
 
 if TYPE_CHECKING:
     from entities.entity import Entity
@@ -235,6 +237,12 @@ class Rotation(Component):
         super().__init__()
         self.rad_angle: float = 0
         self.target_angle: float = 0
+        self.smoothing = 9
+        self.set_target()
+
+    def set_target(self):
+        self.target_angle -= SPRITE_FORWARD_OFFSET
+
 
 
 @ComponentRegistry.register

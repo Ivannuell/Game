@@ -1,7 +1,6 @@
 import math
 from entities.entity import Entity
 from components.components import *
-from helper import SPRITE_FORWARD_OFFSET
 
 
 class Bullet(Entity):
@@ -18,13 +17,14 @@ class Bullet(Entity):
         ))
         self.add(CollisionIdentity(
             layer=[CollisionID.Projectiles],
-            mask=[CollisionID.Enemies, CollisionID.Obstacles, CollisionID.Players]
+            # mask=[CollisionID.Enemies, CollisionID.Obstacles, CollisionID.Players]
+            mask=[]
 
         ))
         self.add(Size(6,9))
         self.add(Sprite())
         self.add(Collider())
-        self.add(Damage(20))
+        self.add(Damage(50))
         self.add(ViewPosition())
         self.add(Position(0, 0))
         self.add(Projectile())
@@ -43,12 +43,12 @@ class Bullet(Entity):
         rotation = self.get(Rotation)
 
         proj.reset()
-        angle = shooter.get(Rotation).rad_angle + SPRITE_FORWARD_OFFSET
+        angle = shooter.get(Rotation).rad_angle
 
         pos.x = shooter_pos.x 
         pos.y = shooter_pos.y
 
-        rotation.rad_angle = angle + SPRITE_FORWARD_OFFSET
+        rotation.rad_angle = angle
         self.get(FactionIdentity).faction = shooter.get(FactionIdentity).faction
 
         vel.speed = 900
@@ -58,16 +58,3 @@ class Bullet(Entity):
         speed = math.hypot(vel.x, vel.y)
         assert abs(speed - vel.speed) < 0.01, f"Bad velocity reset: {speed}"
         self.active = True
-
-    def reset(self):
-        pos = self.get(Position)
-        vel = self.get(Velocity)
-        proj = self.get(Projectile)
-        rotation = self.get(Rotation)
-        # shooter_pos = shooter.get(Position)
-
-        pos.x, pos.y = 0,0
-        vel.x, vel.y = 0,0
-        proj.faction = ""
-        proj.reset()
-        rotation.rad_angle = SPRITE_FORWARD_OFFSET
