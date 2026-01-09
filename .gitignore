@@ -1,1 +1,69 @@
+# =========================
+# Python / Pygame
+# =========================
+
+# Byte-compiled / optimized files
 __pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# =========================
+# Virtual environments
+# =========================
+.venv/
+venv/
+env/
+ENV/
+
+# =========================
+# Distribution / packaging
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# =========================
+# Testing / coverage
+# =========================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# =========================
+# Logs & runtime files
+# =========================
+*.log
+
+# =========================
+# IDE / Editor configs
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Pygame-specific
+# =========================
+
+# Save files / runtime-generated assets
+saves/
+*.sav
+
+# Temporary assets or cache
+cache/
+tmp/
+
+# Optional: ignore exported builds
+exports/
