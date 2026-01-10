@@ -90,7 +90,7 @@ class PlayScene(Scene):
             ButtonDisplaySystem(),
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
 
-            DebugCollisionRenderSystem(enabled=True),
+            # DebugCollisionRenderSystem(enabled=True),
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
@@ -134,7 +134,7 @@ class PlayScene(Scene):
         pause.get(Position).y = 10
                 
         Base = Obstacle()
-        spawn_line = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(200, 0), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
         spawn_line2 = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
         spawn_line3 = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
         spawn_line4 = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)))

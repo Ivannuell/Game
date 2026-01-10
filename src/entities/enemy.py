@@ -7,13 +7,13 @@ class Enemy(Entity):
 
         self.__qualname__ = "Enemy"
 
-        self.add(config["Animation"])
-        self.add(config["Position"])
-        self.add(config["Velocity"])
-        self.add(config["Size"])
-        self.add(config["Collider"])
-        self.add(config["Health"])
-        self.add(config["Cannon"])
+        self.add(Animation(config["Animation"]["animation"], config["Animation"]["spritesheet"]))
+        self.add(Position(config["Position"][0], config["Position"][1]))
+        self.add(Velocity(config["Velocity"]))
+        self.add(Size(config["Size"][0], config["Size"][1], config["Size"][2]))
+        self.add(Collider(config["Collider"][0], config["Collider"][1]))
+        self.add(Health(config["Health"]))
+        self.add(Cannon(config["Cannon"]))
 
         self.add(CollidedWith())
         self.add(Sprite())

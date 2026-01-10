@@ -69,11 +69,10 @@ class Entity:
             
             if sprite.image is None or animation.active_name == "":
                 sprite.image = anim.frames.get_first_image()
-# w
+
             if animation.active_name == "":
                 animation.active_anim = anim.frames
                 animation.active_name = anim.name
-                sprite.image = animation.active_anim.get_frame(0)
 
    
 
