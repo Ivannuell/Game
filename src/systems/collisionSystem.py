@@ -3,16 +3,33 @@ from turtle import Vec2D
 import pygame
 
 from components.components import *
+from spatialGrid import SpatialGrid
 from systems.system import System
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
 
+collision_pairs = {
+    ("PLAYER", "ENEMY"),
+    ("ENEMY", "PLAYER"),
+
+    ("PROJECTILE", "PLAYER"),
+    ("PLAYER", "PROJECTILE"),
+
+    ("PROJECTILE", "ENEMY"),
+    ("ENEMY", "PROJECTILE"),
+
+    ("PROJECTILE", "PLAYERPART"),
+    ("PLAYERPART", "PROJECTILE"),
+}
+
 
 class CollisionSystem(System):
     def __init__(self) -> None:
         super().__init__()
+        self.grid = SpatialGrid(50)
+
         self.rect_cache = {}
 
         self.dyn_rects = []
@@ -24,6 +41,7 @@ class CollisionSystem(System):
         self.dyn_rects = []
         self.stat_rects = []
         self.rect_cache = {}
+        self.grid.clear()
 
         for e in entities:
             if e.has(Collider) and not e.has(Velocity):
@@ -34,24 +52,6 @@ class CollisionSystem(System):
             if e.has(CollidedWith):
                 e.get(CollidedWith).entities.clear()
 
-        # for dyn in dynamic_colliders:
-        #     for stat in static_colliders:
-        #         if dyn is stat:
-        #             continue
-
-        #         if not dyn.has(CollisionIdentity):
-        #             continue
-
-        #         if not dyn.has(FactionIdentity) or not stat.has(FactionIdentity):
-        #             continue
-
-        #         if dyn.get(FactionIdentity).faction == stat.get(FactionIdentity).faction:
-        #             continue
-
-        #         if self.can_collide(dyn, stat):
-        #             if self.rects_collide(dyn, stat):
-        #                 self.register_colliders(dyn, stat)
-        #                 self.resolve_dynamic_static(dyn, stat)
 
         self.dyn_rects = [
             [e,
@@ -62,25 +62,47 @@ class CollisionSystem(System):
              e.get(FactionIdentity).faction]
             for e in dynamic_colliders
             if e.has(Position, Velocity, Collider, CollisionIdentity, FactionIdentity)]
+        
+        for e in self.dyn_rects:
+            pos = e[1]
+            col = e[3]
+            self.grid.insert(e[0], pos, col)
 
-        for i in range(len(self.dyn_rects)):
-            e1, pos1, vel1,  col1, cid1, faction1 = self.dyn_rects[i]
 
-            for j in range(i + 1, len(self.dyn_rects)):
-                e2, pos2, vel2, col2, cid2, faction2 = self.dyn_rects[j]
+        checked = set()
+
+        for e1, pos1, vel1, col1, cid1, faction1 in self.dyn_rects:
+            for other in self.grid.query_neighbors(pos1):
+                if e1 is other:
+                    continue
+
+                pair = tuple(sorted((id(e1), id(other))))
+                if pair in checked:
+                    continue
+                checked.add(pair)
+
+                if not other.has(Position, Velocity, Collider, CollisionIdentity, FactionIdentity):
+                    continue
+
+                pos2 = other.get(Position)
+                vel2 = other.get(Velocity)
+                col2 = other.get(Collider)
+                cid2 = other.get(CollisionIdentity)
+                faction2 = other.get(FactionIdentity).faction
 
                 if faction1 == faction2:
                     continue
 
                 if not self.can_collide(cid1, cid2):
                     continue
- 
-                if not self.is_valid_pair(e1, e2):
+
+                if not self.is_valid_pair(cid1.role, cid2.role):
                     continue
 
-                if self.rects_collide(e1, pos1, col1, e2, pos2, col2):
-                    self.register_colliders(e1, e2)
+                if self.rects_collide(e1, pos1, col1, other, pos2, col2):
+                    self.register_colliders(e1, other)
                     self.resolve_dynamic_dynamic(pos1, vel1, col1, pos2, vel2, col2)
+
 
     @staticmethod
     def can_collide(a, b):
@@ -101,7 +123,7 @@ class CollisionSystem(System):
 
     @staticmethod
     def is_valid_pair(e1, e2):
-        return True
+        return (e1, e2) in collision_pairs
 
     def get_rect(self, e, pos1, col1) -> pygame.Rect:
         if e not in self.rect_cache:

@@ -24,17 +24,12 @@ class LifetimeSystem(System):
                 continue
             if entity.has(Projectile) and len(entity.get(CollidedWith).entities) > 0:
                 collided_bullets.append(entity) #type: ignore
-
-        if len(collided_bullets) > 0: print("Length of collided = ", len(collided_bullets))
-
         
         for bullet in collided_bullets:
             others = bullet.get(CollidedWith).entities
-            print(f"{bullet.__qualname__} hit someting")
 
             for other in others:
                 if bullet.get(FactionIdentity).faction != other.get(FactionIdentity).faction:
-                    print(f"{bullet.__qualname__} hit a {other.__qualname__}")
                     bullet.active = False 
 
 

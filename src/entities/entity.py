@@ -20,6 +20,9 @@ class Entity:
         if self.components is None:
             return
         
+        if self.has(component):
+            self.components.pop(type(component))
+        
         self.components[type(component)] = component
         return self
 

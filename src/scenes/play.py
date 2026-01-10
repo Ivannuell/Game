@@ -124,7 +124,6 @@ class PlayScene(Scene):
 
     def on_Enter(self):
         print("On Game")
-        print((self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2))
         for system in self.systems:
             if type(system) in self.disabledSystems:
                 system.Enabled = False

@@ -20,15 +20,18 @@ class Playback_AnimationSystem(System):
                 animation = entity.get(Animation)
                 anim_state = entity.get(AnimationState)
 
-                anim_state.previous = anim_state.state
-                if anim_state.state == AnimationStateList.IDLE:
-                    animation.active_anim = animation.get_anim(animation.spritesheet + '-idle')
-                elif anim_state.state == AnimationStateList.MOVE:
-                    animation.active_anim = animation.get_anim(animation.spritesheet + '-move')
+                if anim_state.current != anim_state.previous:
+                    if anim_state.current == AnimationStateList.IDLE:
+                        animation.active_anim = animation.get_anim(animation.spritesheet + '-idle')
+                    elif anim_state.current == AnimationStateList.MOVE:
+                        animation.active_anim = animation.get_anim(animation.spritesheet + '-move')
 
+                anim_state.previous = anim_state.current
 
-                sprite.image = animation.active_anim.get_frame(dt)
-                sprite.original = animation.active_anim.get_frame(dt)
+                frame = animation.active_anim.get_frame(dt)
+                sprite.image = frame
+                sprite.original = frame
+
 
 class State_AnimationSystem(System):
     def __init__(self) -> None:
@@ -42,8 +45,13 @@ class State_AnimationSystem(System):
             if entity.has(Parent):
                 parent_m = entity.get(Parent).entity.get(MovementIntent)
                 state = entity.get(AnimationState)
-
+                moving = False
                 if parent_m.move_x != 0 and parent_m.move_y != 0:
-                    state.state = AnimationStateList.MOVE # type: ignore
+                    moving = True
                 else:
-                    state.state = AnimationStateList.IDLE # type: ignore
+                    moving = False
+
+                new_state = AnimationStateList.MOVE if moving else AnimationStateList.IDLE
+                if state.current != new_state:
+                    state.current = new_state #type: ignore
+

@@ -23,6 +23,7 @@ class PlayerPart(Entity):
         self.add(AnimationState())
         self.add(FactionIdentity("PLAYER"))
         self.add(CollisionIdentity(
+            role="PLAYERPART",
             layer=[CollisionID.Players],
             mask=[CollisionID.Enemies, CollisionID.Projectiles]
         ))

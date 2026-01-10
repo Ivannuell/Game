@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ProjectilePool:
     def __init__(self, game) -> None:
         self.game = game
-        self.Proj_Pool: list[Bullet] = [Bullet(self.game) for _ in range(100)]
+        self.Proj_Pool: list[Bullet] = [Bullet(self.game) for _ in range(200)]
 
     def get(self) -> Bullet | None:
         for b in self.Proj_Pool:

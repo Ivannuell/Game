@@ -70,7 +70,7 @@ class Animation(Component):
 class AnimationState(Component):
     def __init__(self):
         super().__init__()
-        self.state = 0
+        self.current = 0
         self.previous = 0
         self.locked = False
 
@@ -187,8 +187,9 @@ class Cannon(Component):
 
 @ComponentRegistry.register
 class CollisionIdentity(Component):
-    def __init__(self, layer: list[CollisionID], mask: list[CollisionID]):
+    def __init__(self, role: str, layer: list[CollisionID], mask: list[CollisionID]):
         super().__init__()
+        self.role = role
         self.layer: list[CollisionID] = layer
         self.mask: list[CollisionID] = mask
 

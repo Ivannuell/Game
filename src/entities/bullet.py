@@ -16,6 +16,7 @@ class Bullet(Entity):
             }
         ))
         self.add(CollisionIdentity(
+            role="PROJECTILE",
             layer=[CollisionID.Projectiles],
             mask=[CollisionID.Enemies, CollisionID.Obstacles, CollisionID.Players] 
 

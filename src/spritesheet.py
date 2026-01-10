@@ -8,7 +8,7 @@ class Spritesheet:
         self.bg = bg
         self.image = self.image.convert_alpha()
 
-    def get_image(self, frame: pygame.rect.Rect, flip=False, scale=1.0):
+    def get_image(self, frame, flip=False, scale=1.0):
         sprite = self.image.subsurface(frame)
 
         if flip:

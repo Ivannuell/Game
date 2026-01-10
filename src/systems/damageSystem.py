@@ -30,7 +30,7 @@ class DamageSystem(System):
                 for damageble in damagables:
                     if damageble == other:
                         if damageble.get(FactionIdentity).faction != damager.get(FactionIdentity).faction:
-                            print(damager.get(FactionIdentity).faction, " -> ", damageble.get(FactionIdentity).faction)
+                            # print(damager.get(FactionIdentity).faction, " -> ", damageble.get(FactionIdentity).faction)
                             damageble.get(Health).health -= damage
 
         

@@ -19,33 +19,22 @@ class WorldRenderSystem(System):
     def render(self, entities, screen):
         visibles = []
         camera: Zoom
-
-
         for e in entities:
             if e.has(Zoom):
                 camera = e.get(Zoom)
 
-            if e.has(Sprite, ViewPosition, Position):
+            if e.has(Sprite, ViewPosition):
                 visibles.append(e)
-                
-
 
 
         for e in visibles: 
-            sprite = e.get(Sprite)
+            image = e.get(Sprite).image
             view = e.get(ViewPosition)
-
-            
-
-
-            image = sprite.image
 
             if e.has(Rotation):
                 rotation =  -math.degrees(e.get(Rotation).rad_angle - SPRITE_FORWARD_OFFSET - self.game.camera.rotation)
-
                 if type(e) is CameraEntity:
                     rotation += SPRITE_FORWARD_OFFSET
-
 
                 image = pygame.transform.rotate(
                     image,

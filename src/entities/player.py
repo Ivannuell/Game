@@ -25,6 +25,7 @@ class Player(Entity):
         self.add(FireIntent())
         self.add(FactionIdentity("PLAYER"))
         self.add(CollisionIdentity(
+            role="PLAYER",
             layer = [CollisionID.Players], 
             mask = [CollisionID.Enemies, CollisionID.Projectiles] 
         ))
