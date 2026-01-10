@@ -1,3 +1,4 @@
+import pygame
 from spritesheet import Spritesheet
 import os
 
@@ -30,6 +31,7 @@ class AssetsManager:
         self.add_asset('ship', Spritesheet(ship))
         self.add_asset('bullet', Spritesheet(bullet))
         self.add_asset('enemy1', Spritesheet(enemy1))
+        self.add_asset('projectile', pygame.image.load(bullet).convert_alpha())
 
     def add_asset(self, asset_key, asset):
         self.assets[asset_key] = asset

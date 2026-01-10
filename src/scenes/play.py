@@ -11,6 +11,7 @@ from scenes.scene import Scene
 
 import screen
 from systems.CleanupSystem import CleanupSystem
+from systems.ProjectileSystem import ProjectileSystem
 from systems.RotationSystem import RotationSystem
 from systems.SpawnerSystem import SpawnerSystem
 from systems.CameraSystem import CameraSystem
@@ -72,11 +73,12 @@ class PlayScene(Scene):
             SpawnerSystem(self.game),
             ParentFollowSystem(),
 
-            ProjectileBehaviourSystem(),
-            ProjectileMovementSystem(),
+            # ProjectileBehaviourSystem(),
+            # ProjectileMovementSystem(),
 
 
-            CollisionSystem(),
+
+            CollisionSystem(self.game),
             DamageSystem(),
             HealthSystem(),
 
@@ -90,15 +92,16 @@ class PlayScene(Scene):
             ButtonDisplaySystem(),
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
 
-            # DebugCollisionRenderSystem(enabled=True),
+            DebugCollisionRenderSystem(enabled=True),
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
+            ProjectileSystem(self.game),
             WorldRenderSystem(self.game),
         ]
 
         self.shipConfig = {
-            "Pos": (0, 0),
+            "Pos": (500, 100),
             "Sprite": "ship",
             "Anim": {
                 "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2)
@@ -134,10 +137,10 @@ class PlayScene(Scene):
         pause.get(Position).y = 10
                 
         Base = Obstacle()
-        spawn_line = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line2 = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line3 = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line4 = SpawnerEntity(Line_SpawnPattern(10, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line3 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line4 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
 
         
 

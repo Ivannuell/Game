@@ -2,7 +2,9 @@ from typing import TYPE_CHECKING
 
 from Camera import Camera
 from EnemyFactory import EnemyFactory
+from entities.projectile_related.projectile import ProjectilePool
 from registries.SceneList import SceneList
+from spatialGrid import SpatialGrid
 if TYPE_CHECKING:
     from screen import Screen
 
@@ -27,6 +29,9 @@ class BaseGame:
         self.asset_manager: AssetsManager = AssetsManager()
         self.input_manager: InputManager = InputManager()
         self.camera = Camera()
+
+        self.grid = SpatialGrid(50)
+        self.proj_pool = ProjectilePool(300)
         
     def set_screen(self, screen: "Screen"):
         if self.screen:

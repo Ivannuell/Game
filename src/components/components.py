@@ -146,6 +146,13 @@ class Projectile(Component):
         self.timeout = 1
 
 @ComponentRegistry.register
+class DamageEvent(Component):
+    def __init__(self, amount=0, source=""):
+        super().__init__()
+        self.amount = amount
+        self.source = source
+
+@ComponentRegistry.register
 class CollidedWith(Component):
     def __init__(self): 
         super().__init__()

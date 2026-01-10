@@ -23,8 +23,8 @@ class SpatialGrid:
                 self.cells.setdefault((cx, cy), []).append(entity)
 
                 
-    def query_neighbors(self, pos):
-        cx, cy = self.cell_coords(pos.x, pos.y)
+    def query_neighbors(self, posx, posy):
+        cx, cy = self.cell_coords(posx, posy)
 
         for dx in (-1, 0, 1):
             for dy in (-1, 0, 1):
