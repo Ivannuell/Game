@@ -43,6 +43,9 @@ class _Anim:
         frame_index = self.get_frame_index(delta_time)
         return self.frames[frame_index]
 
+    def get_first_image(self):
+        return self.frames[0]
+
     def get_frame_index(self, delta_time):
         if len(self.frames) <= 1:
             return 0

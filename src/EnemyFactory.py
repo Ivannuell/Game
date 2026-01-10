@@ -1,4 +1,4 @@
-from components.components import Collider
+from components.components import *
 from entities.enemy import Enemy
 from registries.EnemyList import EnemyList
 
@@ -9,14 +9,25 @@ from registries.EnemyList import EnemyList
 class EnemyFactory:
     def __init__(self, game):
         self.game = game
+        self.EnemyConfig = {
+            "Animation": Animation(
+                spritesheet="enemy1",
+                animation={
+                    "enemy1-idle": Anim([], [(0,0,32,32)], 0, 0.2)
+                }
+            ),
+            "Position": Position(0,0),
+            "Collider": Collider(32,32),
+            "Velocity": Velocity(10),
+            "Cannon": Cannon(0.4),
+            "Size": Size(32,32,1),
+            "Health": Health(100)
+        }
 
     def create(self, enemy: EnemyList) -> Enemy:   
         
         if enemy == EnemyList.Normal:
-            e = Enemy(self.game)
-            e.get(Collider).height = 30
-            e.get(Collider).width = 30
-            
+            e = Enemy(self.EnemyConfig)
             e.game = self.game
             e.init_Entity()
 

@@ -129,10 +129,10 @@ class Size(Component):
 
 @ComponentRegistry.register
 class Collider(Component):
-    def __init__(self):
+    def __init__(self, width=None, height=None):
         super().__init__()
-        self.width: int | None = None
-        self.height: int | None = None
+        self.width: int | None = width
+        self.height: int | None = height
 
 @ComponentRegistry.register
 class Projectile(Component):

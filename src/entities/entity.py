@@ -61,13 +61,17 @@ class Entity:
         scale = self.get(Size)
 
         spritesheet = self.game.asset_manager.get_spritesheet(animation.spritesheet)
+
         for key, anim in animation.anim.items():
             anim.frames = spritesheet.get_animation(anim.frame_coords, anim.frame_duration, scale=scale.scale)
             anim.name = key
             animation.anim_list[anim.name] = anim.frames
-
+            
+            if sprite.image is None or animation.active_name == "":
+                sprite.image = anim.frames.get_first_image()
+# w
             if animation.active_name == "":
-                animation.active_anim = animation.anim_list[anim.name]
+                animation.active_anim = anim.frames
                 animation.active_name = anim.name
                 sprite.image = animation.active_anim.get_frame(0)
 

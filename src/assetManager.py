@@ -17,16 +17,19 @@ class AssetsManager:
             self.assets_dir, 'booster.png')
         
         ship = os.path.join(
-            self.assets_dir, 'Main Ship - Base - Full health.png'
+            self.assets_dir, 'Ship1.png'
         )
         
         bullet = os.path.join(
             self.assets_dir, 'Projectile01.png'
         )
+
+        enemy1 = os.path.join(self.assets_dir, 'fighter1.png')
         
         self.add_asset('booster', Spritesheet(booster))
         self.add_asset('ship', Spritesheet(ship))
         self.add_asset('bullet', Spritesheet(bullet))
+        self.add_asset('enemy1', Spritesheet(enemy1))
 
     def add_asset(self, asset_key, asset):
         self.assets[asset_key] = asset

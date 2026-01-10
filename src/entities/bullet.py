@@ -12,7 +12,7 @@ class Bullet(Entity):
         self.add(Animation(
             spritesheet="bullet",
             animation={
-                "bullet": Anim([], [(0, 0, 6, 9)], 0, 0.2)
+                "bullet-idle": Anim([], [(0, 0, 6, 9)], 0, 0.2)
             }
         ))
         self.add(CollisionIdentity(

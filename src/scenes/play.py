@@ -62,28 +62,26 @@ class PlayScene(Scene):
 
             CommandSystem(self.game),
             ShootingSystem(self.game),
-            Enemy_AI_ShootingSystem(),
             State_AnimationSystem(),
 
-            SpawnerSystem(self.game),
 
+            Enemy_AI_ShootingSystem(),
             Enemy_AI_MovementSystem(),
             MovementSystem(),
+
+            SpawnerSystem(self.game),
             ParentFollowSystem(),
 
             ProjectileBehaviourSystem(),
             ProjectileMovementSystem(),
 
+
             CollisionSystem(),
-            # CollisionCleanupSystem(),
             DamageSystem(),
             HealthSystem(),
 
             LifetimeSystem(),
-            
-
             CleanupSystem(),
-
 
             Playback_AnimationSystem(),
 

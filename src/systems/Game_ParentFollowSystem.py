@@ -11,7 +11,7 @@ class ParentFollowSystem(System):
             if e.has(Parent, OffsetPosition, Position):
                 # print(e)
                 parent = e.get(Parent).entity
-                if not parent.has(Position):
+                if not parent.has(Position, Health):
                     continue
 
                 parent_pos = parent.get(Position)
