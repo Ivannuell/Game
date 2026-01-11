@@ -9,22 +9,6 @@ from registries.EnemyList import EnemyList
 class EnemyFactory:
     def __init__(self, game):
         self.game = game
-        self.EnemyConfig = {
-            "Animation": Animation(
-                spritesheet="enemy1",
-                animation={
-                    "enemy1-idle": Anim([], [(0,0,32,32)], 0, 0.2)
-                }
-            ),
-            "Position": Position(0,0),
-            "Collider": Collider(32,32),
-            "Velocity": Velocity(10),
-            "Cannon": Cannon(0.4),
-            "Size": Size(32,32,1),
-            "Health": Health(100)
-        }
-
-
         self.enemyConfig = {
             "Animation": {                
                 "spritesheet": "enemy1",
@@ -34,7 +18,7 @@ class EnemyFactory:
             },
             "Position": (0,0),
             "Collider": (32,32),
-            "Velocity": (10),
+            "Velocity": (100),
             "Cannon": (0.4),
             "Size": (32,32,1),
             "Health": (100)

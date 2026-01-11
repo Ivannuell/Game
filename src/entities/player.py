@@ -27,7 +27,7 @@ class Player(Entity):
         self.add(CollisionIdentity(
             role="PLAYER",
             layer = [CollisionID.Players], 
-            mask = [CollisionID.Enemies, CollisionID.Projectiles] 
+            mask = [CollisionID.Enemies, CollisionID.Obstacles] 
         ))
 
         self.add(CollidedWith())

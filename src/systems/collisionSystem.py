@@ -22,6 +22,9 @@ collision_pairs = {
 
     ("PROJECTILE", "PLAYERPART"),
     ("PLAYERPART", "PROJECTILE"),
+
+    ("PLAYER", "OBSTACLE"),
+    ("OBSTACLE", "PLAYER")
 }
 
 
@@ -38,8 +41,9 @@ class CollisionSystem(System):
     def update(self, entities: list['Entity'], dt):
         static_colliders = []
         dynamic_colliders = []
-        self.dyn_rects = []
-        self.stat_rects = []
+
+        self.dyn_rects.clear()
+        self.stat_rects.clear()
         self.rect_cache = {}
         self.grid.clear()
 
@@ -52,6 +56,15 @@ class CollisionSystem(System):
             if e.has(CollidedWith):
                 e.get(CollidedWith).entities.clear()
 
+        self.stat_rects = [
+            [e,
+             e.get(Position),
+             e.get(Collider),
+             e.get(CollisionIdentity),
+             e.get(FactionIdentity).faction]
+            for e in static_colliders
+                if e.has(Position, Collider, CollisionIdentity, FactionIdentity)
+        ]
 
         self.dyn_rects = [
             [e,
@@ -63,10 +76,53 @@ class CollisionSystem(System):
             for e in dynamic_colliders
             if e.has(Position, Velocity, Collider, CollisionIdentity, FactionIdentity)]
         
+
+        for e in self.stat_rects:
+            pos = e[1]
+            col = e[2]
+            self.grid.insert(e[0], pos, col)
+
         for e in self.dyn_rects:
             pos = e[1]
             col = e[3]
             self.grid.insert(e[0], pos, col)
+
+        checked = set()
+        
+        for e_dyn, pos_dyn, vel_dyn, col_dyn, cid_dyn, faction_dyn in self.dyn_rects:
+            for e_stat in self.grid.query_neighbors(pos_dyn.x, pos_dyn.y):
+                if e_dyn is e_stat:
+                    continue
+
+                pair = tuple(sorted((id(e_dyn), id(e_stat))))
+                if pair in checked:
+                    continue
+                checked.add(pair)
+
+                pos_stat = e_stat.get(Position)
+                col_stat = e_stat.get(Collider)
+                cid_stat = e_stat.get(CollisionIdentity)
+                faction_stat = e_stat.get(FactionIdentity).faction
+
+                if faction_dyn == faction_stat:
+                    continue
+
+                if not self.can_collide(cid_dyn, cid_stat):
+                    continue
+
+                if not self.is_valid_pair(cid_dyn.role, cid_stat.role):
+                    continue
+
+                if self.rects_collide(e_dyn, pos_dyn, col_dyn, e_stat, pos_stat, col_stat):
+                    self.register_colliders(e_dyn, e_stat)
+                    self.resolve_dynamic_static(
+                        e_dyn, e_stat,
+                        pos_dyn, vel_dyn, col_dyn,
+                        pos_stat, col_stat
+                    )
+                    break
+
+       
 
 
         checked = set()
@@ -101,7 +157,7 @@ class CollisionSystem(System):
 
                 if self.rects_collide(e1, pos1, col1, other, pos2, col2):
                     self.register_colliders(e1, other)
-                    self.resolve_dynamic_dynamic(pos1, vel1, col1, pos2, vel2, col2)
+                    self.resolve_dynamic_dynamic(e1, other, pos1, vel1, col1, pos2, vel2, col2)
 
 
     @staticmethod
@@ -141,37 +197,33 @@ class CollisionSystem(System):
 
         return r1.colliderect(r2)
 
-    def resolve_dynamic_static(self, dyn: 'Entity', stat: 'Entity'):
-        pos = dyn.get(Position)
-        vel = dyn.get(Velocity)
+    def resolve_dynamic_static(self, e1, e2, pos1, vel1, col1, pos2, col2):
+        r1 = self.get_rect(e1, pos1, col1)
+        r2 = self.get_rect(e2, pos2, col2)
 
-        p1 = dyn.get(Position)
-        c1 = dyn.get(Collider)
-        p2 = stat.get(Position)
-        c2 = stat.get(Collider)
+        overlap_x = min(r1.right, r2.right) - max(r1.left, r2.left)
+        overlap_y = min(r1.bottom, r2.bottom) - max(r1.top, r2.top)
 
-        r1 = self.make_rect(p1, c1)
-        r2 = self.make_rect(p2, c2)
+        if overlap_x <= 0 or overlap_y <= 0:
+            return
 
-        dx = min(r1.right - r2.left, r2.right - r1.left)
-        dy = min(r1.bottom - r2.top, r2.bottom - r1.top)
-
-        if dx < dy:
+        if overlap_x < overlap_y:
             if r1.centerx < r2.centerx:
-                pos.x -= dx
+                pos1.x -= overlap_x
             else:
-                pos.x += dx
-            vel.x *= -1
+                pos1.x += overlap_x
+            if vel1.x > 0: vel1.x = 0
         else:
             if r1.centery < r2.centery:
-                pos.y -= dy
+                pos1.y -= overlap_y
             else:
-                pos.y += dy
-            vel.y *= -1
+                pos1.y += overlap_y
+            if vel1.y > 0: vel1.y = 0
 
-    def resolve_dynamic_dynamic(self, p1, v1, c1, p2, v2, c2):
-        r1 = self.make_rect(p1, c1)
-        r2 = self.make_rect(p2, c2)
+
+    def resolve_dynamic_dynamic(self,e1, e2, p1, v1, c1, p2, v2, c2):
+        r1 = self.get_rect(e1, p1, c1)
+        r2 = self.get_rect(e2, p2, c2)
 
         # penetration depths
         dx = min(r1.right - r2.left, r2.right - r1.left)

@@ -67,11 +67,11 @@ class PlayScene(Scene):
 
             Enemy_AI_ShootingSystem(),
             Enemy_AI_MovementSystem(),
+            
+            SpawnerSystem(self.game),
             MovementSystem(),
 
-            SpawnerSystem(self.game),
             ParentFollowSystem(),
-
             CollisionSystem(self.game),
             DamageSystem(),
             HealthSystem(),
@@ -129,22 +129,22 @@ class PlayScene(Scene):
         pause.get(Size).height = 50
         pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
         pause.get(Position).y = 10
-                
-        Base = Obstacle()
-        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line3 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line4 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
 
         
 
+        Base = Obstacle()
+        Base.get(Collider).width = 50
+        Base.get(Collider).height = 50
         Ship_main = Player(self.shipConfig)
         Ship_Booster = PlayerPart(self.boosterConfig)
         Ship_Booster.get(Parent).entity = Ship_main
 
- 
 
-
+                
+        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line3 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line4 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
         self.game.camera.target = Ship_main
 
         self.entities.append(Ship_main)
