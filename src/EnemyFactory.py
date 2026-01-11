@@ -1,5 +1,6 @@
 from components.components import *
 from entities.enemy import Enemy
+from registries.AnimationStateList import AnimationMode
 from registries.EnemyList import EnemyList
 
 
@@ -13,7 +14,7 @@ class EnemyFactory:
             "Animation": {                
                 "spritesheet": "enemy1",
                 "animation": {
-                    "enemy1-idle": Anim([], [(0,0,32,32)], 0, 0.2)
+                    "enemy1-idle": Anim([], [(0,0,32,32)], 0, 0.2, AnimationMode.LOOP)
                 },
             },
             "Position": (0,0),
@@ -27,8 +28,7 @@ class EnemyFactory:
     def create(self, enemy: EnemyList) -> Enemy:   
         
         if enemy == EnemyList.Normal:
-            e = Enemy(self.enemyConfig)
+            e = Enemy(self.enemyConfig, self.game)
             e.game = self.game
-            e.init_Entity()
 
             return e

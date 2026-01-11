@@ -26,12 +26,16 @@ class AssetsManager:
         )
 
         enemy1 = os.path.join(self.assets_dir, 'fighter1.png')
+
+        explosion = os.path.join(self.assets_dir, 'Explosion01-Sheet.png')
+        
         
         self.add_asset('booster', Spritesheet(booster))
         self.add_asset('ship', Spritesheet(ship))
         self.add_asset('bullet', Spritesheet(bullet))
         self.add_asset('enemy1', Spritesheet(enemy1))
         self.add_asset('projectile', pygame.image.load(bullet).convert_alpha())
+        self.add_asset('Explosion1', Spritesheet(explosion))
 
     def add_asset(self, asset_key, asset):
         self.assets[asset_key] = asset

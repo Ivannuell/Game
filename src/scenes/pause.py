@@ -26,15 +26,15 @@ class Pause(Scene):
         ]
     
     def on_Enter(self):
-        resume = Button("RESUME")
+        resume = Button("RESUME", self.game)
         resume.get(Position).x = self.game.screen.display_surface.get_width() / 2 - resume.get(Size).width / 2
         resume.get(Position).y = 100
 
-        exit = Button('EXIT')
+        exit = Button('EXIT', self.game)
         exit.get(Position).x = self.game.screen.display_surface.get_width() / 2 - exit.get(Size).width / 2
         exit.get(Position).y = 250
 
-        restart = Button('RESTART')
+        restart = Button('RESTART', self.game)
         restart.get(Position).x = self.game.screen.display_surface.get_width() / 2 - restart.get(Size).width / 2
         restart.get(Position).y = 400
 

@@ -5,8 +5,8 @@ from components.components import *
 
 
 class Player(Entity):
-    def __init__(self, config):
-        super().__init__()
+    def __init__(self, config, game):
+        super().__init__(game)
 
         self.__qualname__ = "Player"
 
@@ -39,3 +39,4 @@ class Player(Entity):
         self.add(Rotation())
         self.add(ViewPosition())
 
+        self.init_Entity()

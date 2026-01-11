@@ -25,27 +25,27 @@ class UI_Button_InputSystem(System):
                 buttonID = entity.get(Clickable).buttonID
 
                 if buttonID == "PLAY" and pointerState.released:
-                    exe = Executable()
+                    exe = Executable(self.game)
                     exe.add(Command(CommandType.CHANGE_SCENE, SceneList.GAME))
                     entities.append(exe)
 
                 if buttonID == "EXIT" and pointerState.released:
-                    exe = Executable()
+                    exe = Executable(self.game)
                     exe.add(Command(CommandType.EXIT))
                     entities.append(exe)
 
                 if buttonID == "RESUME" and pointerState.released:
-                    exe = Executable()
+                    exe = Executable(self.game)
                     exe.add(Command(CommandType.RESUME))
                     entities.append(exe)
 
                 if buttonID == "RESTART" and pointerState.released:
-                    exe = Executable()
+                    exe = Executable(self.game)
                     exe.add(Command(CommandType.RESTART, SceneList.GAME))
                     entities.append(exe)
 
                 if buttonID == "PAUSE" and pointerState.released:
-                    cmd = Executable()
+                    cmd = Executable(self.game)
                     cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
                     entities.append(cmd)
 

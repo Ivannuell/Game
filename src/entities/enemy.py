@@ -2,8 +2,8 @@ from entities.entity import Entity
 from components.components import *
 
 class Enemy(Entity):
-    def __init__(self, config):
-        super().__init__()
+    def __init__(self, config, game):
+        super().__init__(game)
 
         self.__qualname__ = "Enemy"
 
@@ -29,3 +29,5 @@ class Enemy(Entity):
             layer = [CollisionID.Enemies],
             mask = [CollisionID.Players, CollisionID.Projectiles]
         ))
+
+        self.init_Entity()

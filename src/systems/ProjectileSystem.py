@@ -1,5 +1,6 @@
 import math
 from components.components import *
+from components.intents import Play_CollisionImpact_Event
 from entities.projectile_related.projectile import ProjectilePool
 from systems.system import System
 import pygame
@@ -55,6 +56,8 @@ class ProjectileSystem(System):
             amount=projectile.damage,
             source=projectile.faction
         ))
+
+        target_entity.add(Play_CollisionImpact_Event(projectile.x, projectile.y))
 
     def render(self, entities, screen):
         for e in entities:

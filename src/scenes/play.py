@@ -7,6 +7,7 @@ from entities.playerPart import PlayerPart
 from entities.system_Entities.Spawner import SpawnerEntity
 from entities.system_Entities.camera import CameraEntity
 from entities.obstacle import Obstacle
+from registries.AnimationStateList import AnimationMode
 from scenes.scene import Scene
 
 import screen
@@ -15,7 +16,7 @@ from systems.ProjectileSystem import ProjectileSystem
 from systems.RotationSystem import RotationSystem
 from systems.SpawnerSystem import SpawnerSystem
 from systems.CameraSystem import CameraSystem
-from systems.AnimationSystem import Playback_AnimationSystem, State_AnimationSystem
+from systems.AnimationSystem import EventCleanup_AnimationSystem, Events_AnimationSystem, Playback_AnimationSystem, State_AnimationSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
 from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
@@ -63,6 +64,7 @@ class PlayScene(Scene):
 
             CommandSystem(self.game),
             ShootingSystem(self.game),
+            Events_AnimationSystem(self.game),
             State_AnimationSystem(),
 
             Enemy_AI_ShootingSystem(),
@@ -75,18 +77,19 @@ class PlayScene(Scene):
             CollisionSystem(self.game),
             DamageSystem(),
             HealthSystem(),
+            Playback_AnimationSystem(),
 
             LifetimeSystem(),
             CleanupSystem(),
+            EventCleanup_AnimationSystem(self.game),
 
-            Playback_AnimationSystem(),
 
             CameraSystem(self.game.camera),
 
             ButtonDisplaySystem(),
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
 
-            DebugCollisionRenderSystem(enabled=True),
+            # DebugCollisionRenderSystem(enabled=True),
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
@@ -98,7 +101,7 @@ class PlayScene(Scene):
             "Pos": (500, 100),
             "Sprite": "ship",
             "Anim": {
-                "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2)
+                "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP)
             },
             "col": (48,48),
             "Vel": 420,
@@ -109,8 +112,8 @@ class PlayScene(Scene):
             "Pos": (100, 100),
             "Sprite": "booster",
             "Anim": {
-                "booster-idle": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2),
-                "booster-move": Anim([], [(0,48,48,48), (48,48,48,48), (96,48,48,48), (144,48,48,48)], 0, 0.2)
+                "booster-idle": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2, AnimationMode.LOOP),
+                "booster-move": Anim([], [(0,48,48,48), (48,48,48,48), (96,48,48,48), (144,48,48,48)], 0, 0.2, AnimationMode.LOOP)
             },
             "col": (48,48),
             "Vel": 420
@@ -123,28 +126,27 @@ class PlayScene(Scene):
             if type(system) in self.disabledSystems:
                 system.Enabled = False
 
-        cam = CameraEntity()
-        pause = Button("PAUSE")
+        cam = CameraEntity(self.game)
+        pause = Button("PAUSE", self.game)
         pause.get(Size).width = 50
         pause.get(Size).height = 50
         pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
         pause.get(Position).y = 10
 
-        
-
-        Base = Obstacle()
+        Base = Obstacle(self.game)
         Base.get(Collider).width = 50
         Base.get(Collider).height = 50
-        Ship_main = Player(self.shipConfig)
-        Ship_Booster = PlayerPart(self.boosterConfig)
+
+        Ship_main = Player(self.shipConfig, self.game)
+        Ship_Booster = PlayerPart(self.boosterConfig, self.game)
         Ship_Booster.get(Parent).entity = Ship_main
 
 
                 
-        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line3 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
-        spawn_line4 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)))
+        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
+        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
+        spawn_line3 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
+        spawn_line4 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
         self.game.camera.target = Ship_main
 
         self.entities.append(Ship_main)
@@ -161,10 +163,6 @@ class PlayScene(Scene):
 
         for entity in self.entities:
             entity.game = self.game
-            if entity.has(SystemEntity):
-                continue
-
-            entity.init_Entity()
 
     def on_Pause(self):
         self.disabledSystems = [

@@ -31,11 +31,11 @@ class MainMenu(Scene):
                 system.Enabled = False
 
         
-        button1 = Button('PLAY')
+        button1 = Button('PLAY', self.game)
         button1.get(Position).x = self.game.screen.display_surface.get_width() / 2 - button1.get(Size).width / 2
         button1.get(Position).y = 100
 
-        button2 = Button('EXIT')
+        button2 = Button('EXIT', self.game)
         button2.get(Position).x = self.game.screen.display_surface.get_width() / 2 - button2.get(Size).width / 2
         button2.get(Position).y = 250
 

@@ -5,16 +5,16 @@ from components.components import *
 
 class Bullet(Entity):
     def __init__(self, game):
-        super().__init__()
+        super().__init__(game)
         self.active = False
 
         self.__qualname__ = "Bullet"
-        self.add(Animation(
-            spritesheet="bullet",
-            animation={
-                "bullet-idle": Anim([], [(0, 0, 6, 9)], 0, 0.2)
-            }
-        ))
+        # self.add(Animation(
+        #     spritesheet="bullet",
+        #     animation={
+        #         "bullet-idle": Anim([], [(0, 0, 6, 9)], 0, 0.2)
+        #     }
+        # ))
         self.add(CollisionIdentity(
             role="PROJECTILE",
             layer=[CollisionID.Projectiles],
@@ -33,7 +33,6 @@ class Bullet(Entity):
         self.add(Velocity())
         self.add(CollidedWith())
 
-        self.game = game
         self.init_Entity()
 
     def spawn(self, shooter):

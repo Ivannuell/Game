@@ -11,10 +11,11 @@ T = TypeVar("T", bound=Component)
 
 
 class Entity:
-    def __init__(self):
-        self.game: "BaseGame"
+    def __init__(self, game):
+        self.game: "BaseGame" = game
         self.components: "dict[type, Component]" = {}
         self.__qualname__ = "Entity"
+        
 
     def add(self, component):
         if self.components is None:
@@ -44,33 +45,40 @@ class Entity:
         self._build_Rect()
 
     def _build_Rect(self):
-        if self.has(Collider):
-            col = self.get(Collider)
-            size = self.get(Size)
+        if not self.has(Collider):
+            return
 
-            if col.width is None or col.height is None:
-                col.width = size.width
-                col.height = size.height
+        col = self.get(Collider)
+        size = self.get(Size)
+
+        if col.width is None or col.height is None:
+            col.width = size.width
+            col.height = size.height
 
     def _build_Animation(self):
         if not self.has(Animation):
             return
         
+        if not self.game:
+            return
+
         animation = self.get(Animation)
         sprite = self.get(Sprite)
         scale = self.get(Size)
 
+        
+
         spritesheet = self.game.asset_manager.get_spritesheet(animation.spritesheet)
 
         for key, anim in animation.anim.items():
-            anim.frames = spritesheet.get_animation(anim.frame_coords, anim.frame_duration, scale=scale.scale)
+            anim.frames = spritesheet.get_animation(anim.frame_coords, anim.frame_duration, scale=scale.scale, mode=anim.mode)
             anim.name = key
             animation.anim_list[anim.name] = anim.frames
-            
+
             if sprite.image is None or animation.active_name == "":
                 sprite.image = anim.frames.get_first_image()
 
-            if animation.active_name == "":
+            if animation.active_name is None:
                 animation.active_anim = anim.frames
                 animation.active_name = anim.name
 

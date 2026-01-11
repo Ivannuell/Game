@@ -1,16 +1,16 @@
 from entities.entity import Entity
 from components.components import *
+from registries.AnimationStateList import AnimationMode
 
 class Obstacle(Entity):
-    def __init__(self):
-        super().__init__()
-
+    def __init__(self, game):
+        super().__init__(game)
         self.__qualname__ = "Obstacle"
 
         self.add(Animation(
             spritesheet="ship",
             animation = {
-                "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2)
+                "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP)
             }
         ))
         self.add(CollisionIdentity(
@@ -28,3 +28,5 @@ class Obstacle(Entity):
         self.add(FactionIdentity("Obstacle"))
         self.add(Rotation())
         self.add(ViewPosition())
+
+        self.init_Entity()

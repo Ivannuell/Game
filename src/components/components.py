@@ -6,6 +6,7 @@ import pygame
 from typing import TYPE_CHECKING
 
 from helper import SPRITE_FORWARD_OFFSET
+from registries.AnimationStateList import AnimationStateList
 
 
 if TYPE_CHECKING:
@@ -39,12 +40,13 @@ class CommandType(Enum):
     RESTART = 5
 
 class Anim:
-    def __init__(self, frames, frame_coords, frame_index, frame_duration):
+    def __init__(self, frames, frame_coords, frame_index, frame_duration, mode):
         self.name: str = ''
         self.frames = frames
         self.frame_coords = frame_coords
         self.frame_index = frame_index
         self.frame_duration = frame_duration
+        self.mode = mode
 
 class Component:
     pass
@@ -53,10 +55,10 @@ class Component:
 class Animation(Component):
     def __init__(self, animation, spritesheet):
         super().__init__()
-        self.anim = animation
+        self.anim: dict[str, Anim] = animation
         self.anim_list = {}
         self.spritesheet = spritesheet
-        self.active_anim : _Anim
+        self.active_anim : _Anim | None = None
         self.active_name = ""
         self.active_frame: pygame.surface.Surface
 
@@ -70,8 +72,8 @@ class Animation(Component):
 class AnimationState(Component):
     def __init__(self):
         super().__init__()
-        self.current = 0
-        self.previous = 0
+        self.current: AnimationStateList = 0 # type: ignore
+        self.previous: AnimationStateList | None = None # type: ignore
         self.locked = False
 
 @ComponentRegistry.register

@@ -4,8 +4,8 @@ from components.components import *
 
 
 class PlayerPart(Entity):
-    def __init__(self, config):
-        super().__init__()
+    def __init__(self, config, game):
+        super().__init__(game)
 
         self.add(Position(0, 0))
         self.add(ViewPosition())
@@ -29,4 +29,6 @@ class PlayerPart(Entity):
         ))
         self.add(CollidedWith())
         # self.add(Rotation())
+
+        self.init_Entity()
                    
