@@ -11,6 +11,10 @@ class HealthSystem(System):
 
     def update(self, entities: list["Entity"], dt):
         for entity in entities:
+            if entity.has(Parent):
+                if entity.get(Parent).entity.has(Destroy):
+                    entity.add(Destroy())
+
             if not entity.has(Health):
                 continue
 
@@ -19,11 +23,4 @@ class HealthSystem(System):
                 entity.add(Destroy())
 
 
-
-            if not entity.has(Parent):
-                continue
-
-            p_health = entity.get(Parent).entity.get(Health)
-
-            if p_health.health <= 0:
-                entity.add(Destroy())
+            

@@ -23,20 +23,20 @@ if TYPE_CHECKING:
 #                 return b
 #         return None
 
+
 class ShootingSystem(System):
     def __init__(self, game):
         super().__init__()
         self.game = game
         self.Projectiles = game.proj_pool
 
-
     def update(self, entities: list["Entity"], dt):
         shooters = []
-        
+
         for entity in entities:
             if entity.has(FireIntent, Cannon):
                 shooters.append(entity)
-      
+
         for shooter in shooters:
             shooter.get(Cannon).time_left += dt
 
@@ -45,7 +45,7 @@ class ShootingSystem(System):
                 angle = shooter.get(Rotation).rad_angle
                 speed = 900
                 shooter_faction = shooter.get(FactionIdentity).faction
-                
+
                 if shooter.get(FireIntent).fired:
                     cooldown = shooter.get(Cannon)
 
@@ -76,14 +76,13 @@ class ShootingSystem(System):
                 speed = 900
                 shooter_faction = shooter.get(FactionIdentity).faction
 
-
                 if shooter.get(FireIntent).fired:
                     cooldown = shooter.get(Cannon)
 
                     if cooldown.time_left >= cooldown.cooldown:
                         # bullet = self.Projectiles.get()
                         # if bullet is None: continue
-                        
+
                         # bullet.spawn(shooter)
 
                         # entities.append(bullet)
@@ -93,11 +92,9 @@ class ShootingSystem(System):
                             vx=math.cos(angle) * speed,
                             vy=math.sin(angle) * speed,
                             faction=shooter_faction,
-                            damage=10,
+                            damage=50,
                             max_range=1200
                         )
                         cooldown.time_left = 0
 
                 shooter.get(FireIntent).fired = False
-
-

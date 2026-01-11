@@ -11,26 +11,19 @@ class DamageSystem(System):
         super().__init__()
 
     def update(self, entities: list["Entity"], dt):
-        damagers: list[Entity] = []
         damagables: list[Entity] = []
 
 
         for entity in entities:
-            if entity.has(Health):
+            if entity.has(Health, DamageEvent):
                 damagables.append(entity)
 
-            if entity.has(Damage) and entity.has(CollidedWith):
-                damagers.append(entity)
+        for entity in damagables:
+            source = entity.get(DamageEvent)
 
-        for damager in damagers:
-            others = damager.get(CollidedWith).entities
-            damage = damager.get(Damage).damage
+            if source.source != entity.get(FactionIdentity).faction:
+                entity.get(Health).health -= source.amount
+                entity.remove(DamageEvent)
 
-            for other in others:
-                for damageble in damagables:
-                    if damageble == other:
-                        if damageble.get(FactionIdentity).faction != damager.get(FactionIdentity).faction:
-                            # print(damager.get(FactionIdentity).faction, " -> ", damageble.get(FactionIdentity).faction)
-                            damageble.get(Health).health -= damage
 
         

@@ -16,18 +16,7 @@ class CleanupSystem(System):
         super().__init__()
 
     def update(self, entities: 'list[Entity]', dt):
-        new_entities = []
-    
-        for entity in entities:
-            if entity.has(Projectile):
-                if not entity.active: # type: ignore
-                    continue
-
-            if not entity.has(Destroy):
-                new_entities.append(entity)
-        
-        entities[:] = new_entities
-
+        entities[:] = [e for e in entities if not e.has(Destroy)]
 
 
 
