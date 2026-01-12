@@ -76,7 +76,7 @@ class Entity:
             animation.anim_list[anim.name] = anim.frames
 
             if sprite.image is None or animation.active_name == "":
-                sprite.image = anim.frames.get_first_image()
+                sprite.image = anim.frames.get_first_frame()
 
             if animation.active_name is None:
                 animation.active_anim = anim.frames

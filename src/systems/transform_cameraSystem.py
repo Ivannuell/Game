@@ -1,5 +1,6 @@
 import math
 
+from entities.player import Player
 from components.components import *
 from entities.playerPart import PlayerPart
 from systems.system import System
@@ -22,9 +23,15 @@ class CameraTransformSystem(System):
             pos = e.get(Position)
             view = e.get(ViewPosition)
 
-            # if e is self.camera.target:
+            # if type(e) is Player:
             #     view.x = 0
             #     view.y = 0
+            #     continue
+
+            # if type(e) is PlayerPart:
+            #     view.x = 0
+            #     view.y = 15
+            #     continue
 
             # World → camera space
             dx = pos.x - self.camera.x

@@ -35,7 +35,7 @@ class InputSystem(System):
 
         # TESTING
         if pygame.K_ESCAPE in self.inputManager.keys_down:
-            cmd = Executable()
+            cmd = Executable(self.game)
             cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
             entities.append(cmd)
             self.inputManager.keys_down.remove(pygame.K_ESCAPE)
@@ -52,15 +52,14 @@ class InputSystem(System):
             movement_intent = mover.get(MovementIntent)
             rotation = mover.get(Rotation)
 
-            movement_intent.move_y = 0
-            movement_intent.move_x = 0
-
-            # rotation.set_target(rotation.target_angle)
+            movement_intent.reset()
 
             if pygame.K_a in self.inputManager.keys_down:
                 rotation.target_angle -= (2 * dt)
+                movement_intent.rotate_left = True
             if pygame.K_d in self.inputManager.keys_down:
                 rotation.target_angle += (2 * dt) 
+                movement_intent.rotate_right = True
 
 
             if pygame.K_w in self.inputManager.keys_down:

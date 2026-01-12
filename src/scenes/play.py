@@ -89,7 +89,7 @@ class PlayScene(Scene):
             ButtonDisplaySystem(),
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
 
-            # DebugCollisionRenderSystem(enabled=True),
+            # DebugCollisionRenderSystem(enabled=True),/
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
             
@@ -97,11 +97,13 @@ class PlayScene(Scene):
             WorldRenderSystem(self.game),
         ]
 
-        self.shipConfig = {
+        self.playerConfig = {
             "Pos": (500, 100),
-            "Sprite": "ship",
+            "Sprite": "player",
             "Anim": {
-                "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP)
+                "player-idle": Anim([], [(96,0,48,48)], 0, 0.2, AnimationMode.LOOP),
+                "player-move-left": Anim([], [(96,0,48,48), (48,0,48,48), (0,0,48,48)], 0, 0.1, AnimationMode.NORMAL),
+                "player-move-right": Anim([], [(96,0,48,48), (144,0,48,48), (192,0,48,48)], 0, 0.1, AnimationMode.NORMAL)
             },
             "col": (48,48),
             "Vel": 420,
@@ -137,9 +139,10 @@ class PlayScene(Scene):
         Base.get(Collider).width = 50
         Base.get(Collider).height = 50
 
-        Ship_main = Player(self.shipConfig, self.game)
+        Ship_main = Player(self.playerConfig, self.game)
         Ship_Booster = PlayerPart(self.boosterConfig, self.game)
         Ship_Booster.get(Parent).entity = Ship_main
+        Ship_Booster.get(OffsetPosition).x = -15
 
 
                 
@@ -160,9 +163,6 @@ class PlayScene(Scene):
 
         self.entities.append(cam)
         self.entities.append(pause)
-
-        for entity in self.entities:
-            entity.game = self.game
 
     def on_Pause(self):
         self.disabledSystems = [

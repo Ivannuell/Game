@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from entities.entity import Entity
     from screen import Screen
 
+from entities.playerPart import PlayerPart
 from entities.player import Player
 from entities.system_Entities.camera import CameraEntity
 from systems.system import System
@@ -33,8 +34,8 @@ class WorldRenderSystem(System):
 
             if e.has(Rotation):
                 rotation =  -math.degrees(e.get(Rotation).rad_angle - SPRITE_FORWARD_OFFSET - self.game.camera.rotation)
-                if type(e) is CameraEntity:
-                    rotation += SPRITE_FORWARD_OFFSET
+                if type(e) == PlayerPart:
+                    rotation = 0
 
                 image = pygame.transform.rotate(
                     image,

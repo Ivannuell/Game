@@ -28,7 +28,7 @@ class PlayerPart(Entity):
             mask=[CollisionID.Enemies, CollisionID.Projectiles]
         ))
         self.add(CollidedWith())
-        # self.add(Rotation())
+        self.add(Rotation())
 
         self.init_Entity()
                    

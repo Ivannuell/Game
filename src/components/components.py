@@ -58,7 +58,7 @@ class Animation(Component):
         self.anim: dict[str, Anim] = animation
         self.anim_list = {}
         self.spritesheet = spritesheet
-        self.active_anim : _Anim | None = None
+        self.active_anim : _Anim
         self.active_name = ""
         self.active_frame: pygame.surface.Surface
 
@@ -66,7 +66,7 @@ class Animation(Component):
         try:
             return self.anim_list[anim_name]
         except:
-            return self.active_anim
+            raise Exception('No animation')
         
 @ComponentRegistry.register
 class AnimationState(Component):
@@ -268,10 +268,14 @@ class MovementIntent(Component):
         super().__init__
         self.move_x = 0
         self.move_y = 0
+        self.rotate_left = False
+        self.rotate_right = False
 
     def reset(self):
         self.move_x = 0
         self.move_y = 0
+        self.rotate_left = False
+        self.rotate_right = False
 
 @ComponentRegistry.register   
 class FireIntent(Component):

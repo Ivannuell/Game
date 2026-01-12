@@ -21,7 +21,7 @@ class ParentFollowSystem(System):
                 x = offset.x
                 y = offset.y
 
-                if parent.has(Rotation) and not type(parent) is Player:
+                if parent.has(Rotation):
                     angle = parent.get(Rotation).rad_angle
                     cos_a = math.cos(angle)
                     sin_a = math.sin(angle)
@@ -31,5 +31,5 @@ class ParentFollowSystem(System):
                 else:
                     rx, ry = x, y
 
-                pos.x = parent_pos.x + rx
+                pos.x = parent_pos.x + rx 
                 pos.y = parent_pos.y + ry

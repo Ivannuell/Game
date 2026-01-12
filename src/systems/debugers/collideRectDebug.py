@@ -42,7 +42,6 @@ class DebugCollisionRenderSystem(System):
                 colliders.append(e)
 
         for e in colliders:
-            pos = e.get(Position)
             viewpos = e.get(ViewPosition)
             col = e.get(Collider)
             screen_center = screen.display_surface.get_rect().center
@@ -53,12 +52,15 @@ class DebugCollisionRenderSystem(System):
             if camera.zoom is None:
                 continue
 
-            rect = pygame.Rect(
-                (viewpos.x - col.width / 2) * camera.zoom + screen_center[0],
-                (viewpos.y - col.height / 2) * camera.zoom + screen_center[1] + 200,
-                col.width * camera.zoom,
-                col.height * camera.zoom
-            )
+            image: pygame.Surface = e.get(Sprite).image
+
+            rect = image.get_rect()
+
+            rect.w = col.width * camera.zoom
+            rect.h = col.height * camera.zoom
+            rect.center = (viewpos.x * camera.zoom + screen_center[0], 
+                           viewpos.y * camera.zoom + screen_center[1] + 200)
+                
 
             # red outline
             pygame.draw.rect(
@@ -67,6 +69,7 @@ class DebugCollisionRenderSystem(System):
                 rect,
                 width=1
             )
+
         
 
 

@@ -41,19 +41,26 @@ class _Anim:
         self.frames = frames
         self.frame_duration = frame_duration
         self.animation_duration = self.frame_duration * len(self.frames)
-        self.state_time = 0
+        self.state_time: float = 0
         self.mode = mode
 
     def get_frame(self, delta_time):
         frame_index = self.get_frame_index(delta_time)
         return self.frames[frame_index]
 
-    def get_first_image(self):
+    def get_first_frame(self):
         return self.frames[0]
+    
+    def get_last_frame(self):
+        return self.frames[-1]
+    
+    def reset_time(self):
+        self.state_time = 0.0
 
     def get_frame_index(self, delta_time):
         if len(self.frames) <= 1:
             return 0
+        
 
         # if self.state_time >= self.animation_duration:
         #     self.state_time = 0

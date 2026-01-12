@@ -7,9 +7,9 @@ if TYPE_CHECKING:
 
 from components.intents import AnimationPlayer, Play_CollisionImpact_Event
 from registries.AnimationStateList import AnimationMode, AnimationStateList
-from helper import MIN_SPEED
 from systems.system import System
 from components.components import *
+
 
 class State_AnimationSystem(System):
     def __init__(self) -> None:
@@ -18,10 +18,17 @@ class State_AnimationSystem(System):
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
             if not entity.has(AnimationState, Animation):
-                continue 
-
+                continue
             state = entity.get(AnimationState)
             state.current = AnimationStateList.IDLE
+
+            if entity.has(InputControlled, MovementIntent):
+                intent = entity.get(MovementIntent)
+
+                if intent.rotate_left:
+                    state.current = AnimationStateList.MOVE_LEFT
+                if intent.rotate_right:
+                    state.current = AnimationStateList.MOVE_RIGHT
 
             if entity.has(AnimationPlayer):
                 state = entity.get(AnimationState)
@@ -39,10 +46,7 @@ class State_AnimationSystem(System):
 
                 new_state = AnimationStateList.MOVE if moving else AnimationStateList.IDLE
                 if state.current != new_state:
-                    state.current = new_state #type: ignore
-
-
-            
+                    state.current = new_state  # type: ignore
 
 
 class Playback_AnimationSystem(System):
@@ -55,24 +59,40 @@ class Playback_AnimationSystem(System):
                 sprite = entity.get(Sprite)
                 animation = entity.get(Animation)
                 anim_state = entity.get(AnimationState)
+                move = ""
 
                 if anim_state.current != anim_state.previous:
                     match anim_state.current:
                         case AnimationStateList.IMPACT:
-                            animation.active_anim = animation.get_anim(animation.spritesheet + '-impact')
+                            move = "-impact"
                         case AnimationStateList.IDLE:
-                            animation.active_anim = animation.get_anim(animation.spritesheet + '-idle')
+                            move = "-idle"
                         case AnimationStateList.MOVE:
-                            animation.active_anim = animation.get_anim(animation.spritesheet + '-move')
+                            move = "-move"
+                        case AnimationStateList.MOVE_LEFT:
+                            move = "-move-left"
+                        case AnimationStateList.MOVE_RIGHT:
+                            move = "-move-right"
+                            
+                    # animation.active_anim = animation.get_anim(f"{animation.spritesheet}{move}")
+                    animation.active_anim = animation.get_anim(animation.spritesheet + move)
 
-                anim_state.previous = anim_state.current
+                if anim_state.previous != anim_state.current:
+                    animation.active_anim.reset_time()
 
-                if animation.active_anim is None:
-                    continue
+                if animation.active_anim.mode == AnimationMode.NORMAL:
+                    if animation.active_anim.is_animation_finished():
+                        frame = animation.active_anim.get_last_frame()
+                    else:
+                        frame = animation.active_anim.get_frame(dt)
 
-                frame = animation.active_anim.get_frame(dt)
+                else:
+                    frame = animation.active_anim.get_frame(dt)
+
                 sprite.image = frame
                 sprite.original = frame
+                anim_state.previous = anim_state.current
+
 
 
 class Events_AnimationSystem(System):
@@ -91,7 +111,7 @@ class Events_AnimationSystem(System):
                     "Posy": anim_pos.pos_y,
                     "Spritesheet": 'Explosion1',
                     "Animation": {
-                        "Explosion1-impact": Anim([], [(0,0,32,32), (32,0,32,32), (64,0,32,32), (96,0,32,32), (128,0,32,32)], 0, 0.08, AnimationMode.NORMAL)
+                        "Explosion1-impact": Anim([], [(0, 0, 32, 32), (32, 0, 32, 32), (64, 0, 32, 32), (96, 0, 32, 32), (128, 0, 32, 32)], 0, 0.08, AnimationMode.NORMAL)
                     },
                     "AnimMode": AnimationMode.NORMAL
                 }
@@ -107,7 +127,6 @@ class EventCleanup_AnimationSystem(System):
         super().__init__()
         self.game = game
 
-
     def update(self, entities: 'list[Entity]', dt):
         for e in entities:
             if e.has(Animation, AnimationPlayer):
@@ -118,5 +137,3 @@ class EventCleanup_AnimationSystem(System):
 
                 if anim.active_anim.is_animation_finished():
                     e.add(Destroy())
-            
-                
