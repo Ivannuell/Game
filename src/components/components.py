@@ -59,14 +59,19 @@ class Animation(Component):
         self.anim_list = {}
         self.spritesheet = spritesheet
         self.active_anim : _Anim
+        self.previous_anim: _Anim
         self.active_name = ""
         self.active_frame: pygame.surface.Surface
 
-    def get_anim(self, anim_name):
+    def get_anim(self, anim_action):
         try:
-            return self.anim_list[anim_name]
+            return self.anim_list[anim_action]
         except:
-            raise Exception('No animation')
+            raise Exception(f'No animation {anim_action}')
+        
+    def reset_timers(self):
+        for key, anim in self.anim_list.items():
+            anim.reset_time()
         
 @ComponentRegistry.register
 class AnimationState(Component):

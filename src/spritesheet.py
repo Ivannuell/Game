@@ -46,6 +46,7 @@ class _Anim:
 
     def get_frame(self, delta_time):
         frame_index = self.get_frame_index(delta_time)
+
         return self.frames[frame_index]
 
     def get_first_frame(self):
@@ -53,7 +54,7 @@ class _Anim:
     
     def get_last_frame(self):
         return self.frames[-1]
-    
+
     def reset_time(self):
         self.state_time = 0.0
 
@@ -61,18 +62,16 @@ class _Anim:
         if len(self.frames) <= 1:
             return 0
         
-
-        # if self.state_time >= self.animation_duration:
-        #     self.state_time = 0
-
         self.state_time += delta_time
         frame_number = int(self.state_time/self.frame_duration)
 
         if self.mode == AnimationMode.NORMAL:
-            frame_number = min(len(self.frames) - 1, frame_number)
+            frame_number = min(len(self.frames) - 1, frame_number) 
         elif self.mode == AnimationMode.LOOP:
             frame_number = frame_number % len(self.frames)
+
         return frame_number
+
 
     def is_animation_finished(self):
         frame_number = int(self.state_time/self.frame_duration)

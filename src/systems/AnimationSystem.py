@@ -1,14 +1,23 @@
 from typing import TYPE_CHECKING
 
+from spritesheet import _Anim
 from entities.system_Entities.animationPlayer import AnimationEvent
 
 if TYPE_CHECKING:
     from entities.entity import Entity
 
+from enum import Enum, auto
+
 from components.intents import AnimationPlayer, Play_CollisionImpact_Event
 from registries.AnimationStateList import AnimationMode, AnimationStateList
 from systems.system import System
 from components.components import *
+
+class TransitionPolicy(Enum):
+    IMMEDIATE = auto()   # Can be cut at any time
+    ON_FINISH = auto()   # Must finish first
+    NON_INTERRUPT = auto()  # Cannot be interrupted
+
 
 
 class State_AnimationSystem(System):
@@ -59,26 +68,27 @@ class Playback_AnimationSystem(System):
                 sprite = entity.get(Sprite)
                 animation = entity.get(Animation)
                 anim_state = entity.get(AnimationState)
-                move = ""
+                action = ""
+                # frames:
 
                 if anim_state.current != anim_state.previous:
                     match anim_state.current:
                         case AnimationStateList.IMPACT:
-                            move = "-impact"
+                            action = "-impact"
                         case AnimationStateList.IDLE:
-                            move = "-idle"
+                            action = "-idle"
                         case AnimationStateList.MOVE:
-                            move = "-move"
+                            action = "-move"
                         case AnimationStateList.MOVE_LEFT:
-                            move = "-move-left"
+                            action = "-move-left"
                         case AnimationStateList.MOVE_RIGHT:
-                            move = "-move-right"
-                            
-                    # animation.active_anim = animation.get_anim(f"{animation.spritesheet}{move}")
-                    animation.active_anim = animation.get_anim(animation.spritesheet + move)
+                            action = "-move-right"
 
-                if anim_state.previous != anim_state.current:
+                
+                    animation.active_anim = animation.get_anim(animation.spritesheet + action)
                     animation.active_anim.reset_time()
+
+
 
                 if animation.active_anim.mode == AnimationMode.NORMAL:
                     if animation.active_anim.is_animation_finished():
@@ -88,10 +98,12 @@ class Playback_AnimationSystem(System):
 
                 else:
                     frame = animation.active_anim.get_frame(dt)
+                    
 
                 sprite.image = frame
                 sprite.original = frame
                 anim_state.previous = anim_state.current
+                animation.previous_anim = animation.active_anim
 
 
 
