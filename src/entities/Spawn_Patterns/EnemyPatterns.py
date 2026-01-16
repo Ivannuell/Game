@@ -97,8 +97,14 @@ class Grid_Enemies(SpawnPattern):
                     self.startPos[0] + x * self.spacing, 
                     self.startPos[1] + y * self.spacing
                     )
+
+                dx = self.target.x - self.startPos[0]
+                dy = self.target.y - self.startPos[1]
+
+                enemy.direction = math.atan2(dy, dx)
+
                
-                enemy.direction = math.radians(enemy.position.angle_to(pygame.Vector2(self.target.x, self.target.y))) + SPRITE_FORWARD_OFFSET
+                # enemy.direction = math.radians(enemy.position.angle_to(pygame.Vector2(self.target.x, self.target.y)) + 46)
                 # enemy.direction = 2
                 self.spawned += 1
                 events.append(enemy)

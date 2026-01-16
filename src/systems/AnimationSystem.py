@@ -67,7 +67,7 @@ class Playback_AnimationSystem(System):
                 sprite = entity.get(Sprite)
                 animation = entity.get(Animation)
                 anim_state = entity.get(AnimationState)
-                action = ""
+                action = "-idle"
                 # frames:
 
                 if anim_state.current != anim_state.previous:

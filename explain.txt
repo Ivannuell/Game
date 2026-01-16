@@ -23,7 +23,7 @@ NEXT TODO: ANIMATION
 Currently doing:
     make the player animate when changing directions..
 
-
+Start to implement a autoaiming gun.
 
 
 

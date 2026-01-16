@@ -56,7 +56,7 @@ class ShootingSystem(System):
                             vx=math.cos(angle) * speed,
                             vy=math.sin(angle) * speed,
                             faction=shooter_faction,
-                            damage=50,
+                            damage=100,
                             max_range=1200
                         )
                         cooldown.time_left = 0
@@ -79,7 +79,7 @@ class ShootingSystem(System):
                             vx=math.cos(angle) * speed,
                             vy=math.sin(angle) * speed,
                             faction=shooter_faction,
-                            damage=50,
+                            damage=10,
                             max_range=1200
                         )
                         cooldown.time_left = 0

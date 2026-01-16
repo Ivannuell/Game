@@ -34,3 +34,13 @@ class SpatialGrid:
         cx, cy = self.cell_coords(posx, posy)
 
         return self.cells.get((cx, cy), [])
+
+    def query_range(self, posx, posy, radius):
+        cx, cy = self.cell_coords(posx, posy)
+
+        for dx in range(-radius, radius+1):
+            for dy in range(-radius, radius+1):
+                distance = (dx*dx + dy*dy) ** 0.5
+
+                if distance <= radius:
+                    yield from self.cells.get((cx + dx, cy + dy), [])

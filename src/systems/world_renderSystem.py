@@ -31,6 +31,9 @@ class WorldRenderSystem(System):
             view = e.get(ViewPosition)
 
             if e.has(Rotation):
+                # if e.has(AutoCannon):
+                #     print(e.__class__.__name__, e.get(Rotation))
+
                 rot = e.get(Rotation)
                 image = pygame.transform.rotate(image, rot.visual_deg)
 

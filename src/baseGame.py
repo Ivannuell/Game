@@ -35,8 +35,8 @@ class BaseGame:
         self.profiler = SystemProfiler()
         self.profiler_overlay = DebugOverlaySystem(self.profiler)
 
-        self.grid = SpatialGrid(50)
-        self.proj_pool = ProjectilePool(300)
+        self.collision_grid = SpatialGrid(50)
+        self.proj_pool = ProjectilePool(500)
         
     def set_screen(self, screen: "Screen"):
         if self.screen:

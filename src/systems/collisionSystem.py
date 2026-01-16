@@ -31,8 +31,7 @@ collision_pairs = {
 class CollisionSystem(System):
     def __init__(self, game) -> None:
         super().__init__()
-        self.grid = game.grid
-
+        self.grid = game.collision_grid
         self.rect_cache = {}
 
         self.dyn_rects = []

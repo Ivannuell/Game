@@ -14,7 +14,7 @@ class PlayerPart(Entity):
         self.add(Size(48, 48))
         self.add(InputControlled())
         self.add(Collider())
-        self.add(Velocity(config["Vel"]))
+        self.add(Velocity())
         self.add(Sprite())
         self.add(Animation(
             spritesheet=config["Sprite"],

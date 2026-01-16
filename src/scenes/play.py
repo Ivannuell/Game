@@ -12,6 +12,7 @@ from scenes.scene import Scene
 
 import screen
 from systems.CleanupSystem import CleanupSystem
+from systems.Game_AutoAimingSystem import AutoAimingSystem
 from systems.ProjectileSystem import ProjectileSystem
 from systems.RotationSystem import RotationSystem
 from systems.SpawnerSystem import SpawnerSystem
@@ -63,6 +64,7 @@ class PlayScene(Scene):
 
             CommandSystem(self.game),
             ShootingSystem(self.game),
+            AutoAimingSystem(self.game),
             Events_AnimationSystem(self.game),
             State_AnimationSystem(),
 
@@ -97,7 +99,7 @@ class PlayScene(Scene):
         ]
 
         self.playerConfig = {
-            "Pos": (200, 300),
+            "Pos": (400, 300),
             "Sprite": "player",
             "Anim": {
                 "player-idle": Anim([], [(96,0,48,48)], 0, 0.2, AnimationMode.LOOP),
@@ -117,7 +119,16 @@ class PlayScene(Scene):
                 "booster-move": Anim([], [(0,48,48,48), (48,48,48,48), (96,48,48,48), (144,48,48,48)], 0, 0.2, AnimationMode.LOOP)
             },
             "col": (48,48),
-            "Vel": 420
+        }
+
+        self.cannonConfig = {
+            "Pos": (100, 100),
+            "Sprite": "player_cannon",
+            "Anim": {
+                "player_cannon-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP),
+                "player_cannon-shoot": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48), (144,0,48,48), (198,0,48,48), (240,0,48,48), (288,0,48,48)], 0, 0.1, AnimationMode.LOOP)
+            },
+            "col": (48,48),
         }
         
 
@@ -138,29 +149,33 @@ class PlayScene(Scene):
         Headquarter.get(Collider).width = 50
         Headquarter.get(Collider).height = 50
 
-        Ship_main = Player(self.playerConfig, self.game)
         Ship_Booster = PlayerPart(self.boosterConfig, self.game)
+        Ship_Cannon = PlayerPart(self.cannonConfig, self.game)
+        Ship_main = Player(self.playerConfig, self.game)
+
+
         Ship_Booster.get(Parent).entity = Ship_main
         Ship_Booster.get(OffsetPosition).x = -15
+        Ship_Cannon.get(Parent).entity = Ship_main
+        Ship_Cannon.add(AutoCannon(0.2))
 
         spawn_line = SpawnerEntity(Line_Enemies(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
         spawn_line2 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
         spawn_line3 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
         spawn_line4 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
 
-        gridEnemy = SpawnerEntity(Grid_Enemies((100, 100), (1,1), Headquarter.get(ViewPosition), 32), self.game)
+        gridEnemy = SpawnerEntity(Grid_Enemies((100, 100), (3,3), Headquarter.get(Position), 32), self.game)
+        gridEnemy2 = SpawnerEntity(Grid_Enemies((500, 200), (3,3), Headquarter.get(Position), 32), self.game)
+
         self.game.camera.target = Ship_main
 
         self.entities.append(Ship_main)
         self.entities.append(Ship_Booster)
+        self.entities.append(Ship_Cannon)
         self.entities.append(Headquarter)
 
-        # self.entities.append(spawn_line)
-        # self.entities.append(spawn_line2)
-        # self.entities.append(spawn_line3)
-        # self.entities.append(spawn_line4)
-
         self.entities.append(gridEnemy)
+        self.entities.append(gridEnemy2)
 
         self.entities.append(cam)
         self.entities.append(pause)

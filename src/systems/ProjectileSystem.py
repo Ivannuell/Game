@@ -10,7 +10,7 @@ class ProjectileSystem(System):
     def __init__(self, game):
         super().__init__()
         self.pool = game.proj_pool
-        self.grid = game.grid   # reuse your existing grid
+        self.grid = game.collision_grid   # reuse your existing grid
         self.camera = game.camera
         self.zoom = 1
         self.center =  (game.screen.display_surface.width /2, game.screen.display_surface.height /2 + 500)

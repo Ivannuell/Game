@@ -68,7 +68,9 @@ class Animation(Component):
         try:
             return self.anim_list[anim_action]
         except:
-            raise Exception(f'No animation {anim_action}')
+            # raise Exception(f'No animation {anim_action}')
+            print(f"{anim_action} is not defined")
+            return self.anim_list[f"{self.spritesheet}-idle"]
         
     def reset_timers(self):
         for key, anim in self.anim_list.items():
@@ -198,13 +200,6 @@ class InputControlled(Component):
 class Ship(Component):
     def __init__(self):
         super().__init__()
-
-@ComponentRegistry.register
-class Cannon(Component):
-    def __init__(self, cooldown):
-        super().__init__()
-        self.cooldown = cooldown
-        self.time_left = 0
 
 @ComponentRegistry.register
 class CollisionIdentity(Component):
@@ -340,3 +335,18 @@ class EnemySpawner(Component):
 class Destroy(Component):
     def __init__(self) -> None:
         super().__init__()
+
+
+@ComponentRegistry.register
+class AutoCannon(Component):
+    def __init__(self, cooldown) -> None:
+        super().__init__()
+        self.cooldown = cooldown
+        self.time_left: float = 0
+
+@ComponentRegistry.register
+class Cannon(Component):
+    def __init__(self, cooldown):
+        super().__init__()
+        self.cooldown = cooldown
+        self.time_left: float = 0
