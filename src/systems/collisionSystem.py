@@ -23,8 +23,8 @@ collision_pairs = {
     ("PROJECTILE", "PLAYERPART"),
     ("PLAYERPART", "PROJECTILE"),
 
-    ("PLAYER", "OBSTACLE"),
-    ("OBSTACLE", "PLAYER")
+    ("PLAYER", "BASE"),
+    ("BASE", "PLAYER")
 }
 
 
@@ -87,48 +87,10 @@ class CollisionSystem(System):
             col = e[3]
             self.grid.insert(e[0], pos, col)
 
-        checked = set()
-        
-        for e_dyn, pos_dyn, vel_dyn, col_dyn, cid_dyn, faction_dyn in self.dyn_rects:
-            for e_stat in self.grid.query_neighbors(pos_dyn.x, pos_dyn.y):
-                if e_dyn is e_stat:
-                    continue
-
-                pair = tuple(sorted((id(e_dyn), id(e_stat))))
-                if pair in checked:
-                    continue
-                checked.add(pair)
-
-                pos_stat = e_stat.get(Position)
-                col_stat = e_stat.get(Collider)
-                cid_stat = e_stat.get(CollisionIdentity)
-                faction_stat = e_stat.get(FactionIdentity).faction
-
-                if faction_dyn == faction_stat:
-                    continue
-
-                if not self.can_collide(cid_dyn, cid_stat):
-                    continue
-
-                if not self.is_valid_pair(cid_dyn.role, cid_stat.role):
-                    continue
-
-                if self.rects_collide(e_dyn, pos_dyn, col_dyn, e_stat, pos_stat, col_stat):
-                    self.register_colliders(e_dyn, e_stat)
-                    self.resolve_dynamic_static(
-                        e_dyn, e_stat,
-                        pos_dyn, vel_dyn, col_dyn,
-                        pos_stat, col_stat
-                    )
-                    break
-
-       
-
-
-        checked = set()
+            checked = set()
 
         for e1, pos1, vel1, col1, cid1, faction1 in self.dyn_rects:
-            for other in self.grid.query_neighbors(pos1.x ,pos1.y):
+            for other in self.grid.query_neighbors(pos1.x, pos1.y):
                 if e1 is other:
                     continue
 
@@ -137,11 +99,10 @@ class CollisionSystem(System):
                     continue
                 checked.add(pair)
 
-                if not other.has(Position, Velocity, Collider, CollisionIdentity, FactionIdentity):
+                if not other.has(Position, Collider, CollisionIdentity, FactionIdentity):
                     continue
 
                 pos2 = other.get(Position)
-                vel2 = other.get(Velocity)
                 col2 = other.get(Collider)
                 cid2 = other.get(CollisionIdentity)
                 faction2 = other.get(FactionIdentity).faction
@@ -155,9 +116,25 @@ class CollisionSystem(System):
                 if not self.is_valid_pair(cid1.role, cid2.role):
                     continue
 
-                if self.rects_collide(e1, pos1, col1, other, pos2, col2):
-                    self.register_colliders(e1, other)
-                    self.resolve_dynamic_dynamic(e1, other, pos1, vel1, col1, pos2, vel2, col2)
+                if not self.rects_collide(e1, pos1, col1, other, pos2, col2):
+                    continue
+
+                # --- RESOLUTION DECISION ---
+                if other.has(Velocity):
+                    vel2 = other.get(Velocity)
+                    self.resolve_dynamic_dynamic(
+                        e1, other,
+                        pos1, vel1, col1,
+                        pos2, vel2, col2
+                    )
+                else:
+                    self.resolve_dynamic_static(
+                        e1, other,
+                        pos1, vel1, col1,
+                        pos2, col2
+                    )
+
+                self.register_colliders(e1, other)
 
 
     @staticmethod
@@ -169,6 +146,7 @@ class CollisionSystem(System):
         )
 
     @staticmethod
+    # @lru_cache
     def make_rect(pos, collider):
         return pygame.Rect(
             pos.x - collider.width / 2,

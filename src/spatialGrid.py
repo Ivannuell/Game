@@ -29,3 +29,8 @@ class SpatialGrid:
         for dx in (-1, 0, 1):
             for dy in (-1, 0, 1):
                 yield from self.cells.get((cx + dx, cy + dy), [])
+    
+    def query_point(self, posx, posy):
+        cx, cy = self.cell_coords(posx, posy)
+
+        return self.cells.get((cx, cy), [])

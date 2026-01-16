@@ -50,20 +50,13 @@ class ShootingSystem(System):
                     cooldown = shooter.get(Cannon)
 
                     if cooldown.time_left >= cooldown.cooldown:
-                        # bullet = self.Projectiles.get()
-                        # if bullet is None: continue
-
-                        # bullet.spawn(shooter)
-
-                        # entities.append(bullet)
-
                         self.Projectiles.spawn(
                             x=pos.x,
                             y=pos.y,
                             vx=math.cos(angle) * speed,
                             vy=math.sin(angle) * speed,
                             faction=shooter_faction,
-                            damage=10,
+                            damage=50,
                             max_range=1200
                         )
                         cooldown.time_left = 0
@@ -80,12 +73,6 @@ class ShootingSystem(System):
                     cooldown = shooter.get(Cannon)
 
                     if cooldown.time_left >= cooldown.cooldown:
-                        # bullet = self.Projectiles.get()
-                        # if bullet is None: continue
-
-                        # bullet.spawn(shooter)
-
-                        # entities.append(bullet)
                         self.Projectiles.spawn(
                             x=pos.x,
                             y=pos.y,

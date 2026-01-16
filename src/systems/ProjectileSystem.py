@@ -33,7 +33,7 @@ class ProjectileSystem(System):
                 continue
 
             # Collision (narrow target set)
-            for target in self.grid.query_neighbors(p.x, p.y):
+            for target in self.grid.query_point(p.x, p.y):
                 if target.get(FactionIdentity).faction == p.faction:
                     continue
 
@@ -65,10 +65,10 @@ class ProjectileSystem(System):
                 self.zoom = e.get(Zoom).zoom
                 break
 
-        zoomed_sprite = pygame.transform.scale_by(self.sprite, self.zoom)
 
         cos_r = math.cos(-self.camera.rotation)
         sin_r = math.sin(-self.camera.rotation)
+        zoomed_sprite = pygame.transform.scale_by(self.sprite, self.zoom)
 
         hw = self.sprite.get_width() * 0.5
         hh = self.sprite.get_height() * 0.5
@@ -82,7 +82,7 @@ class ProjectileSystem(System):
                 cam_y = dx * sin_r + dy * cos_r
 
                 screen_x = cam_x * self.zoom + self.center[0]
-                screen_y = cam_y * self.zoom + self.center[1] - 300
+                screen_y = cam_y * self.zoom + self.center[1] - 500
 
                 screen.display_surface.blit(zoomed_sprite, (screen_x - hw, screen_y - hh))
 

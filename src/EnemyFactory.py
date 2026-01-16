@@ -4,9 +4,6 @@ from registries.AnimationStateList import AnimationMode
 from registries.EnemyList import EnemyList
 
 
-
-
-
 class EnemyFactory:
     def __init__(self, game):
         self.game = game
@@ -19,7 +16,7 @@ class EnemyFactory:
             },
             "Position": (0,0),
             "Collider": (32,32),
-            "Velocity": (100),
+            "Velocity": (10),
             "Cannon": (0.4),
             "Size": (32,32,1),
             "Health": (100)

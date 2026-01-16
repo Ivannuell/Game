@@ -38,7 +38,7 @@ class SpawnerSystem(System):
                 entities.append(self.spawnEnemy(event))
 
             if pattern.is_done():
-                entity.add(Destroy)
+                entity.add(Destroy())
 
                 
 
@@ -47,9 +47,10 @@ class SpawnerSystem(System):
         enemy = self.game.spawner.create(event.spawn)
 
         enemy_pos = enemy.get(Position)
+        # event.position.x = 300
         enemy_pos.set(event.position)
+        enemy.get(Rotation).rad_angle = event.direction
 
-        if event.direction:
-            enemy.get(Rotation).rad_angle = event.direction
+        # print(enemy.get(Rotation).rad_angle)
 
         return enemy

@@ -24,10 +24,7 @@ Currently doing:
     make the player animate when changing directions..
 
 
-    now trying to figure out how to change animation state using the movementintent system i healthDraw_DebugerSystem
-        Trying to figure out how does movementintent is doing to the players movement in worldspace and screenspace
-        - Making a debugger that will tell the direction where the object is moving
-            - trying to draw the line starting at the object itself.
+
 
 
 in the final game feature add something you now about the 9kings and farming

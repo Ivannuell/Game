@@ -1,5 +1,6 @@
 from enum import Enum
 from functools import lru_cache
+import math
 import pygame
 
 
@@ -170,6 +171,7 @@ class Health(Component):
     def __init__(self, health):
         super().__init__()
         self.health = health
+        self.full_health = health
 
 @ComponentRegistry.register
 class Damage(Component):
@@ -178,7 +180,12 @@ class Damage(Component):
         self.damage = damage
 
 @ComponentRegistry.register
-class Solid(Component):
+class Static(Component):
+    def __init__(self):
+        super().__init__()
+
+@ComponentRegistry.register
+class HeadQuarter(Component):
     def __init__(self):
         super().__init__()
 
@@ -252,8 +259,10 @@ class Rotation(Component):
         super().__init__()
         self.rad_angle: float = 0
         self.target_angle: float = 0
+        self.angular_vel = 0.0  
         self.smoothing = 9
-        self.set_target()
+        self.visual_deg = math.degrees(self.rad_angle)
+        # self.set_target()
 
     def set_target(self):
         self.target_angle -= SPRITE_FORWARD_OFFSET

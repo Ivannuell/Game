@@ -5,6 +5,8 @@ from EnemyFactory import EnemyFactory
 from entities.projectile_related.projectile import ProjectilePool
 from registries.SceneList import SceneList
 from spatialGrid import SpatialGrid
+from systemProfiler import SystemProfiler
+from systemProfiler_overlay import DebugOverlaySystem
 if TYPE_CHECKING:
     from screen import Screen
 
@@ -30,6 +32,9 @@ class BaseGame:
         self.input_manager: InputManager = InputManager()
         self.camera = Camera()
 
+        self.profiler = SystemProfiler()
+        self.profiler_overlay = DebugOverlaySystem(self.profiler)
+
         self.grid = SpatialGrid(50)
         self.proj_pool = ProjectilePool(300)
         
@@ -54,5 +59,8 @@ class BaseGame:
             self.scene_manager.handle_input(pygame.event.get())
             self.scene_manager.update(self.delta_time)
             self.scene_manager.render(self.screen)
+            self.profiler_overlay.update()
+
+            self.profiler_overlay.render(self.screen.display_surface) # type: ignore
 
             if self.screen is not None: self.screen.draw()

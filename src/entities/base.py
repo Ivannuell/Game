@@ -2,10 +2,10 @@ from entities.entity import Entity
 from components.components import *
 from registries.AnimationStateList import AnimationMode
 
-class Obstacle(Entity):
+class Base(Entity):
     def __init__(self, game):
         super().__init__(game)
-        self.__qualname__ = "Obstacle"
+        self.__qualname__ = "Base"
 
         self.add(Animation(
             spritesheet="ship",
@@ -14,7 +14,7 @@ class Obstacle(Entity):
             }
         ))
         self.add(CollisionIdentity(
-            role="OBSTACLE",
+            role="BASE",
             layer = [CollisionID.Obstacles],
             mask = [CollisionID.Players]
             
@@ -24,9 +24,11 @@ class Obstacle(Entity):
         self.add(Sprite())
         self.add(Size(48,48, 4))
         self.add(Collider())
-        self.add(Solid())
-        self.add(FactionIdentity("Obstacle"))
+        self.add(Static())
+        self.add(FactionIdentity("BASE"))
         self.add(Rotation())
         self.add(ViewPosition())
+        self.add(HeadQuarter())
+        self.add(Health(1000))
 
         self.init_Entity()

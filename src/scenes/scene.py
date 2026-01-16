@@ -1,5 +1,6 @@
 
 
+import time
 import pygame
 from abc import abstractmethod, ABC
 
@@ -39,15 +40,25 @@ class Scene(ABC):
 
     def update(self, dt):
         for system in self.systems:
-            if system.Enabled:
-                if hasattr(system, "update"):
-                    system.update(self.entities, dt)
+            if not system.Enabled:
+                continue
+
+            if hasattr(system, "update"):
+                start = time.perf_counter()
+                system.update(self.entities, dt)
+                elapsed = (time.perf_counter() - start) * 1000  # ms
+                self.game.profiler.record(system.__class__.__name__, elapsed)
 
     def render(self, screen):
         for system in self.systems:
-            if system.Enabled:
-                if hasattr(system, "render"):
-                    system.render(self.entities, screen)
+            if not system.Enabled:
+                continue
+
+            if hasattr(system, "render"):
+                start = time.perf_counter()
+                system.render(self.entities, screen)
+                elapsed = (time.perf_counter() - start) * 1000  # ms
+                self.game.profiler.record(system.__class__.__name__, elapsed)
 
     @property
     def blocks_input(self) -> bool:

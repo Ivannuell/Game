@@ -6,8 +6,6 @@ if TYPE_CHECKING:
     from screen import Screen
 
 from entities.playerPart import PlayerPart
-from entities.player import Player
-from entities.system_Entities.camera import CameraEntity
 from systems.system import System
 from components.components import *
 
@@ -17,7 +15,7 @@ class WorldRenderSystem(System):
         super().__init__()
         self.game = game
 
-    def render(self, entities, screen):
+    def render(self, entities: 'list[Entity]', screen):
         visibles = []
         camera: Zoom
         for e in entities:
@@ -33,24 +31,17 @@ class WorldRenderSystem(System):
             view = e.get(ViewPosition)
 
             if e.has(Rotation):
-                rotation =  -math.degrees(e.get(Rotation).rad_angle - SPRITE_FORWARD_OFFSET - self.game.camera.rotation)
-                if type(e) == PlayerPart:
-                    rotation = 0
-
-                image = pygame.transform.rotate(
-                    image,
-                    rotation
-                )
-                    
-                
+                rot = e.get(Rotation)
+                image = pygame.transform.rotate(image, rot.visual_deg)
 
             image = pygame.transform.scale_by(image, camera.zoom)
             screen_center = screen.display_surface.get_rect().center
 
             screen_x = view.x * camera.zoom + screen_center[0]
-            screen_y = view.y * camera.zoom + screen_center[1] + 200
+            screen_y = view.y * camera.zoom + screen_center[1]
 
             rect = image.get_rect(center=(screen_x, screen_y))
             screen.display_surface.blit(image, rect)
+
 
 

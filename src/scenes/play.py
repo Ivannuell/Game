@@ -1,12 +1,12 @@
 
 import math
 from EnemyFactory import EnemyFactory, EnemyList
-from entities.Spawn_Patterns.EnemyPatterns import Line_SpawnPattern
+from entities.Spawn_Patterns.EnemyPatterns import Grid_Enemies, Line_Enemies
 from entities.UI.button import Button
 from entities.playerPart import PlayerPart
 from entities.system_Entities.Spawner import SpawnerEntity
 from entities.system_Entities.camera import CameraEntity
-from entities.obstacle import Obstacle
+from entities.base import Base
 from registries.AnimationStateList import AnimationMode
 from scenes.scene import Scene
 
@@ -23,6 +23,7 @@ from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
 from systems.UI.button_displaySystem import ButtonDisplaySystem
 from systems.camera_zoomSystem import CameraZoomSystem
+from systems.healthBar_displaySystem import HealthBar_DisplaySystem
 from systems.world_renderSystem import WorldRenderSystem
 from systems.Game_inputSystem import InputSystem
 from systems.UI.commandSystem import CommandSystem
@@ -55,9 +56,7 @@ class PlayScene(Scene):
 
     def on_Create(self):
         self.systems = [
-            
             InputSystem(self.game.input_manager, self.game),
-            RotationSystem(),
             CameraZoomSystem(self.game.input_manager),
             UI_Pointer_InputSystem(self.game),
             UI_Button_InputSystem(self.game),
@@ -70,7 +69,6 @@ class PlayScene(Scene):
             Enemy_AI_ShootingSystem(),
             Enemy_AI_MovementSystem(),
             
-            SpawnerSystem(self.game),
             MovementSystem(),
 
             ParentFollowSystem(),
@@ -83,22 +81,23 @@ class PlayScene(Scene):
             CleanupSystem(),
             EventCleanup_AnimationSystem(self.game),
 
-
             CameraSystem(self.game.camera),
 
+            SpawnerSystem(self.game),
             ButtonDisplaySystem(),
             CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
 
             # DebugCollisionRenderSystem(enabled=True),/
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self.game),
-            
+            HealthBar_DisplaySystem(self.game),
             ProjectileSystem(self.game),
-            WorldRenderSystem(self.game),
+            RotationSystem(self.game),
+            WorldRenderSystem(self.game), # Uses ViewPosition
         ]
 
         self.playerConfig = {
-            "Pos": (500, 100),
+            "Pos": (200, 300),
             "Sprite": "player",
             "Anim": {
                 "player-idle": Anim([], [(96,0,48,48)], 0, 0.2, AnimationMode.LOOP),
@@ -135,31 +134,33 @@ class PlayScene(Scene):
         pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
         pause.get(Position).y = 10
 
-        Base = Obstacle(self.game)
-        Base.get(Collider).width = 50
-        Base.get(Collider).height = 50
+        Headquarter = Base(self.game)
+        Headquarter.get(Collider).width = 50
+        Headquarter.get(Collider).height = 50
 
         Ship_main = Player(self.playerConfig, self.game)
         Ship_Booster = PlayerPart(self.boosterConfig, self.game)
         Ship_Booster.get(Parent).entity = Ship_main
         Ship_Booster.get(OffsetPosition).x = -15
 
+        spawn_line = SpawnerEntity(Line_Enemies(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
+        spawn_line2 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
+        spawn_line3 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
+        spawn_line4 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
 
-                
-        spawn_line = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
-        spawn_line2 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
-        spawn_line3 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
-        spawn_line4 = SpawnerEntity(Line_SpawnPattern(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Base.get(ViewPosition)), self.game)
+        gridEnemy = SpawnerEntity(Grid_Enemies((100, 100), (1,1), Headquarter.get(ViewPosition), 32), self.game)
         self.game.camera.target = Ship_main
 
         self.entities.append(Ship_main)
         self.entities.append(Ship_Booster)
-        self.entities.append(Base)
+        self.entities.append(Headquarter)
 
-        self.entities.append(spawn_line)
-        self.entities.append(spawn_line2)
-        self.entities.append(spawn_line3)
-        self.entities.append(spawn_line4)
+        # self.entities.append(spawn_line)
+        # self.entities.append(spawn_line2)
+        # self.entities.append(spawn_line3)
+        # self.entities.append(spawn_line4)
+
+        self.entities.append(gridEnemy)
 
         self.entities.append(cam)
         self.entities.append(pause)

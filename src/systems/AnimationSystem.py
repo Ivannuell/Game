@@ -19,7 +19,6 @@ class TransitionPolicy(Enum):
     NON_INTERRUPT = auto()  # Cannot be interrupted
 
 
-
 class State_AnimationSystem(System):
     def __init__(self) -> None:
         super().__init__()

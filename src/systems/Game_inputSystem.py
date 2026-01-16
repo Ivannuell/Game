@@ -2,6 +2,7 @@ import math
 from typing import TYPE_CHECKING
 
 from entities.player import Player
+from helper import ROT_SPEED
 
 if TYPE_CHECKING:
     from entities.entity import Entity
@@ -39,6 +40,9 @@ class InputSystem(System):
             cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
             entities.append(cmd)
             self.inputManager.keys_down.remove(pygame.K_ESCAPE)
+
+        if pygame.K_F3 in self.inputManager.keys_pressed:
+            self.game.profiler_overlay.toggle()
         # --------------
 
         for shooter in shooters:
@@ -55,10 +59,10 @@ class InputSystem(System):
             movement_intent.reset()
 
             if pygame.K_a in self.inputManager.keys_down:
-                rotation.target_angle -= (2 * dt)
+                rotation.angular_vel -= ROT_SPEED
                 movement_intent.rotate_left = True
             if pygame.K_d in self.inputManager.keys_down:
-                rotation.target_angle += (2 * dt) 
+                rotation.angular_vel += ROT_SPEED
                 movement_intent.rotate_right = True
 
 
