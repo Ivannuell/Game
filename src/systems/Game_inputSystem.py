@@ -31,7 +31,7 @@ class InputSystem(System):
                 movers.append(entity)
 
 
-            if entity.has(FireIntent, Cannon, InputControlled):
+            if entity.has(ShootIntent, Cannon, InputControlled):
                 shooters.append(entity)
 
         # TESTING
@@ -45,13 +45,13 @@ class InputSystem(System):
             self.game.profiler_overlay.toggle()
         # --------------
 
-        for shooter in shooters:
-            fire = shooter.get(FireIntent)
+        # for shooter in shooters:
+        #     fire = shooter.get(ShootIntent)
 
-            if pygame.K_SPACE in self.inputManager.keys_down:
-                fire.fired = True
+            # if pygame.K_SPACE in self.inputManager.keys_down:
+            #     fire.fired = True
 
-
+# 
         for mover in movers:
             movement_intent = mover.get(MovementIntent)
             rotation = mover.get(Rotation)

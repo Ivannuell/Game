@@ -27,7 +27,8 @@ class AssetsManager:
 
         enemy1 = os.path.join(self.assets_dir, 'fighter1.png')
         explosion = os.path.join(self.assets_dir, 'Explosion01-Sheet.png')
-        player = os.path.join(self.assets_dir, 'Player01-Sheet.png')
+        # player = os.path.join(self.assets_dir, 'Player01-Sheet.png')
+        player = os.path.join(self.assets_dir, 'Ship1.png')
         player_cannon = os.path.join(self.assets_dir, 'Main Ship - Weapons - Auto Cannon.png')
         
         self.add_asset('booster', Spritesheet(booster))

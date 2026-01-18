@@ -56,6 +56,10 @@ class State_AnimationSystem(System):
                 if state.current != new_state:
                     state.current = new_state  # type: ignore
 
+            if entity.has(ShootIntent):
+                if entity.get(ShootIntent).fired:
+                    state.current = AnimationStateList.SHOOT
+
 
 class Playback_AnimationSystem(System):
     def __init__(self) -> None:
@@ -82,6 +86,8 @@ class Playback_AnimationSystem(System):
                             action = "-move-left"
                         case AnimationStateList.MOVE_RIGHT:
                             action = "-move-right"
+                        case AnimationStateList.SHOOT:
+                            action = "-shoot"
 
                 
                     animation.active_anim = animation.get_anim(animation.spritesheet + action)
@@ -133,7 +139,7 @@ class Events_AnimationSystem(System):
         entities.extend(events)
 
 
-class EventCleanup_AnimationSystem(System):
+class EventCleanerSystem(System):
     def __init__(self, game) -> None:
         super().__init__()
         self.game = game

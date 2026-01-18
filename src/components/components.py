@@ -287,7 +287,7 @@ class MovementIntent(Component):
         self.rotate_right = False
 
 @ComponentRegistry.register   
-class FireIntent(Component):
+class ShootIntent(Component):
     def __init__(self):
         super().__init__
         self.fired = False
@@ -339,10 +339,9 @@ class Destroy(Component):
 
 @ComponentRegistry.register
 class AutoCannon(Component):
-    def __init__(self, cooldown) -> None:
+    def __init__(self, range) -> None:
         super().__init__()
-        self.cooldown = cooldown
-        self.time_left: float = 0
+        self.range = range
 
 @ComponentRegistry.register
 class Cannon(Component):

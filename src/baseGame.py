@@ -26,15 +26,15 @@ class BaseGame:
         self.fps = 60
         
 
-        self.spawner = EnemyFactory(self)
         self.scene_manager: SceneManager = SceneManager(self)
         self.asset_manager: AssetsManager = AssetsManager()
         self.input_manager: InputManager = InputManager()
-        self.camera = Camera()
 
         self.profiler = SystemProfiler()
         self.profiler_overlay = DebugOverlaySystem(self.profiler)
 
+        self.camera = Camera()
+        self.spawner = EnemyFactory(self)
         self.collision_grid = SpatialGrid(50)
         self.proj_pool = ProjectilePool(500)
         

@@ -41,8 +41,8 @@ class Enemy_AI_ShootingSystem(System):
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
-            if entity.has(EnemyIntent, FireIntent, Position):
-                entity.get(FireIntent).fired = True
+            if entity.has(EnemyIntent, ShootIntent, Position):
+                entity.get(ShootIntent).fired = True
 
                 
 

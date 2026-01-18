@@ -19,7 +19,7 @@ class Enemy(Entity):
         self.add(Sprite())
         self.add(EnemyIntent())
         self.add(MovementIntent())
-        self.add(FireIntent())
+        self.add(ShootIntent())
         self.add(Rotation())
         self.add(ViewPosition())
 

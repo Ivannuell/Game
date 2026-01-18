@@ -12,16 +12,16 @@ from components.components import *
 if TYPE_CHECKING:
     from entities.entity import Entity
 
-# class ProjectilePool:
-#     def __init__(self, game) -> None:
-#         self.game = game
-#         self.Proj_Pool: list[Bullet] = [Bullet(self.game) for _ in range(100)]
-
-#     def get(self) -> Bullet | None:
-#         for b in self.Proj_Pool:
-#             if not b.active:
-#                 return b
-#         return None
+"""
+    1. Checks all entities that can Shoot (ShootIntent) and have a Cannon for shooting (Cannon)
+    2. Now iterates through those shooters:
+        2.1 - Checks if shooter have fired a shot
+        2.2 - gets the shooter's Information for firing
+        2.3 - Sets the correct bullet for shooter
+        2.4 - Appended the cannon's timer with delta time
+        2.5 - Spawned the bullet using the shooters information
+        2.5 - Consumed the Shooting intent and reset the cannon's cooldown
+"""
 
 
 class ShootingSystem(System):
@@ -34,54 +34,39 @@ class ShootingSystem(System):
         shooters = []
 
         for entity in entities:
-            if entity.has(FireIntent, Cannon):
+            if entity.has(ShootIntent, Cannon):
                 shooters.append(entity)
 
         for shooter in shooters:
-            shooter.get(Cannon).time_left += dt
+            shoot_intent = shooter.get(ShootIntent)
 
-            if shooter.get(FactionIdentity).faction == "PLAYER":
-                pos = shooter.get(Position)
-                angle = shooter.get(Rotation).rad_angle
-                speed = 900
-                shooter_faction = shooter.get(FactionIdentity).faction
+            if not shoot_intent.fired:
+                continue
 
-                if shooter.get(FireIntent).fired:
-                    cooldown = shooter.get(Cannon)
+            pos = shooter.get(Position)
+            angle = shooter.get(Rotation).rad_angle
+            faction = shooter.get(FactionIdentity).faction
+            cannon = shooter.get(Cannon)
 
-                    if cooldown.time_left >= cooldown.cooldown:
-                        self.Projectiles.spawn(
-                            x=pos.x,
-                            y=pos.y,
-                            vx=math.cos(angle) * speed,
-                            vy=math.sin(angle) * speed,
-                            faction=shooter_faction,
-                            damage=100,
-                            max_range=1200
-                        )
-                        cooldown.time_left = 0
+            speed = 900
+            damage = 10
+            cannon.time_left += dt
 
-                shooter.get(FireIntent).fired = False
+            if faction == "PLAYER":
+                damage = 50
+            elif faction == "ENEMY":
+                damage = 10
 
-            elif shooter.get(FactionIdentity).faction == "ENEMY":
-                pos = shooter.get(Position)
-                angle = shooter.get(Rotation).rad_angle
-                speed = 900
-                shooter_faction = shooter.get(FactionIdentity).faction
+            if cannon.time_left >= cannon.cooldown:
+                self.Projectiles.spawn(
+                    x=pos.x,
+                    y=pos.y,
+                    vx=math.cos(angle) * speed,
+                    vy=math.sin(angle) * speed,
+                    faction=faction,
+                    damage=damage,
+                    max_range=1200
+                )
+                cannon.time_left = 0
 
-                if shooter.get(FireIntent).fired:
-                    cooldown = shooter.get(Cannon)
-
-                    if cooldown.time_left >= cooldown.cooldown:
-                        self.Projectiles.spawn(
-                            x=pos.x,
-                            y=pos.y,
-                            vx=math.cos(angle) * speed,
-                            vy=math.sin(angle) * speed,
-                            faction=shooter_faction,
-                            damage=10,
-                            max_range=1200
-                        )
-                        cooldown.time_left = 0
-
-                shooter.get(FireIntent).fired = False
+            shoot_intent.fired = False

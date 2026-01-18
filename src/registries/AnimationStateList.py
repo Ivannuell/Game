@@ -6,6 +6,7 @@ class AnimationStateList(Enum):
     IMPACT = 2
     MOVE_LEFT = 3
     MOVE_RIGHT = 4
+    SHOOT = 5
 
 class AnimationMode(Enum):
     NORMAL = 0

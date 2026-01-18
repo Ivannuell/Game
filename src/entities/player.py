@@ -22,7 +22,7 @@ class Player(Entity):
         self.add(MovementIntent())
         self.add(Collider())
         self.add(InputControlled())
-        self.add(FireIntent())
+        self.add(ShootIntent())
         self.add(FactionIdentity("PLAYER"))
         self.add(CollisionIdentity(
             role="PLAYER",
@@ -32,8 +32,8 @@ class Player(Entity):
 
         self.add(CollidedWith())
 
-        if "Cannon" in config:
-            self.add(Cannon(0.3))
+        # if "Cannon" in config:
+        #     self.add(Cannon(0.3))
 
         self.add(Health(500))
         self.add(Rotation())

@@ -17,7 +17,7 @@ from systems.ProjectileSystem import ProjectileSystem
 from systems.RotationSystem import RotationSystem
 from systems.SpawnerSystem import SpawnerSystem
 from systems.CameraSystem import CameraSystem
-from systems.AnimationSystem import EventCleanup_AnimationSystem, Events_AnimationSystem, Playback_AnimationSystem, State_AnimationSystem
+from systems.AnimationSystem import EventCleanerSystem, Events_AnimationSystem, Playback_AnimationSystem, State_AnimationSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
 from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
@@ -81,7 +81,7 @@ class PlayScene(Scene):
 
             LifetimeSystem(),
             CleanupSystem(),
-            EventCleanup_AnimationSystem(self.game),
+            EventCleanerSystem(self.game),
 
             CameraSystem(self.game.camera),
 
@@ -102,9 +102,9 @@ class PlayScene(Scene):
             "Pos": (400, 300),
             "Sprite": "player",
             "Anim": {
-                "player-idle": Anim([], [(96,0,48,48)], 0, 0.2, AnimationMode.LOOP),
-                "player-move-left": Anim([], [(96,0,48,48), (48,0,48,48), (0,0,48,48)], 0, 0.1, AnimationMode.NORMAL),
-                "player-move-right": Anim([], [(96,0,48,48), (144,0,48,48), (192,0,48,48)], 0, 0.1, AnimationMode.NORMAL)
+                "player-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP),
+                # "player-move-left": Anim([], [(96,0,48,48), (48,0,48,48), (0,0,48,48)], 0, 0.1, AnimationMode.NORMAL),
+                # "player-move-right": Anim([], [(96,0,48,48), (144,0,48,48), (192,0,48,48)], 0, 0.1, AnimationMode.NORMAL)
             },
             "col": (48,48),
             "Vel": 420,
@@ -126,7 +126,7 @@ class PlayScene(Scene):
             "Sprite": "player_cannon",
             "Anim": {
                 "player_cannon-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP),
-                "player_cannon-shoot": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48), (144,0,48,48), (198,0,48,48), (240,0,48,48), (288,0,48,48)], 0, 0.1, AnimationMode.LOOP)
+                "player_cannon-shoot": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48), (144,0,48,48), (192,0,48,48), (240,0,48,48), (288,0,48,48)], 0, 0.07, AnimationMode.LOOP)
             },
             "col": (48,48),
         }
@@ -149,15 +149,18 @@ class PlayScene(Scene):
         Headquarter.get(Collider).width = 50
         Headquarter.get(Collider).height = 50
 
-        Ship_Booster = PlayerPart(self.boosterConfig, self.game)
-        Ship_Cannon = PlayerPart(self.cannonConfig, self.game)
+        Ship_Cannon = PlayerPart(self.cannonConfig, self.game) 
         Ship_main = Player(self.playerConfig, self.game)
+        Ship_Booster = PlayerPart(self.boosterConfig, self.game)
 
 
         Ship_Booster.get(Parent).entity = Ship_main
-        Ship_Booster.get(OffsetPosition).x = -15
+        # Ship_Booster.get(OffsetPosition).x = -15
         Ship_Cannon.get(Parent).entity = Ship_main
-        Ship_Cannon.add(AutoCannon(0.2))
+        Ship_Cannon.add(Cannon(0.2))
+        Ship_Cannon.add(AutoCannon(7))
+        Ship_Cannon.add(ShootIntent())
+
 
         spawn_line = SpawnerEntity(Line_Enemies(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
         spawn_line2 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
@@ -169,9 +172,9 @@ class PlayScene(Scene):
 
         self.game.camera.target = Ship_main
 
+        self.entities.append(Ship_Cannon)
         self.entities.append(Ship_main)
         self.entities.append(Ship_Booster)
-        self.entities.append(Ship_Cannon)
         self.entities.append(Headquarter)
 
         self.entities.append(gridEnemy)
