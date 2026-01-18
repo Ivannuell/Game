@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 
 class ProjectileBehaviourSystem(System):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, scene) -> None:
+        super().__init__(scene)
 
     def update(self, entities: list["Entity"], dt):
         # projectiles = []

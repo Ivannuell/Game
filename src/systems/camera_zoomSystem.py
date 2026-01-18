@@ -1,25 +1,28 @@
-from decimal import Clamped
-import pygame
+
 from components.components import Zoom
-from entities.entity import Entity
-from helper import clamp_value
+from Utils.helper import clamp_value
+from scenes.scene import Scene
 from systems.system import System
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+    from scenes.scene import Scene
 
 
 class CameraZoomSystem(System):
-    def __init__(self, inputManager) -> None:
-        super().__init__()
-        self.inputManager = inputManager
+    def __init__(self, scene: Scene) -> None:
+        super().__init__(scene)
 
-    def update(self, entities: list[Entity], dt):
+    def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
             if entity.has(Zoom):
                 zoom = entity.get(Zoom)
 
                 # Mouse wheel input is discrete
-                if self.inputManager.wheel_delta > 0:
+                if self.input_manager.wheel_delta > 0:
                     zoom.target_zoom *= zoom.zoom_step
-                elif self.inputManager.wheel_delta < 0:
+                elif self.input_manager.wheel_delta < 0:
                     zoom.target_zoom /= zoom.zoom_step
 
                 # Clamp target zoom
@@ -33,7 +36,7 @@ class CameraZoomSystem(System):
                     zoom.zoom = zoom.target_zoom
 
             # Reset wheel delta after processing
-        self.inputManager.wheel_delta = 0
+        self.input_manager.wheel_delta = 0
 
 
 

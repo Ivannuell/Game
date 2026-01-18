@@ -8,10 +8,9 @@ if TYPE_CHECKING:
 class Preload(Scene):
     def __init__(self, game: 'BaseGame') -> None:
         super().__init__(game)
-        self.game = game
 
     def on_Create(self):
-        self.game.asset_manager.load_assets()
+        self.asset_manager.load_assets()
     
     def on_Enter(self):
         print("On preload")

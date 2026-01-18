@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import math
 
 import pygame
-from helper import SPRITE_FORWARD_OFFSET
+from Utils.helper import SPRITE_FORWARD_OFFSET
 from registries.EnemyList import EnemyList
 from systems.SpawnerSystem import SpawnEvent
 
@@ -11,7 +11,7 @@ class SpawnPattern(ABC):
     def reset(self): pass
 
     @abstractmethod
-    def update(self, dt): pass
+    def update_step(self, dt): pass
 
     @abstractmethod
     def is_done(self) -> bool: pass
@@ -34,7 +34,7 @@ class Line_Enemies(SpawnPattern):
     def reset(self):
         return super().reset()
     
-    def update(self, dt):
+    def update_step(self, dt):
         self.timer += dt
     
     def is_done(self) -> bool:
@@ -83,7 +83,7 @@ class Grid_Enemies(SpawnPattern):
     def reset(self):
         return super().reset()
     
-    def update(self, dt):
+    def update_step(self, dt):
         self.timer += dt
 
     def get_spawn_events(self) -> list:

@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 from scenes.scene import Scene
 
 from components.components import Position, Size
@@ -17,25 +16,23 @@ class MainMenu(Scene):
 
     def on_Create(self):
         self.systems = [
-            UI_Pointer_InputSystem(self.game),
-            UI_Button_InputSystem(self.game),
-            CommandSystem(self.game),
+            UI_Pointer_InputSystem(self),
+            UI_Button_InputSystem(self),
+            CommandSystem(self),
 
-            ButtonDisplaySystem()
+            ButtonDisplaySystem(self)
         ]
     
     def on_Enter(self):
-
         for system in self.systems:
             if type(system) in self.disabledSystems:
                 system.Enabled = False
-
         
-        button1 = Button('PLAY', self.game)
+        button1 = Button(self, 'PLAY')
         button1.get(Position).x = self.game.screen.display_surface.get_width() / 2 - button1.get(Size).width / 2
         button1.get(Position).y = 100
 
-        button2 = Button('EXIT', self.game)
+        button2 = Button(self, 'EXIT')
         button2.get(Position).x = self.game.screen.display_surface.get_width() / 2 - button2.get(Size).width / 2
         button2.get(Position).y = 250
 

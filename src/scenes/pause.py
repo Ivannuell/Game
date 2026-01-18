@@ -18,30 +18,29 @@ class Pause(Scene):
 
     def on_Create(self):
         self.systems = [
-            UI_Pointer_InputSystem(self.game),
-            UI_Button_InputSystem(self.game),
-            CommandSystem(self.game),
+            UI_Pointer_InputSystem(self),
+            UI_Button_InputSystem(self),
+            CommandSystem(self),
 
-            ButtonDisplaySystem()
+            ButtonDisplaySystem(self)
         ]
     
     def on_Enter(self):
-        resume = Button("RESUME", self.game)
+        resume = Button(self, "RESUME")
         resume.get(Position).x = self.game.screen.display_surface.get_width() / 2 - resume.get(Size).width / 2
         resume.get(Position).y = 100
 
-        exit = Button('EXIT', self.game)
+        exit = Button(self, 'EXIT')
         exit.get(Position).x = self.game.screen.display_surface.get_width() / 2 - exit.get(Size).width / 2
         exit.get(Position).y = 250
 
-        restart = Button('RESTART', self.game)
+        restart = Button(self, 'RESTART')
         restart.get(Position).x = self.game.screen.display_surface.get_width() / 2 - restart.get(Size).width / 2
         restart.get(Position).y = 400
 
         self.entities.append(resume)
         self.entities.append(exit)
         self.entities.append(restart)
-
 
     def on_Exit(self):
         self.entities.clear()

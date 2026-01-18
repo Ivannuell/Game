@@ -1,20 +1,21 @@
 
 from typing import TYPE_CHECKING, Type, TypeVar
 from components.components import *
+from scenes.scene import Scene
 
 
 if TYPE_CHECKING:
-    from baseGame import BaseGame
     from components.components import Component
+    from scenes.scene import Scene
 T = TypeVar("T", bound=Component)
 
 
 
 class Entity:
-    def __init__(self, game):
-        self.game: "BaseGame" = game
+    def __init__(self, scene: 'Scene'):
         self.components: "dict[type, Component]" = {}
         self.__qualname__ = "Entity"
+        self.scene: 'Scene' = scene
         
 
     def add(self, component):
@@ -59,16 +60,14 @@ class Entity:
         if not self.has(Animation):
             return
         
-        if not self.game:
+        if not self.scene:
             return
 
         animation = self.get(Animation)
         sprite = self.get(Sprite)
         scale = self.get(Size)
 
-        
-
-        spritesheet = self.game.asset_manager.get_spritesheet(animation.spritesheet)
+        spritesheet = self.scene.game.asset_manager.get_spritesheet(animation.spritesheet)
 
         for key, anim in animation.anim.items():
             anim.frames = spritesheet.get_animation(anim.frame_coords, anim.frame_duration, scale=scale.scale, mode=anim.mode)

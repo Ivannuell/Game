@@ -5,19 +5,22 @@ from entities.projectile_related.projectile import ProjectilePool
 from systems.system import System
 import pygame
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+    from scenes.scene import Scene
+    from scenes.play import PlayScene
+
 
 class ProjectileSystem(System):
-    def __init__(self, game):
-        super().__init__()
-        self.pool = game.proj_pool
-        self.grid = game.collision_grid   # reuse your existing grid
-        self.camera = game.camera
+    def __init__(self, scene: 'PlayScene'):
+        super().__init__(scene)
         self.zoom = 1
-        self.center =  (game.screen.display_surface.width /2, game.screen.display_surface.height /2 + 500)
-        self.sprite = game.asset_manager.get_asset('projectile')
+        self.center =  (scene.game.screen.display_surface.width /2, scene.game.screen.display_surface.height /2 + 500)
+        self.sprite = scene.asset_manager.get_asset('projectile')
 
     def update(self, entites, dt):
-        for p in self.pool.pool:
+        for p in self.scene.proj_pool.pool:
             if not p.alive:
                 continue
 
@@ -33,7 +36,7 @@ class ProjectileSystem(System):
                 continue
 
             # Collision (narrow target set)
-            for target in self.grid.query_point(p.x, p.y):
+            for target in self.scene.collision_grid.query_point(p.x, p.y):
                 if target.get(FactionIdentity).faction == p.faction:
                     continue
 
@@ -66,17 +69,17 @@ class ProjectileSystem(System):
                 break
 
 
-        cos_r = math.cos(-self.camera.rotation)
-        sin_r = math.sin(-self.camera.rotation)
+        cos_r = math.cos(-self.scene.camera.rotation)
+        sin_r = math.sin(-self.scene.camera.rotation)
         zoomed_sprite = pygame.transform.scale_by(self.sprite, self.zoom)
 
         hw = self.sprite.get_width() * 0.5
         hh = self.sprite.get_height() * 0.5
         
-        for p in self.pool.pool:
+        for p in self.scene.proj_pool.pool:
             if p.alive:
-                dx = p.x - self.camera.x
-                dy = p.y - self.camera.y
+                dx = p.x - self.scene.camera.x
+                dy = p.y - self.scene.camera.y
 
                 cam_x = dx * cos_r - dy * sin_r
                 cam_y = dx * sin_r + dy * cos_r

@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.scene import Scene
 
 import pygame
 from components.components import PointerState, Position, Size
@@ -10,13 +11,12 @@ from systems.system import System
 
 
 class UI_Pointer_InputSystem(System):
-    def __init__(self, game):
-        super().__init__()
-        self.game = game
+    def __init__(self, scene: 'Scene'):
+        super().__init__(scene)
 
     def update(self, entities: 'list[Entity]', dt: float):
-        mouse_pos = self.game.input_manager.mouse_pos
-        mouse_down = self.game.input_manager.mouse_buttons[0]
+        mouse_pos = self.input_manager.mouse_pos
+        mouse_down = self.input_manager.mouse_buttons[0]
 
         for entity in entities:
             if not entity.has(PointerState):

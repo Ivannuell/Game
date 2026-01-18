@@ -5,8 +5,8 @@ from entities.entity import Entity
 
 
 class AnimationEvent(Entity):
-    def __init__(self, config, game):
-        super().__init__(game)
+    def __init__(self, scene, config: dict = {}):
+        super().__init__(scene)
         self.add(Position(config["Posx"], config["Posy"]))
         self.add(ViewPosition())
         self.add(Animation(
@@ -16,7 +16,7 @@ class AnimationEvent(Entity):
         self.add(Sprite())
         self.add(AnimationState())
         self.add(AnimationPlayer())
-        self.add(Size(32,32,1))
+        self.add(Size(*config['size']))
 
         self.init_Entity()
         

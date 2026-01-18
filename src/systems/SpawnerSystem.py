@@ -2,12 +2,13 @@
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.play import PlayScene
 
 from pygame import Vector2
 
 from registries.EnemyList import EnemyList
 
-from components.components import Destroy, EnemySpawner, Position, Rotation
+from components.components import *
 
 from systems.system import System
 
@@ -19,9 +20,8 @@ class SpawnEvent:
 
 
 class SpawnerSystem(System):
-    def __init__(self, game) -> None:
-        super().__init__()
-        self.game = game
+    def __init__(self, scene: 'PlayScene') -> None:
+        super().__init__(scene)
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
@@ -32,7 +32,7 @@ class SpawnerSystem(System):
             spawner = entity.get(EnemySpawner)
             pattern = spawner.pattern
 
-            pattern.update(dt)
+            pattern.update_step(dt)
 
             for event in pattern.get_spawn_events():
                 entities.append(self.spawnEnemy(event))
@@ -44,13 +44,11 @@ class SpawnerSystem(System):
 
 
     def spawnEnemy(self, event: SpawnEvent):
-        enemy = self.game.spawner.create(event.spawn)
+        enemy = self.scene.spawner.create(event.spawn)
 
         enemy_pos = enemy.get(Position)
-        # event.position.x = 300
+
         enemy_pos.set(event.position)
         enemy.get(Rotation).rad_angle = event.direction
-
-        # print(enemy.get(Rotation).rad_angle)
 
         return enemy

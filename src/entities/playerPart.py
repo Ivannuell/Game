@@ -1,11 +1,14 @@
 from entities.entity import Entity
 
 from components.components import *
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from scenes.scene import Scene
 
 
 class PlayerPart(Entity):
-    def __init__(self, config, game):
-        super().__init__(game)
+    def __init__(self, scene: 'Scene', config: dict = {}):
+        super().__init__(scene)
 
         self.add(Position(0, 0))
         self.add(ViewPosition())

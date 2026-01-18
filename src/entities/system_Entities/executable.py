@@ -3,7 +3,7 @@ from entities.entity import Entity
 
 
 class Executable(Entity):
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self, scene):
+        super().__init__(scene)
         self.alive = True
         self.add(SystemEntity())

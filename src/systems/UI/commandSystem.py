@@ -12,9 +12,8 @@ from systems.system import System
 
 
 class CommandSystem(System):
-    def __init__(self, game):
-        super().__init__()
-        self.game = game
+    def __init__(self, scene):
+        super().__init__(scene)
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
@@ -22,7 +21,7 @@ class CommandSystem(System):
                 command = entity.get(Command)
 
                 if command.type == CommandType.CHANGE_SCENE:
-                    self.game.scene_manager.replace(command.payload)
+                    self.scene.game.scene_manager.replace(command.payload)
                     entities.remove(entity)
 
                 elif command.type == CommandType.EXIT:
@@ -30,15 +29,15 @@ class CommandSystem(System):
                     exit()
 
                 elif command.type == CommandType.PAUSE:
-                    self.game.scene_manager.push(command.payload)
+                    self.scene.game.scene_manager.push(command.payload)
                     entities.remove(entity)
 
                 elif command.type == CommandType.RESUME:
-                    self.game.scene_manager.pop()
+                    self.scene.game.scene_manager.pop()
                     entities.remove(entity)
 
                 elif command.type == CommandType.RESTART:
-                    self.game.scene_manager.pop()
-                    self.game.scene_manager.replace(command.payload)
+                    self.scene.game.scene_manager.pop()
+                    self.scene.game.scene_manager.replace(command.payload)
                     entities.remove(entity)
 

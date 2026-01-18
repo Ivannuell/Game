@@ -1,20 +1,17 @@
 from typing import TYPE_CHECKING
 
-from Camera import Camera
-from EnemyFactory import EnemyFactory
-from entities.projectile_related.projectile import ProjectilePool
-from registries.SceneList import SceneList
-from spatialGrid import SpatialGrid
-from systemProfiler import SystemProfiler
-from systemProfiler_overlay import DebugOverlaySystem
+from Game_Managers.assetManager import AssetsManager
+from Game_Managers.inputManager import InputManager
+from Utils.systemProfiler import SystemProfiler
+from Utils.systemProfiler_overlay import DebugOverlaySystem
+
 if TYPE_CHECKING:
     from screen import Screen
 
     
 import pygame
-from assetManager import AssetsManager
-from inputManager import InputManager
 from scenes.scene_Manager import SceneManager
+from registries.SceneList import SceneList
 
 
 
@@ -22,21 +19,17 @@ class BaseGame:
     def __init__(self):
         self.screen: "Screen | None" = None
         self.clock = pygame.time.Clock()
-        self.delta_time = 0
-        self.fps = 60
-        
-
-        self.scene_manager: SceneManager = SceneManager(self)
+        self.delta_time = 0.0
+        self.fps = 60.0
+    
         self.asset_manager: AssetsManager = AssetsManager()
         self.input_manager: InputManager = InputManager()
+        # self.scene_manager: SceneManager
 
         self.profiler = SystemProfiler()
         self.profiler_overlay = DebugOverlaySystem(self.profiler)
-
-        self.camera = Camera()
-        self.spawner = EnemyFactory(self)
-        self.collision_grid = SpatialGrid(50)
-        self.proj_pool = ProjectilePool(500)
+        
+        self.scene_manager = SceneManager(self)
         
     def set_screen(self, screen: "Screen"):
         if self.screen:

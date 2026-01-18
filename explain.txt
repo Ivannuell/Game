@@ -28,3 +28,12 @@ Start to implement a autoaiming gun.
 
 
 in the final game feature add something you now about the 9kings and farming
+
+TODO: 
+ -> Explain how Pointner system works
+
+ -> Make entities that recieve config declare the config parameter as optional
+
+ -> Optimize by returning early or using coninue to out a loop when has() return false.
+
+ -> Make button display creation more modular

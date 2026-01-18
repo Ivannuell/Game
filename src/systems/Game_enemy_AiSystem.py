@@ -4,18 +4,19 @@ import math
 import random
 from typing import TYPE_CHECKING
 
-from helper import ENEMY_ACCELARATION, move_towards
+from Utils.helper import ENEMY_ACCELARATION, move_towards
 
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.scene import Scene
 
 from components.components import *
 from systems.system import System
 
 
 class Enemy_AI_MovementSystem(System):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
 
 
     def update(self, entities: 'list[Entity]', dt):
@@ -36,8 +37,8 @@ class Enemy_AI_MovementSystem(System):
 
 
 class Enemy_AI_ShootingSystem(System):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:

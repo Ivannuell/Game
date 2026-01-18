@@ -1,13 +1,14 @@
-from typing import TYPE_CHECKING
 from systems.system import System
 from components.components import *
 
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.scene import Scene
 
 class HealthSystem(System):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
 
     def update(self, entities: list["Entity"], dt):
         for entity in entities:

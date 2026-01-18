@@ -1,15 +1,14 @@
 import pygame
-from spritesheet import Spritesheet
 import os
+
+from Utils.spritesheet import Spritesheet
 
 
 class AssetsManager:
     def __init__(self):
         self.assets: 'dict[str, Spritesheet]' = {}
         self.current_dir = os.path.dirname(__file__)
-        self.assets_dir = os.path.join(
-            os.path.dirname(self.current_dir), 'ship')
-        # self.assets_dir = os.path.abspath(self.assets_dir)
+        self.assets_dir = os.path.join(os.path.dirname(self.current_dir), '../Assets')
 
     def load_assets(self):
 
@@ -43,7 +42,7 @@ class AssetsManager:
     def add_asset(self, asset_key, asset):
         self.assets[asset_key] = asset
 
-    def get_asset(self, asset_key):
+    def get_asset(self, asset_key) -> Spritesheet | pygame.Surface:
         return self.assets[asset_key]
 
     def get_spritesheet(self, key) -> Spritesheet:

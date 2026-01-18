@@ -1,16 +1,18 @@
 
-import math
-from EnemyFactory import EnemyFactory, EnemyList
+
+from Utils.Camera import Camera
+from Utils.EnemyFactory import EnemyFactory
+from Utils.spatialGrid import SpatialGrid
 from entities.Spawn_Patterns.EnemyPatterns import Grid_Enemies, Line_Enemies
 from entities.UI.button import Button
 from entities.playerPart import PlayerPart
+from entities.projectile_related.projectile import ProjectilePool
 from entities.system_Entities.Spawner import SpawnerEntity
 from entities.system_Entities.camera import CameraEntity
 from entities.base import Base
 from registries.AnimationStateList import AnimationMode
 from scenes.scene import Scene
 
-import screen
 from systems.CleanupSystem import CleanupSystem
 from systems.Game_AutoAimingSystem import AutoAimingSystem
 from systems.ProjectileSystem import ProjectileSystem
@@ -30,7 +32,6 @@ from systems.Game_inputSystem import InputSystem
 from systems.UI.commandSystem import CommandSystem
 from systems.movementSystem import MovementSystem
 from systems.collisionSystem import CollisionSystem
-from systems.orbit_movementSystem import OrbitSystem
 from systems.shootingSystem import ShootingSystem
 from systems.collider_cleanerSystem import CollisionCleanupSystem
 from systems.lifetimeSystem import LifetimeSystem
@@ -45,7 +46,6 @@ from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
 from components.components import *
 
 from entities.player import Player
-from entities.enemy import Enemy
 from systems.transform_cameraSystem import CameraTransformSystem
 
 
@@ -54,59 +54,64 @@ class PlayScene(Scene):
         super().__init__(game)
         self.shipConfig = {}
         self.boosterConfig = {}
+        self.camera = Camera()
+        self.spawner = EnemyFactory(self)
+        self.collision_grid = SpatialGrid(50)
+        self.proj_pool = ProjectilePool(500)
 
     def on_Create(self):
         self.systems = [
-            InputSystem(self.game.input_manager, self.game),
-            CameraZoomSystem(self.game.input_manager),
-            UI_Pointer_InputSystem(self.game),
-            UI_Button_InputSystem(self.game),
+            InputSystem(self),
+            CameraZoomSystem(self),
+            UI_Pointer_InputSystem(self),
+            UI_Button_InputSystem(self),
 
-            CommandSystem(self.game),
-            ShootingSystem(self.game),
-            AutoAimingSystem(self.game),
-            Events_AnimationSystem(self.game),
-            State_AnimationSystem(),
+            CommandSystem(self),
+            ShootingSystem(self),
+            AutoAimingSystem(self),
+            Events_AnimationSystem(self),
+            State_AnimationSystem(self),
 
-            Enemy_AI_ShootingSystem(),
-            Enemy_AI_MovementSystem(),
-            
-            MovementSystem(),
+            Enemy_AI_ShootingSystem(self),
+            Enemy_AI_MovementSystem(self),
 
-            ParentFollowSystem(),
-            CollisionSystem(self.game),
-            DamageSystem(),
-            HealthSystem(),
-            Playback_AnimationSystem(),
+            MovementSystem(self),
 
-            LifetimeSystem(),
-            CleanupSystem(),
-            EventCleanerSystem(self.game),
+            ParentFollowSystem(self),
+            CollisionSystem(self),
+            DamageSystem(self),
+            HealthSystem(self),
+            Playback_AnimationSystem(self),
 
-            CameraSystem(self.game.camera),
+            LifetimeSystem(self),
+            CleanupSystem(self),
+            EventCleanerSystem(self),
 
-            SpawnerSystem(self.game),
-            ButtonDisplaySystem(),
-            CameraTransformSystem(self.game.camera, (self.game.screen.display_surface.width /2, self.game.screen.display_surface.height /2 + 500)),
+            CameraSystem(self),
+
+            SpawnerSystem(self),
+            ButtonDisplaySystem(self),
+            CameraTransformSystem(self),
 
             # DebugCollisionRenderSystem(enabled=True),/
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
-            OnScreenDebugSystem(self.game),
-            HealthBar_DisplaySystem(self.game),
-            ProjectileSystem(self.game),
-            RotationSystem(self.game),
-            WorldRenderSystem(self.game), # Uses ViewPosition
+            OnScreenDebugSystem(self),
+
+            HealthBar_DisplaySystem(self),
+            ProjectileSystem(self),
+            RotationSystem(self),
+            WorldRenderSystem(self),  # Uses ViewPosition
         ]
 
         self.playerConfig = {
             "Pos": (400, 300),
             "Sprite": "player",
             "Anim": {
-                "player-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP),
+                "player-idle": Anim([], [(0, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
                 # "player-move-left": Anim([], [(96,0,48,48), (48,0,48,48), (0,0,48,48)], 0, 0.1, AnimationMode.NORMAL),
                 # "player-move-right": Anim([], [(96,0,48,48), (144,0,48,48), (192,0,48,48)], 0, 0.1, AnimationMode.NORMAL)
             },
-            "col": (48,48),
+            "col": (48, 48),
             "Vel": 420,
             "Cannon": True
         }
@@ -115,22 +120,22 @@ class PlayScene(Scene):
             "Pos": (100, 100),
             "Sprite": "booster",
             "Anim": {
-                "booster-idle": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48)], 0, 0.2, AnimationMode.LOOP),
-                "booster-move": Anim([], [(0,48,48,48), (48,48,48,48), (96,48,48,48), (144,48,48,48)], 0, 0.2, AnimationMode.LOOP)
+                "booster-idle": Anim([], [(0, 0, 48, 48), (48, 0, 48, 48), (96, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
+                "booster-move": Anim([], [(0, 48, 48, 48), (48, 48, 48, 48), (96, 48, 48, 48), (144, 48, 48, 48)], 0, 0.2, AnimationMode.LOOP)
             },
-            "col": (48,48),
+            "col": (48, 48),
         }
 
         self.cannonConfig = {
             "Pos": (100, 100),
             "Sprite": "player_cannon",
             "Anim": {
-                "player_cannon-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP),
-                "player_cannon-shoot": Anim([], [(0,0,48,48), (48,0,48,48), (96,0,48,48), (144,0,48,48), (192,0,48,48), (240,0,48,48), (288,0,48,48)], 0, 0.07, AnimationMode.LOOP)
+                "player_cannon-idle": Anim([], [(0, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
+                "player_cannon-shoot": Anim([], [(0, 0, 48, 48), (48, 0, 48, 48), (96, 0, 48, 48), (144, 0, 48, 48), (192, 0, 48, 48), (240, 0, 48, 48), (288, 0, 48, 48)], 0, 0.07, AnimationMode.LOOP),
+                "player_cannon-move": Anim([], [(0, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
             },
-            "col": (48,48),
+            "col": (48, 48),
         }
-        
 
     def on_Enter(self):
         print("On Game")
@@ -138,39 +143,31 @@ class PlayScene(Scene):
             if type(system) in self.disabledSystems:
                 system.Enabled = False
 
-        cam = CameraEntity(self.game)
-        pause = Button("PAUSE", self.game)
+        cam = CameraEntity(self)
+        pause = Button(self, "PAUSE")
         pause.get(Size).width = 50
         pause.get(Size).height = 50
-        pause.get(Position).x = self.game.screen.display_surface.width /2 - 25
+        pause.get(Position).x = self.game.screen.display_surface.width / 2 - 25
         pause.get(Position).y = 10
 
-        Headquarter = Base(self.game)
+        Headquarter = Base(self)
         Headquarter.get(Collider).width = 50
         Headquarter.get(Collider).height = 50
 
-        Ship_Cannon = PlayerPart(self.cannonConfig, self.game) 
-        Ship_main = Player(self.playerConfig, self.game)
-        Ship_Booster = PlayerPart(self.boosterConfig, self.game)
-
+        Ship_Cannon = PlayerPart(self, config=self.cannonConfig)
+        Ship_main = Player(self, config=self.playerConfig)
+        Ship_Booster = PlayerPart(self, config=self.boosterConfig)
 
         Ship_Booster.get(Parent).entity = Ship_main
-        # Ship_Booster.get(OffsetPosition).x = -15
         Ship_Cannon.get(Parent).entity = Ship_main
         Ship_Cannon.add(Cannon(0.2))
         Ship_Cannon.add(AutoCannon(7))
         Ship_Cannon.add(ShootIntent())
 
+        gridEnemy = SpawnerEntity(self, Grid_Enemies(
+            (100, 100), (3, 3), Headquarter.get(Position), 32))
 
-        spawn_line = SpawnerEntity(Line_Enemies(20, pygame.Vector2(200, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
-        spawn_line2 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(300, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
-        spawn_line3 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(400, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
-        spawn_line4 = SpawnerEntity(Line_Enemies(20, pygame.Vector2(500, 100), 50, 0.1, self.game, Headquarter.get(ViewPosition)), self.game)
-
-        gridEnemy = SpawnerEntity(Grid_Enemies((100, 100), (3,3), Headquarter.get(Position), 32), self.game)
-        gridEnemy2 = SpawnerEntity(Grid_Enemies((500, 200), (3,3), Headquarter.get(Position), 32), self.game)
-
-        self.game.camera.target = Ship_main
+        self.camera.target = Ship_main
 
         self.entities.append(Ship_Cannon)
         self.entities.append(Ship_main)
@@ -178,7 +175,7 @@ class PlayScene(Scene):
         self.entities.append(Headquarter)
 
         self.entities.append(gridEnemy)
-        self.entities.append(gridEnemy2)
+        # self.entities.append(gridEnemy2)
 
         self.entities.append(cam)
         self.entities.append(pause)
@@ -195,7 +192,7 @@ class PlayScene(Scene):
 
             CollisionCleanupSystem,
             CollisionSystem,
-            
+
             DamageSystem,
             HealthSystem,
 
@@ -203,7 +200,7 @@ class PlayScene(Scene):
             HealthDraw,
             OnScreenDebugSystem,
         ]
-    
+
     def on_Resume(self):
         self.disabledSystems = []
 

@@ -3,12 +3,12 @@ from turtle import Vec2D
 import pygame
 
 from components.components import *
-from spatialGrid import SpatialGrid
 from systems.system import System
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.play import PlayScene
 
 collision_pairs = {
     ("PLAYER", "ENEMY"),
@@ -29,11 +29,9 @@ collision_pairs = {
 
 
 class CollisionSystem(System):
-    def __init__(self, game) -> None:
-        super().__init__()
-        self.grid = game.collision_grid
+    def __init__(self, scene: 'PlayScene') -> None:
+        super().__init__(scene)
         self.rect_cache = {}
-
         self.dyn_rects = []
         self.stat_rects = []
 
@@ -44,7 +42,7 @@ class CollisionSystem(System):
         self.dyn_rects.clear()
         self.stat_rects.clear()
         self.rect_cache = {}
-        self.grid.clear()
+        self.scene.collision_grid.clear()
 
         for e in entities:
             if e.has(Collider) and not e.has(Velocity):
@@ -79,17 +77,17 @@ class CollisionSystem(System):
         for e in self.stat_rects:
             pos = e[1]
             col = e[2]
-            self.grid.insert(e[0], pos, col)
+            self.scene.collision_grid.insert(e[0], pos, col)
 
         for e in self.dyn_rects:
             pos = e[1]
             col = e[3]
-            self.grid.insert(e[0], pos, col)
+            self.scene.collision_grid.insert(e[0], pos, col)
 
             checked = set()
 
         for e1, pos1, vel1, col1, cid1, faction1 in self.dyn_rects:
-            for other in self.grid.query_neighbors(pos1.x, pos1.y):
+            for other in self.scene.collision_grid.query_neighbors(pos1.x, pos1.y):
                 if e1 is other:
                     continue
 

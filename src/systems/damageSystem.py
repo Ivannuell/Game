@@ -7,12 +7,11 @@ if TYPE_CHECKING:
 
 
 class DamageSystem(System):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, scene) -> None:
+        super().__init__(scene)
 
     def update(self, entities: list["Entity"], dt):
         damagables: list[Entity] = []
-
 
         for entity in entities:
             if entity.has(Health, DamageEvent):

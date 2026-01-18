@@ -1,16 +1,14 @@
 import math
-from typing import TYPE_CHECKING
 
-from entities.bullet import Bullet
-from entities.enemy import Enemy
-from entities.player import Player
 from systems.system import System
 
 from components.components import *
 
 
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.play import PlayScene
 
 """
     1. Checks all entities that can Shoot (ShootIntent) and have a Cannon for shooting (Cannon)
@@ -25,10 +23,8 @@ if TYPE_CHECKING:
 
 
 class ShootingSystem(System):
-    def __init__(self, game):
-        super().__init__()
-        self.game = game
-        self.Projectiles = game.proj_pool
+    def __init__(self, scene: 'PlayScene'):
+        super().__init__(scene)
 
     def update(self, entities: list["Entity"], dt):
         shooters = []
@@ -58,7 +54,7 @@ class ShootingSystem(System):
                 damage = 10
 
             if cannon.time_left >= cannon.cooldown:
-                self.Projectiles.spawn(
+                self.scene.proj_pool.spawn(
                     x=pos.x,
                     y=pos.y,
                     vx=math.cos(angle) * speed,

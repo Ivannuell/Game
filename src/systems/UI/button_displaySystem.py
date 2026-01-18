@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.scene import Scene
 
 
 import pygame
@@ -9,13 +11,11 @@ from systems.system import System
 from components.components import Clickable, Position, Size
 
 pygame.font.init()
-
-
 font = pygame.Font(None, 50)
 
 class ButtonDisplaySystem(System):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
 
     def render(self, entities: list['Entity'], screen):
 

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from registries.SceneList import SceneList
 
 if TYPE_CHECKING:
-    from baseGame import BaseGame
+    from scenes.scene import Scene
     from entities.entity import Entity
 
 from entities.system_Entities.executable import Executable
@@ -14,9 +14,8 @@ from systems.system import System
 
 
 class UI_Button_InputSystem(System):
-    def __init__(self, game: 'BaseGame') -> None:
-        super().__init__()
-        self.game = game
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
         
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
@@ -25,27 +24,27 @@ class UI_Button_InputSystem(System):
                 buttonID = entity.get(Clickable).buttonID
 
                 if buttonID == "PLAY" and pointerState.released:
-                    exe = Executable(self.game)
+                    exe = Executable(self.scene)
                     exe.add(Command(CommandType.CHANGE_SCENE, SceneList.GAME))
                     entities.append(exe)
 
                 if buttonID == "EXIT" and pointerState.released:
-                    exe = Executable(self.game)
+                    exe = Executable(self.scene)
                     exe.add(Command(CommandType.EXIT))
                     entities.append(exe)
 
                 if buttonID == "RESUME" and pointerState.released:
-                    exe = Executable(self.game)
+                    exe = Executable(self.scene)
                     exe.add(Command(CommandType.RESUME))
                     entities.append(exe)
 
                 if buttonID == "RESTART" and pointerState.released:
-                    exe = Executable(self.game)
+                    exe = Executable(self.scene)
                     exe.add(Command(CommandType.RESTART, SceneList.GAME))
                     entities.append(exe)
 
                 if buttonID == "PAUSE" and pointerState.released:
-                    cmd = Executable(self.game)
+                    cmd = Executable(self.scene)
                     cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
                     entities.append(cmd)
 

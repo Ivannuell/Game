@@ -4,12 +4,19 @@ from components.components import *
 from entities.player import Player
 from systems.system import System
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+    from scenes.scene import Scene
+
 
 class ParentFollowSystem(System):
-    def update(self, entities, dt):
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
+
+    def update(self, entities: 'list[Entity]', dt):
         for e in entities:
             if e.has(Parent, OffsetPosition, Position):
-                # print(e)
                 parent = e.get(Parent).entity
                 if not parent.has(Position, Health):
                     continue

@@ -6,13 +6,13 @@ import pygame
 
 from typing import TYPE_CHECKING
 
-from helper import SPRITE_FORWARD_OFFSET
+from Utils.helper import SPRITE_FORWARD_OFFSET
 from registries.AnimationStateList import AnimationStateList
 
 
 if TYPE_CHECKING:
     from entities.entity import Entity
-    from spritesheet import _Anim
+    from Utils.spritesheet import _Anim
     from entities.Spawn_Patterns.EnemyPatterns import SpawnPattern
 
 class ComponentRegistry:
@@ -329,7 +329,6 @@ class EnemySpawner(Component):
     def __init__(self, pattern) -> None:
         super().__init__()
         self.pattern: 'SpawnPattern' = pattern
-
 
 @ComponentRegistry.register
 class Destroy(Component):

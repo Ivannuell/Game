@@ -3,9 +3,14 @@
 
 import pygame
 from components.components import *
-from entities.entity import Entity
-from spatialGrid import SpatialGrid
+from Utils.spatialGrid import SpatialGrid
 from systems.system import System
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+    from scenes.play import PlayScene
+
 
 """
     1. Create a range grid using SpatialGrid class and take the Global projectile pool
@@ -18,13 +23,11 @@ from systems.system import System
 """
 
 class AutoAimingSystem(System):
-    def __init__(self, game) -> None:
-        super().__init__()
-        self.game = game
+    def __init__(self, scene: 'PlayScene') -> None:
+        super().__init__(scene)
         self.enemy_inRange_grid = SpatialGrid(50)
-        self.projectiles = game.proj_pool
 
-    def update(self, entities: list[Entity], dt):
+    def update(self, entities: 'list[Entity]', dt):
         self.enemy_inRange_grid.clear()
         self.auto_cannons = []
 

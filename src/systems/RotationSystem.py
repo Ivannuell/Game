@@ -2,22 +2,26 @@ import math
 from components.components import Rotation
 from entities.player import Player
 from entities.playerPart import PlayerPart
-from helper import ROTATION_SMOOTHNESS, SPRITE_FORWARD_OFFSET, lerp_angle
+from Utils.helper import ROTATION_SMOOTHNESS, SPRITE_FORWARD_OFFSET, lerp_angle
 from systems.system import System
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+    from scenes.scene import Scene
 
 
 class RotationSystem(System):
-    def __init__(self, game) -> None:
-        super().__init__()
-        self.game = game
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
 
-    def update(self, entities, dt):
+    def update(self, entities: 'list[Entity]', dt):
         for e in entities:
             if e.has(Rotation):
                 rot = e.get(Rotation)
 
                 target_deg = -math.degrees(
-                    rot.rad_angle - SPRITE_FORWARD_OFFSET - self.game.camera.rotation
+                    rot.rad_angle - SPRITE_FORWARD_OFFSET - self.scene.camera.rotation
                 )
 
                 rot.rad_angle += rot.angular_vel * dt

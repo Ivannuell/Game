@@ -1,20 +1,21 @@
 
 import math
-from helper import ACCELERATION, move_towards
+from Utils.helper import ACCELERATION, move_towards
 from systems.system import System
 from components.components import *
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from entities.entity import Entity
+    from scenes.scene import Scene
 
 
 
 class MovementSystem(System):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
         
-    def update(self, entities: list["Entity"], dt):
+    def update(self, entities: 'list[Entity]', dt):
         player_cons = []
 
         for entity in entities:
@@ -41,20 +42,6 @@ class MovementSystem(System):
                 velocity.y = move_towards(velocity.y, target_vy, ACCELERATION * dt)
             # else:
             #     velocity.y = move_towards(velocity.y, 0, FRICTION * dt)
-
-
-            # if movement_intent.move_x == 0 and movement_intent.move_y == 0:
-
-            #     velocity.x = clamp_value(velocity.x, MIN_SPEED, velocity.speed)
-            #     velocity.y = clamp_value(velocity.y, MIN_SPEED, velocity.speed)
-
-
-            # if movement_intent.move_x == 0 and movement_intent.move_y == 0:
-            #     velocity.x, velocity.y = clamp_min_speed(
-            #         velocity.x,
-            #         velocity.y,
-            #         MIN_SPEED
-            #     )
 
             position.x += velocity.x * dt 
             position.y += velocity.y * dt 

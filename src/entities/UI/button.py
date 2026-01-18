@@ -5,8 +5,8 @@ from entities.entity import Entity
 
 
 class Button(Entity):
-    def __init__(self, buttonID, game):
-        super().__init__(game)
+    def __init__(self, scene, buttonID):
+        super().__init__(scene)
         self.add(Clickable(buttonID))
         self.add(Position(0, 300))
         self.add(Size(300, 100))

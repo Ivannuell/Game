@@ -10,10 +10,10 @@ from scenes.preload import Preload
 
 if TYPE_CHECKING:
     from scenes.scene import Scene
-
+    from baseGame import BaseGame
 
 class SceneManager:
-    def __init__(self, game):
+    def __init__(self, game: 'BaseGame'):
         self.game = game
         self._stack: list["Scene"] = []
         self._pending_op_stack: list[LambdaType] = []
@@ -22,13 +22,12 @@ class SceneManager:
         self._update_frozen = False
 
         self.scene_registry: dict[SceneList, Scene] = {
-            SceneList.PAUSE: Pause(self.game),
-            SceneList.GAME: PlayScene(self.game),
-            SceneList.MAIN_MENU: MainMenu(self.game),
-            SceneList.PRELOAD: Preload(self.game)
+            SceneList.PAUSE: Pause(game),
+            SceneList.GAME: PlayScene(game),
+            SceneList.MAIN_MENU: MainMenu(game),
+            SceneList.PRELOAD: Preload(game)
         }
         
-
 
     def push(self, scene: SceneList):
         self._pending_op_stack.append(lambda: self._do_push(self.scene_registry.get(scene)))

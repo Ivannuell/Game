@@ -3,7 +3,7 @@
 
 import math
 from components.components import *
-from helper import SPRITE_FORWARD_OFFSET
+from Utils.helper import SPRITE_FORWARD_OFFSET
 from systems.system import System
 
 

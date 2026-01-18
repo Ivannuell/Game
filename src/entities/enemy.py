@@ -2,8 +2,8 @@ from entities.entity import Entity
 from components.components import *
 
 class Enemy(Entity):
-    def __init__(self, config, game):
-        super().__init__(game)
+    def __init__(self, scene, config={}):
+        super().__init__(scene)
 
         self.__qualname__ = "Enemy"
 

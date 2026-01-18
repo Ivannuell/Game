@@ -5,8 +5,9 @@ from registries.EnemyList import EnemyList
 
 
 class EnemyFactory:
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, scene):
+        self.scene = scene
+        self.game = scene.game
         self.normal_EnemyConfig = {
             "Animation": {                
                 "spritesheet": "enemy1",
@@ -23,9 +24,7 @@ class EnemyFactory:
         }
 
     def create(self, enemy: EnemyList) -> Enemy:   
-        
         if enemy == EnemyList.Normal:
-            e = Enemy(self.normal_EnemyConfig, self.game)
-            e.game = self.game
+            e = Enemy(self.scene, self.normal_EnemyConfig)
 
             return e

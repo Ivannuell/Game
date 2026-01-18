@@ -3,8 +3,8 @@ from components.components import *
 from registries.AnimationStateList import AnimationMode
 
 class Base(Entity):
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self, scene):
+        super().__init__(scene)
         self.__qualname__ = "Base"
 
         self.add(Animation(

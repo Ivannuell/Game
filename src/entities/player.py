@@ -2,11 +2,12 @@
 from entities.entity import Entity
 
 from components.components import *
+from scenes.scene import Scene
 
 
 class Player(Entity):
-    def __init__(self, config, game):
-        super().__init__(game)
+    def __init__(self, scene: Scene, config: dict = {}, ):
+        super().__init__(scene)
 
         self.__qualname__ = "Player"
 

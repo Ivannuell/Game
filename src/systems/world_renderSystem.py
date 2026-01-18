@@ -1,19 +1,16 @@
 import math
 from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
     from entities.entity import Entity
-    from screen import Screen
-
-from entities.playerPart import PlayerPart
+    from scenes.scene import Scene
+    
 from systems.system import System
 from components.components import *
 
 
 class WorldRenderSystem(System):
-    def __init__(self, game) -> None:
-        super().__init__()
-        self.game = game
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
 
     def render(self, entities: 'list[Entity]', screen):
         visibles = []
@@ -31,9 +28,6 @@ class WorldRenderSystem(System):
             view = e.get(ViewPosition)
 
             if e.has(Rotation):
-                # if e.has(AutoCannon):
-                #     print(e.__class__.__name__, e.get(Rotation))
-
                 rot = e.get(Rotation)
                 image = pygame.transform.rotate(image, rot.visual_deg)
 

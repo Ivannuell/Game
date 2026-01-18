@@ -1,6 +1,4 @@
 import pygame
-import sys
-
 from registries.AnimationStateList import AnimationMode
 
 

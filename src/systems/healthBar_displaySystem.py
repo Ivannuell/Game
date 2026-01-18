@@ -2,11 +2,15 @@ from components.components import *
 from entities.entity import Entity
 from systems.system import System
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from entities.entity import Entity
+    from scenes.scene import Scene
 
 class HealthBar_DisplaySystem(System):
-    def __init__(self, game) -> None:
-        super().__init__()
-        game_screen = game.screen.display_surface
+    def __init__(self, scene: 'Scene') -> None:
+        super().__init__(scene)
+        game_screen = scene.game.screen.display_surface
         game_screen_rect = game_screen.get_rect()
         
         self.tiny_font = pygame.font.Font(None, 15)
