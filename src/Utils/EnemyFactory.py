@@ -17,7 +17,7 @@ class EnemyFactory:
             },
             "Position": (0,0),
             "Collider": (32,32),
-            "Velocity": (10),
+            "Velocity": (50),
             "Cannon": (0.4),
             "Size": (32,32,1),
             "Health": (100)
@@ -26,5 +26,12 @@ class EnemyFactory:
     def create(self, enemy: EnemyList) -> Enemy:   
         if enemy == EnemyList.Normal:
             e = Enemy(self.scene, self.normal_EnemyConfig)
+            angle = e.get(Rotation).angle
+            e.add(Cannon(1))
+            e.add(ManualAim(angle))
+            e.add(Vision(7))
+            e.add(Perception())
+            
+            e.add(Gold(10))
 
             return e

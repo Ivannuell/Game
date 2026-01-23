@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
     
 import pygame
-from scenes.scene_Manager import SceneManager
+from Game_Managers.scene_Manager import SceneManager
 from registries.SceneList import SceneList
 
 

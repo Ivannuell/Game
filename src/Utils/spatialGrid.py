@@ -6,6 +6,9 @@ class SpatialGrid:
     def clear(self):
         self.cells.clear()
 
+    def get_Candidates(self):
+        return [(pos, entity) for pos, entity in self.cells.items()]
+
     def cell_coords(self, x, y):
         return int(x // self.cell_size), int(y // self.cell_size)
 
@@ -44,3 +47,16 @@ class SpatialGrid:
 
                 if distance <= radius:
                     yield from self.cells.get((cx + dx, cy + dy), [])
+
+    def query_range_ip(self, posx, posy, radius):
+        candidates = []
+        cx, cy = self.cell_coords(posx, posy)
+
+        for dx in range(-radius, radius+1):
+            for dy in range(-radius, radius+1):
+                distance = (dx*dx + dy*dy) ** 0.5
+
+                if distance <= radius:
+                    candidates.append(self.cells.get((cx + dx, cy + dy), []))
+
+        return candidates

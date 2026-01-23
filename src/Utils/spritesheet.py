@@ -70,7 +70,6 @@ class _Anim:
 
         return frame_number
 
-
     def is_animation_finished(self):
         frame_number = int(self.state_time/self.frame_duration)
         return len(self.frames) - 1 < frame_number

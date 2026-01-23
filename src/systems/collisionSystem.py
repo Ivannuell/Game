@@ -3,6 +3,7 @@ from turtle import Vec2D
 import pygame
 
 from components.components import *
+from entities.enemy import Enemy
 from systems.system import System
 
 from typing import TYPE_CHECKING
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 collision_pairs = {
     ("PLAYER", "ENEMY"),
     ("ENEMY", "PLAYER"),
+    ("ENEMY", "ENEMY"),
 
     ("PROJECTILE", "PLAYER"),
     ("PLAYER", "PROJECTILE"),
@@ -38,10 +40,10 @@ class CollisionSystem(System):
     def update(self, entities: list['Entity'], dt):
         static_colliders = []
         dynamic_colliders = []
+        self.rect_cache = {}
 
         self.dyn_rects.clear()
         self.stat_rects.clear()
-        self.rect_cache = {}
         self.scene.collision_grid.clear()
 
         for e in entities:
@@ -99,13 +101,14 @@ class CollisionSystem(System):
                 if not other.has(Position, Collider, CollisionIdentity, FactionIdentity):
                     continue
 
+
                 pos2 = other.get(Position)
                 col2 = other.get(Collider)
                 cid2 = other.get(CollisionIdentity)
                 faction2 = other.get(FactionIdentity).faction
 
-                if faction1 == faction2:
-                    continue
+                # if faction1 == faction2:    
+                #     continue
 
                 if not self.can_collide(cid1, cid2):
                     continue
@@ -219,8 +222,10 @@ class CollisionSystem(System):
             copy_x1 = v1.x
             copy_x2 = v2.x
 
-            v1.x = (copy_x2 * -1) / 3
-            v2.x = (copy_x1 * -1) / 3
+            v1.x = 0
+            v2.x = 0
+            # v1.x = (copy_x2 * -1) 
+            # v2.x = (copy_x1 * -1)
 
             # v1.x = clamp_value(v1.x, max(v1.x, v2.x), 100)
             # v2.x = clamp_value(v2.x, max(v1.x, v2.x), 100)
@@ -235,8 +240,10 @@ class CollisionSystem(System):
             copy_y1 = v1.y
             copy_y2 = v2.y
 
-            v1.y = (copy_y2 * -1) / 3
-            v2.y = (copy_y1 * -1) / 3
+            v1.y = 0
+            v2.y = 0
+            # v1.y = (copy_y2 * -1)
+            # v2.y = (copy_y1 * -1) 
 
             # v1.y = clamp_value(v1.y, max(v1.y, v2.y), 100)
             # v2.y = clamp_value(v2.y, max(v1.y, v2.y), 100)

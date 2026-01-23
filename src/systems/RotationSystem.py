@@ -20,14 +20,14 @@ class RotationSystem(System):
             if e.has(Rotation):
                 rot = e.get(Rotation)
 
-                target_deg = -math.degrees(
-                    rot.rad_angle - SPRITE_FORWARD_OFFSET - self.scene.camera.rotation
+                rot.angleOfAttack = -math.degrees(
+                    rot.angle - SPRITE_FORWARD_OFFSET - self.scene.camera.rotation
                 )
 
-                rot.rad_angle += rot.angular_vel * dt
+                rot.angle += rot.angular_vel * dt
                 rot.angular_vel *= 0.85  # damping
 
                 # interpolate
                 t = 1 - math.exp(-ROTATION_SMOOTHNESS * dt)
-                rot.visual_deg = lerp_angle(rot.visual_deg, target_deg, t)
+                rot.visual_deg = lerp_angle(rot.visual_deg, rot.angleOfAttack, t)
 

@@ -1,7 +1,12 @@
 
 
-from enum import Enum
+from enum import Enum, auto
 
 
 class EnemyList(Enum):
-    Normal = 0
+    Normal = auto()
+
+class EnemyActions(Enum):
+    Patroling = auto()
+    Invading = auto()
+    Attacking = auto()

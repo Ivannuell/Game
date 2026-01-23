@@ -32,12 +32,10 @@ class Player(Entity):
         ))
 
         self.add(CollidedWith())
-
-        # if "Cannon" in config:
-        #     self.add(Cannon(0.3))
-
         self.add(Health(500))
         self.add(Rotation())
         self.add(ViewPosition())
+
+        self.add(GoldContainer(1000))
 
         self.init_Entity()

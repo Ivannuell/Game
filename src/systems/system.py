@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from Game_Managers.inputManager import InputManager
     from Utils.systemProfiler import SystemProfiler
     from Utils.systemProfiler_overlay import DebugOverlaySystem
-    from scenes.scene_Manager import SceneManager
+    from Game_Managers.scene_Manager import SceneManager
 
 
 class System:
@@ -16,6 +16,5 @@ class System:
         self.scene: 'Scene | PlayScene' = scene
         self.asset_manager: 'AssetsManager' = scene.asset_manager
         self.input_manager: 'InputManager' = scene.input_manager
-        # self.scene_manager: 'SceneManager' = scene.scene_manager
         self.profiler: 'SystemProfiler' = scene.profiler
         self.profiler_overlay: 'DebugOverlaySystem' = scene.profiler_overlay

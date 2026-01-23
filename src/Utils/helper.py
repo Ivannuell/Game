@@ -1,10 +1,11 @@
 from enum import Enum
 import math
+from typing import Sequence
 
 
-ACCELERATION = 1200
+ACCELERATION = 200
 FRICTION = 1000
-ENEMY_ACCELARATION = 1000
+ENEMY_ACCELARATION = 200
 
 SPRITE_FORWARD_OFFSET = -math.pi / 2
 MIN_SPEED = 100
@@ -32,6 +33,7 @@ def move_towards(current, target, max_delta):
         return max(current - max_delta, target)
     return target
 
+
 def lerp_angle(current, target, t):
     """
     current, target: degrees
@@ -39,3 +41,19 @@ def lerp_angle(current, target, t):
     """
     delta = (target - current + 180) % 360 - 180
     return current + delta * t
+
+def point_towards(origin, target) -> float:
+    """
+    This function returns the angle from the given origin position to the target position
+    
+    :param origin: The origin position
+    :param target: The Target position you want to point to
+    :return: angle in radians
+    :rtype: float
+    """
+
+    dx = target.x - origin.x
+    dy = target.y - origin.y
+    return math.atan2(dy, dx)
+
+

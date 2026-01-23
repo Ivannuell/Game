@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from Utils.systemProfiler_overlay import DebugOverlaySystem
     from Game_Managers.assetManager import AssetsManager
     from Game_Managers.inputManager import InputManager
-    from scenes.scene_Manager import SceneManager
+    from Game_Managers.scene_Manager import SceneManager
     from Utils.systemProfiler import SystemProfiler
 
 
@@ -22,7 +22,6 @@ class Scene(ABC):
         self.game = game
         self.asset_manager: 'AssetsManager' = game.asset_manager
         self.input_manager: 'InputManager' = game.input_manager
-        # self.scene_manager: 'SceneManager' = game.scene_manager
         self.profiler: 'SystemProfiler' = game.profiler
         self.profiler_overlay: 'DebugOverlaySystem' = game.profiler_overlay
     
@@ -77,6 +76,7 @@ class Scene(ABC):
     @property
     def blocks_input(self) -> bool:
         return True
+    
     @property
     def blocks_update(self) -> bool:
         return True

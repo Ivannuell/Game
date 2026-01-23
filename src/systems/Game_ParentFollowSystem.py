@@ -29,15 +29,15 @@ class ParentFollowSystem(System):
 
                 if parent.has(Rotation):
                     parent_rot = parent.get(Rotation)
-                    angle = parent.get(Rotation).rad_angle
+                    angle = parent.get(Rotation).angle
                     cos_a = math.cos(angle)
                     sin_a = math.sin(angle)
 
                     rx = x * cos_a - y * sin_a
                     ry = x * sin_a + y * cos_a
                     
-                    if not e.has(AutoCannon):
-                        e.get(Rotation).rad_angle = parent_rot.rad_angle
+                    if not e.has(Cannon):
+                        e.get(Rotation).angle = parent_rot.angle
                         
                 else:
                     rx, ry = x, y

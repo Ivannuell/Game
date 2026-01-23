@@ -2,9 +2,10 @@ from abc import ABC, abstractmethod
 import math
 
 import pygame
-from Utils.helper import SPRITE_FORWARD_OFFSET
+from Utils.helper import SPRITE_FORWARD_OFFSET, point_towards
+from components.components import Position
 from registries.EnemyList import EnemyList
-from systems.SpawnerSystem import SpawnEvent
+from systems.enemyFactorySystem import SpawnEvent
 
 class SpawnPattern(ABC):
     @abstractmethod
@@ -69,12 +70,12 @@ class Line_Enemies(SpawnPattern):
 
 
 class Grid_Enemies(SpawnPattern):
-    def __init__(self, startPos:tuple[int, int], gridSize: tuple[int, int], angle, spacing):
+    def __init__(self, startPos:tuple[int, int], gridSize: tuple[int, int], target, spacing):
         self.timer = 0
         self.spawned = 0
         self.gridx, self.gridy = gridSize
         self.startPos = startPos
-        self.target = angle
+        self.target = target
         self.spacing = spacing
 
     def is_done(self) -> bool:
@@ -91,21 +92,17 @@ class Grid_Enemies(SpawnPattern):
 
         for x in range(self.gridx):
             for y in range(self.gridy):
+                target_pos = self.target.get(Position)
+
                 enemy = SpawnEvent()
                 enemy.spawn = EnemyList.Normal
                 enemy.position = pygame.Vector2(
                     self.startPos[0] + x * self.spacing, 
                     self.startPos[1] + y * self.spacing
                     )
+                enemy.direction = point_towards(enemy.position, target_pos)
+                enemy.target = self.target
 
-                dx = self.target.x - self.startPos[0]
-                dy = self.target.y - self.startPos[1]
-
-                enemy.direction = math.atan2(dy, dx)
-
-               
-                # enemy.direction = math.radians(enemy.position.angle_to(pygame.Vector2(self.target.x, self.target.y)) + 46)
-                # enemy.direction = 2
                 self.spawned += 1
                 events.append(enemy)
 

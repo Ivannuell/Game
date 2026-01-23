@@ -20,7 +20,7 @@ class ProjectileSystem(System):
         self.sprite = scene.asset_manager.get_asset('projectile')
 
     def update(self, entites, dt):
-        for p in self.scene.proj_pool.pool:
+        for p in self.scene.proj_pool.pool: # type: ignore
             if not p.alive:
                 continue
 
@@ -69,9 +69,9 @@ class ProjectileSystem(System):
                 break
 
 
-        cos_r = math.cos(-self.scene.camera.rotation)
-        sin_r = math.sin(-self.scene.camera.rotation)
-        zoomed_sprite = pygame.transform.scale_by(self.sprite, self.zoom)
+        cos_r = math.cos(-self.scene.camera.rotation) 
+        sin_r = math.sin(-self.scene.camera.rotation) 
+        zoomed_sprite = pygame.transform.scale_by(self.sprite, self.zoom) 
 
         hw = self.sprite.get_width() * 0.5
         hh = self.sprite.get_height() * 0.5

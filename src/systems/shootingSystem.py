@@ -27,7 +27,7 @@ class ShootingSystem(System):
         super().__init__(scene)
 
     def update(self, entities: list["Entity"], dt):
-        shooters = []
+        shooters: 'list[Entity]' = []
 
         for entity in entities:
             if entity.has(ShootIntent, Cannon):
@@ -40,7 +40,7 @@ class ShootingSystem(System):
                 continue
 
             pos = shooter.get(Position)
-            angle = shooter.get(Rotation).rad_angle
+            angle = shooter.get(Rotation).angle
             faction = shooter.get(FactionIdentity).faction
             cannon = shooter.get(Cannon)
 
@@ -53,7 +53,7 @@ class ShootingSystem(System):
             elif faction == "ENEMY":
                 damage = 10
 
-            if cannon.time_left >= cannon.cooldown:
+            if cannon.cooldown():
                 self.scene.proj_pool.spawn(
                     x=pos.x,
                     y=pos.y,

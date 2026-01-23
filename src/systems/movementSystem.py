@@ -20,7 +20,7 @@ class MovementSystem(System):
 
         for entity in entities:
 
-            if entity.has(Position, Velocity, MovementIntent, InputControlled):
+            if entity.has(Position, Velocity, MovementIntent):
                 player_cons.append(entity)
 
 
@@ -30,8 +30,8 @@ class MovementSystem(System):
             movement_intent = player.get(MovementIntent)
             rotation = player.get(Rotation)
 
-            target_vx = movement_intent.move_x * math.cos(rotation.rad_angle) *  velocity.speed
-            target_vy = movement_intent.move_y * -math.sin(rotation.rad_angle) * velocity.speed
+            target_vx = movement_intent.move_x * math.cos(rotation.angle) *  velocity.speed
+            target_vy = movement_intent.move_y * -math.sin(rotation.angle) * velocity.speed
         
             if movement_intent.move_x != 0:
                 velocity.x = move_towards(velocity.x , target_vx, ACCELERATION * dt)

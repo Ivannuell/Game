@@ -2,6 +2,7 @@
 
 
 import pygame
+from Utils.helper import point_towards
 from components.components import *
 from Utils.spatialGrid import SpatialGrid
 from systems.system import System
@@ -29,13 +30,13 @@ class AutoAimingSystem(System):
 
     def update(self, entities: 'list[Entity]', dt):
         self.enemy_inRange_grid.clear()
-        self.auto_cannons = []
+        auto_cannons: list[Entity] = []
 
         for e in entities:
-            if e.has(AutoCannon):
-                self.auto_cannons.append(e)
+            if e.has(Cannon, AutoAim):
+                auto_cannons.append(e)
 
-        if len(self.auto_cannons) <= 0:
+        if len(auto_cannons) <= 0:
             return
 
         for e in entities:
@@ -46,15 +47,15 @@ class AutoAimingSystem(System):
                 self.enemy_inRange_grid.insert(e, pos, col)
         
         
-        for cannon in self.auto_cannons:
+        for cannon in auto_cannons:
             cannon_pos = cannon.get(Position)
-            cannon_range = cannon.get(AutoCannon)
+            cannon_AimRange = cannon.get(AutoAim)
             cannon_rot = cannon.get(Rotation)
             cannon_intent = cannon.get(ShootIntent)
             enemy_inRange = []
 
             for enemy in self.enemy_inRange_grid.query_range(
-                    cannon_pos.x, cannon_pos.y, cannon_range.range):
+                    cannon_pos.x, cannon_pos.y, cannon_AimRange.range):
 
                 enemy_pos = enemy.get(Position)
 
@@ -71,12 +72,9 @@ class AutoAimingSystem(System):
             enemy = enemy_inRange[0]
 
             enemy_pos = enemy[0].get(Position)
+            cannon_rot.angle = point_towards(cannon_pos, enemy_pos)
 
-            dx = enemy_pos.x - cannon_pos.x
-            dy = enemy_pos.y - cannon_pos.y
-            cannon_rot.rad_angle = math.atan2(dy, dx)
-
-            cannon_intent.fired = True
+            # cannon_intent.fired = True
 
 
             

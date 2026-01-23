@@ -15,13 +15,14 @@ from scenes.scene import Scene
 
 from systems.CleanupSystem import CleanupSystem
 from systems.Game_AutoAimingSystem import AutoAimingSystem
+from systems.Game_goldSystem import Earn_GoldSystem
 from systems.ProjectileSystem import ProjectileSystem
 from systems.RotationSystem import RotationSystem
-from systems.SpawnerSystem import SpawnerSystem
+from systems.enemyFactorySystem import Enemy_FactorySystem
 from systems.CameraSystem import CameraSystem
 from systems.AnimationSystem import EventCleanerSystem, Events_AnimationSystem, Playback_AnimationSystem, State_AnimationSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
-from systems.Game_enemy_AiSystem import Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem
+from systems.Game_enemy_AiSystem import AI_DecisionSystem, AI_PerceptionSystem, Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem, Enemy_AI_TargetSystem, GridIndexSystem
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
 from systems.UI.button_displaySystem import ButtonDisplaySystem
@@ -52,12 +53,15 @@ from systems.transform_cameraSystem import CameraTransformSystem
 class PlayScene(Scene):
     def __init__(self, game) -> None:
         super().__init__(game)
-        self.shipConfig = {}
-        self.boosterConfig = {}
+
         self.camera = Camera()
-        self.spawner = EnemyFactory(self)
-        self.collision_grid = SpatialGrid(50)
+        self.enemyFactory = EnemyFactory(self)
         self.proj_pool = ProjectilePool(500)
+
+        self.collision_grid = SpatialGrid(50)
+        self.player_grid = SpatialGrid(50)
+        self.enemy_grid = SpatialGrid(50)
+
 
     def on_Create(self):
         self.systems = [
@@ -72,8 +76,14 @@ class PlayScene(Scene):
             Events_AnimationSystem(self),
             State_AnimationSystem(self),
 
-            Enemy_AI_ShootingSystem(self),
+            GridIndexSystem(self),
+
+            AI_PerceptionSystem(self),
+            AI_DecisionSystem(self),
+
             Enemy_AI_MovementSystem(self),
+            Enemy_AI_ShootingSystem(self),
+            Enemy_AI_TargetSystem(self),
 
             MovementSystem(self),
 
@@ -81,6 +91,7 @@ class PlayScene(Scene):
             CollisionSystem(self),
             DamageSystem(self),
             HealthSystem(self),
+            Earn_GoldSystem(self),
             Playback_AnimationSystem(self),
 
             LifetimeSystem(self),
@@ -89,11 +100,11 @@ class PlayScene(Scene):
 
             CameraSystem(self),
 
-            SpawnerSystem(self),
+            Enemy_FactorySystem(self),
             ButtonDisplaySystem(self),
             CameraTransformSystem(self),
 
-            # DebugCollisionRenderSystem(enabled=True),/
+            DebugCollisionRenderSystem(self, enabled=True),
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self),
 
@@ -104,7 +115,7 @@ class PlayScene(Scene):
         ]
 
         self.playerConfig = {
-            "Pos": (400, 300),
+            "Pos": (100, 200),
             "Sprite": "player",
             "Anim": {
                 "player-idle": Anim([], [(0, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
@@ -112,8 +123,7 @@ class PlayScene(Scene):
                 # "player-move-right": Anim([], [(96,0,48,48), (144,0,48,48), (192,0,48,48)], 0, 0.1, AnimationMode.NORMAL)
             },
             "col": (48, 48),
-            "Vel": 420,
-            "Cannon": True
+            "Vel": 200,
         }
 
         self.boosterConfig = {
@@ -137,6 +147,29 @@ class PlayScene(Scene):
             "col": (48, 48),
         }
 
+        self.PlayerBaseConfig = {
+            "Position": (100, 100),
+            "Spritesheet": "ship",
+            "Animation": {
+                "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP)
+            }, 
+            "Size": (48,48,4),
+            "Faction": "PLAYER"
+        }
+
+        self.EnemyBaseConfig = {
+            "Position": (1500, 100),
+            "Spritesheet": "enemy1",
+            "Animation": {
+                "enemy1-idle": Anim([], [(0,0,32,32)], 0, 0.2, AnimationMode.LOOP)
+            }, 
+            "Size": (32,32,4),
+            "Faction": "ENEMY"
+        }
+
+
+
+
     def on_Enter(self):
         print("On Game")
         for system in self.systems:
@@ -150,22 +183,28 @@ class PlayScene(Scene):
         pause.get(Position).x = self.game.screen.display_surface.width / 2 - 25
         pause.get(Position).y = 10
 
-        Headquarter = Base(self)
+        EnemyBase = Base(self, self.EnemyBaseConfig)
+        Headquarter = Base(self, self.PlayerBaseConfig)
+
+        EnemyBase.get(Rotation).angle = math.radians(175)
+        # EnemyBase.add(EnemyIntent())
+
         Headquarter.get(Collider).width = 50
         Headquarter.get(Collider).height = 50
 
         Ship_Cannon = PlayerPart(self, config=self.cannonConfig)
         Ship_main = Player(self, config=self.playerConfig)
         Ship_Booster = PlayerPart(self, config=self.boosterConfig)
-
         Ship_Booster.get(Parent).entity = Ship_main
         Ship_Cannon.get(Parent).entity = Ship_main
-        Ship_Cannon.add(Cannon(0.2))
-        Ship_Cannon.add(AutoCannon(7))
+        Ship_Cannon.add(Cannon(0.5))
+        Ship_Cannon.add(AutoAim(7))
         Ship_Cannon.add(ShootIntent())
 
         gridEnemy = SpawnerEntity(self, Grid_Enemies(
-            (100, 100), (3, 3), Headquarter.get(Position), 32))
+            (1500, 100), (3, 3), Headquarter, 32))
+        gridEnemy2 = SpawnerEntity(self, Grid_Enemies(
+            (1500, 100), (3, 3), Headquarter, 62))
 
         self.camera.target = Ship_main
 
@@ -173,9 +212,10 @@ class PlayScene(Scene):
         self.entities.append(Ship_main)
         self.entities.append(Ship_Booster)
         self.entities.append(Headquarter)
+        self.entities.append(EnemyBase)
 
         self.entities.append(gridEnemy)
-        # self.entities.append(gridEnemy2)
+        self.entities.append(gridEnemy2)
 
         self.entities.append(cam)
         self.entities.append(pause)

@@ -1,8 +1,9 @@
 import math
+from warnings import deprecated
 from entities.entity import Entity
 from components.components import *
 
-
+@deprecated("Now uses object-derived projectiles")
 class Bullet(Entity):
     def __init__(self, game):
         super().__init__(game)
@@ -49,7 +50,7 @@ class Bullet(Entity):
         pos.x = shooter_pos.x 
         pos.y = shooter_pos.y
 
-        rotation.rad_angle = angle
+        rotation.angle = angle
         self.get(FactionIdentity).faction = shooter.get(FactionIdentity).faction
 
         vel.speed = 900

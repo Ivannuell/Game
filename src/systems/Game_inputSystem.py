@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from scenes.scene import Scene
 
 from entities.system_Entities.executable import Executable
-from scenes.scene_Manager import SceneList
+from Game_Managers.scene_Manager import SceneList
 from systems.system import System
 from components.components import *
 

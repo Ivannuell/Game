@@ -17,9 +17,10 @@ class SpawnEvent:
     position: Vector2
     direction: float | None = None
     delay: float = 0.0
+    target: 'Entity'
 
 
-class SpawnerSystem(System):
+class Enemy_FactorySystem(System):
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
 
@@ -41,14 +42,13 @@ class SpawnerSystem(System):
                 entity.add(Destroy())
 
                 
-
-
     def spawnEnemy(self, event: SpawnEvent):
-        enemy = self.scene.spawner.create(event.spawn)
+        enemy = self.scene.enemyFactory.create(event.spawn)
 
         enemy_pos = enemy.get(Position)
-
+        enemy.add(Target(event.target))
+        
         enemy_pos.set(event.position)
-        enemy.get(Rotation).rad_angle = event.direction
+        enemy.get(Rotation).angle = event.direction
 
         return enemy

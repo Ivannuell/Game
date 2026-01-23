@@ -13,7 +13,6 @@ class Enemy(Entity):
         self.add(Size(config["Size"][0], config["Size"][1], config["Size"][2]))
         self.add(Collider(config["Collider"][0], config["Collider"][1]))
         self.add(Health(config["Health"]))
-        self.add(Cannon(config["Cannon"]))
 
         self.add(CollidedWith())
         self.add(Sprite())
@@ -27,7 +26,7 @@ class Enemy(Entity):
         self.add(CollisionIdentity(
             role="ENEMY",
             layer = [CollisionID.Enemies],
-            mask = [CollisionID.Players, CollisionID.Projectiles]
+            mask = [CollisionID.Players, CollisionID.Projectiles, CollisionID.Enemies]
         ))
 
         self.init_Entity()

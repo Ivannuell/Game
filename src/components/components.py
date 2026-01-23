@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod, abstractproperty
 from enum import Enum
 from functools import lru_cache
 import math
@@ -8,6 +9,7 @@ from typing import TYPE_CHECKING
 
 from Utils.helper import SPRITE_FORWARD_OFFSET
 from registries.AnimationStateList import AnimationStateList
+from registries.EnemyList import EnemyActions
 
 
 if TYPE_CHECKING:
@@ -49,7 +51,7 @@ class Anim:
         self.frame_duration = frame_duration
         self.mode = mode
 
-class Component:
+class Component(ABC):
     pass
 
 @ComponentRegistry.register
@@ -155,12 +157,7 @@ class Projectile(Component):
     def reset(self):
         self.timeout = 1
 
-@ComponentRegistry.register
-class DamageEvent(Component):
-    def __init__(self, amount=0, source=""):
-        super().__init__()
-        self.amount = amount
-        self.source = source
+
 
 @ComponentRegistry.register
 class CollidedWith(Component):
@@ -180,6 +177,13 @@ class Damage(Component):
     def __init__(self, damage):
         super().__init__()
         self.damage = damage
+
+@ComponentRegistry.register
+class DamageEvent(Component):
+    def __init__(self, amount=0, source=""):
+        super().__init__()
+        self.amount = amount
+        self.source = source
 
 @ComponentRegistry.register
 class Static(Component):
@@ -252,15 +256,15 @@ class Orbit(Component):
 class Rotation(Component):
     def __init__(self) -> None:
         super().__init__()
-        self.rad_angle: float = 0
-        self.target_angle: float = 0
-        self.angular_vel = 0.0  
+        self.angle: float = 0
+        self.angleOfAttack: float = 0
+        self.angular_vel = 0 
         self.smoothing = 9
-        self.visual_deg = math.degrees(self.rad_angle)
+        self.visual_deg = math.degrees(self.angle)
         # self.set_target()
 
     def set_target(self):
-        self.target_angle -= SPRITE_FORWARD_OFFSET
+        self.angleOfAttack -= SPRITE_FORWARD_OFFSET
 
 
 
@@ -286,12 +290,6 @@ class MovementIntent(Component):
         self.rotate_left = False
         self.rotate_right = False
 
-@ComponentRegistry.register   
-class ShootIntent(Component):
-    def __init__(self):
-        super().__init__
-        self.fired = False
-
 @ComponentRegistry.register
 class Clickable(Component):
     def __init__(self, buttonID) -> None:
@@ -311,8 +309,19 @@ class Command(Component):
 class EnemyIntent(Component):
     def __init__(self) -> None:
         super().__init__()
-        self.move = "LEFT"
-        self.shoot = False
+        self.current_action = EnemyActions.Attacking
+        self.previous_action = EnemyActions.Invading
+        self.special_action = None
+        self.radar_range = 7
+
+
+@ComponentRegistry.register
+class Target(Component):
+    def __init__(self, target) -> None:
+        super().__init__()
+        self.target = target
+        self.Main_target = target
+    
 
 @ComponentRegistry.register
 class Zoom(Component):
@@ -335,16 +344,69 @@ class Destroy(Component):
     def __init__(self) -> None:
         super().__init__()
 
-
-@ComponentRegistry.register
-class AutoCannon(Component):
-    def __init__(self, range) -> None:
-        super().__init__()
-        self.range = range
+@ComponentRegistry.register   
+class ShootIntent(Component):
+    def __init__(self):
+        super().__init__
+        self.fired = False
 
 @ComponentRegistry.register
 class Cannon(Component):
     def __init__(self, cooldown):
+        self.time_left = 0
+        self._cooldowntime_ = cooldown
+
+    def cooldown(self):
+        if self.time_left >= self._cooldowntime_: return True
+        else: return False
+
+@ComponentRegistry.register
+class ManualAim(Component):
+    def __init__(self, angle) -> None:
+        self.angleOfAttack = angle
+
+@ComponentRegistry.register
+class AutoAim(Component):
+    def __init__(self, range) -> None:
+        self.range = range
+
+
+@ComponentRegistry.register
+class Gold(Component):
+    def __init__(self, amount):
         super().__init__()
-        self.cooldown = cooldown
-        self.time_left: float = 0
+        self.amount = amount
+        
+@ComponentRegistry.register
+class GoldContainer(Component):
+    def __init__(self, capacity):
+        super().__init__()
+        self.gold = 0
+        self.gold_capacity = capacity
+
+@ComponentRegistry.register
+class EarnGoldEvent(Component):
+    def __init__(self, amount=0, source=""):
+        super().__init__()
+        self.amount = amount
+        self.source = source
+
+
+
+@ComponentRegistry.register
+class IsDead(Component):
+    def __init__(self):
+        super().__init__()
+
+
+@ComponentRegistry.register
+class Vision(Component):
+    def __init__(self, visual_range):
+        super().__init__()
+        self.range = visual_range
+
+@ComponentRegistry.register
+class Perception(Component):
+    def __init__(self):
+        super().__init__()
+        self.entities: 'list[Entity]' = []

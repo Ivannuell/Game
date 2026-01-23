@@ -23,8 +23,8 @@ def draw_forward_debug(surface, position, rotation, length=40, color=(0, 255, 0)
 
 
 class DebugCollisionRenderSystem(System):
-    def __init__(self, enabled=False,):
-        super().__init__()
+    def __init__(self,scene, enabled=False,):
+        super().__init__(scene)
         self.enabled = enabled
 
     def render(self, entities: list[Entity], screen):
@@ -59,7 +59,7 @@ class DebugCollisionRenderSystem(System):
             rect.w = col.width * camera.zoom
             rect.h = col.height * camera.zoom
             rect.center = (viewpos.x * camera.zoom + screen_center[0], 
-                           viewpos.y * camera.zoom + screen_center[1] + 200)
+                           viewpos.y * camera.zoom + screen_center[1])
                 
 
             # red outline
