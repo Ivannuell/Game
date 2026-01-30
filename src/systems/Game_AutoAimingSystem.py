@@ -27,20 +27,27 @@ class AutoAimingSystem(System):
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
         self.enemy_inRange_grid = SpatialGrid(50)
+        self.time = 0
 
     def update(self, entities: 'list[Entity]', dt):
+        if self.time >= 0.2:
+            self.time = 0
+            return
+        
+        self.time += dt
+
         self.enemy_inRange_grid.clear()
         auto_cannons: list[Entity] = []
 
         for e in entities:
-            if e.has(Cannon, AutoAim):
+            if e.has(Cannon, AutoAim, Perception):
                 auto_cannons.append(e)
 
         if len(auto_cannons) <= 0:
             return
 
         for e in entities:
-            if e.has(EnemyIntent):
+            if e.has(EnemyIntent) or e.has(Farm):
                 pos = e.get(Position)
                 col = e.get(Collider)
 
@@ -50,12 +57,12 @@ class AutoAimingSystem(System):
         for cannon in auto_cannons:
             cannon_pos = cannon.get(Position)
             cannon_AimRange = cannon.get(AutoAim)
-            cannon_rot = cannon.get(Rotation)
-            cannon_intent = cannon.get(ShootIntent)
+            cannon_perception = cannon.get(Perception)
             enemy_inRange = []
 
-            for enemy in self.enemy_inRange_grid.query_range(
-                    cannon_pos.x, cannon_pos.y, cannon_AimRange.range):
+            cannon_perception.visible_entities.clear()
+            
+            for enemy in self.enemy_inRange_grid.query_range(cannon_pos.x, cannon_pos.y, cannon_AimRange.range):
 
                 enemy_pos = enemy.get(Position)
 
@@ -64,17 +71,41 @@ class AutoAimingSystem(System):
                 distance = dx*dx + dy*dy
 
                 enemy_inRange.append((enemy, distance))
+                if len(enemy_inRange) >= 3:
+                    break
 
             if not enemy_inRange:
                 continue
 
-            enemy_inRange.sort(key=lambda e: e[1])
-            enemy = enemy_inRange[0]
+            cannon_perception.visible_entities.extend(enemy_inRange)
 
-            enemy_pos = enemy[0].get(Position)
-            cannon_rot.angle = point_towards(cannon_pos, enemy_pos)
 
-            # cannon_intent.fired = True
+
+class AutoFireSystem(System):
+        def __init__(self, scene):
+                super().__init__(scene)
+
+        def update(self, entities, dt):
+            for e in entities:
+                if not e.has(Cannon, AutoAim, Perception):
+                    continue
+
+                perception = e.get(Perception)
+                cannon_rot = e.get(Rotation)
+                cannon_pos = e.get(Position)
+                cannon_intent = e.get(ShootIntent)
+
+
+                if not perception.visible_entities:
+                    break
+
+                perception.visible_entities.sort(key=lambda e: e[1])
+                enemy = perception.visible_entities[0]
+
+                enemy_pos = enemy[0].get(Position)
+                cannon_rot.angle = point_towards(cannon_pos, enemy_pos)
+
+                cannon_intent.fired = True
 
 
             

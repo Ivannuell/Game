@@ -31,4 +31,6 @@ class Base(Entity):
         self.add(HeadQuarter())
         self.add(Health(1000))
 
+        self.add(GoldContainer(10000))
+
         self.init_Entity()

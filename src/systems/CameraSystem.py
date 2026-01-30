@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class CameraSystem(System):
     def __init__(self, scene: 'PlayScene'):
         super().__init__(scene)
-
+        
     def update(self, entities: 'list[Scene]',  dt):
         if self.scene.camera.target is None:
             return

@@ -26,7 +26,12 @@ collision_pairs = {
     ("PLAYERPART", "PROJECTILE"),
 
     ("PLAYER", "BASE"),
-    ("BASE", "PLAYER")
+    ("BASE", "PLAYER"),
+    ("PLAYER", "FARM"),
+    ("FARM", "PLAYER"),
+
+    ("ENEMY", "FARM"),
+    ("FARM", "ENEMY")
 }
 
 
@@ -200,6 +205,8 @@ class CollisionSystem(System):
 
 
     def resolve_dynamic_dynamic(self,e1, e2, p1, v1, c1, p2, v2, c2):
+        bounce = -1
+
         r1 = self.get_rect(e1, p1, c1)
         r2 = self.get_rect(e2, p2, c2)
 
@@ -222,10 +229,10 @@ class CollisionSystem(System):
             copy_x1 = v1.x
             copy_x2 = v2.x
 
-            v1.x = 0
-            v2.x = 0
-            # v1.x = (copy_x2 * -1) 
-            # v2.x = (copy_x1 * -1)
+            v1.x *= bounce
+            v2.x *= bounce
+            # v1.x = (copy_x2 * bounce) 
+            # v2.x = (copy_x1 * bounce)
 
             # v1.x = clamp_value(v1.x, max(v1.x, v2.x), 100)
             # v2.x = clamp_value(v2.x, max(v1.x, v2.x), 100)
@@ -240,8 +247,8 @@ class CollisionSystem(System):
             copy_y1 = v1.y
             copy_y2 = v2.y
 
-            v1.y = 0
-            v2.y = 0
+            v1.y *= bounce
+            v2.y *= bounce
             # v1.y = (copy_y2 * -1)
             # v2.y = (copy_y1 * -1) 
 

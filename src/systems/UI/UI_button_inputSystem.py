@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from scenes.scene import Scene
     from entities.entity import Entity
 
-from entities.system_Entities.executable import Executable
+from entities.Utility_Entities.executable import Executable
 
 from components.components import *
 

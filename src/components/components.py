@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-from enum import Enum
+from enum import Enum, auto
 from functools import lru_cache
 import math
 import pygame
@@ -30,17 +30,18 @@ class ComponentRegistry:
         return cls._components[component_cls]
 
 class CollisionID(Enum):
-    Players = 0
-    Enemies = 1
-    Projectiles = 2
-    Obstacles = 3
+    Players = auto()
+    Enemies = auto()
+    Projectiles = auto()
+    Obstacles = auto()
+    Farm = auto()
 
 class CommandType(Enum):
-    CHANGE_SCENE = 1
-    EXIT = 2
-    PAUSE = 3
-    RESUME = 4
-    RESTART = 5
+    CHANGE_SCENE = auto()
+    EXIT = auto()
+    PAUSE = auto()
+    RESUME = auto()
+    RESTART = auto()
 
 class Anim:
     def __init__(self, frames, frame_coords, frame_index, frame_duration, mode):
@@ -180,7 +181,7 @@ class Damage(Component):
 
 @ComponentRegistry.register
 class DamageEvent(Component):
-    def __init__(self, amount=0, source=""):
+    def __init__(self, amount=0, source:'Entity|None'=None):
         super().__init__()
         self.amount = amount
         self.source = source
@@ -219,7 +220,7 @@ class UiElement(Component):
     def __init__(self) -> None:
         super().__init__()
 
-class SystemEntity(Component):
+class UtilityEntity(Component):
     def __init__(self) -> None:
         super().__init__()
 
@@ -319,6 +320,7 @@ class EnemyIntent(Component):
 class Target(Component):
     def __init__(self, target) -> None:
         super().__init__()
+        self.prev_target = target
         self.target = target
         self.Main_target = target
     
@@ -340,6 +342,34 @@ class EnemySpawner(Component):
         self.pattern: 'SpawnPattern' = pattern
 
 @ComponentRegistry.register
+class AsteriodSpawner(Component):
+    def __init__(self) -> None:
+        super().__init__()
+        
+
+@ComponentRegistry.register
+class ZoneComponent(Component):
+    def __init__(self,id, maxcount, pos, size) -> None:
+        super().__init__()
+        self.maxCount = maxcount
+        self.count = 0
+        self.pos = pos
+        self.size = size
+        self.id = id
+
+@ComponentRegistry.register
+class ZoneId(Component):
+    def __init__(self, id) -> None:
+        super().__init__()
+        self.id = id
+
+class FarmDestroyed(Component):
+    def __init__(self, idm) -> None:
+        super().__init__()
+        self.id = idm
+
+
+@ComponentRegistry.register
 class Destroy(Component):
     def __init__(self) -> None:
         super().__init__()
@@ -349,6 +379,16 @@ class ShootIntent(Component):
     def __init__(self):
         super().__init__
         self.fired = False
+
+@ComponentRegistry.register   
+class Attacker(Component):
+    def __init__(self):
+        super().__init__
+
+@ComponentRegistry.register   
+class Farmer(Component):
+    def __init__(self):
+        super().__init__
 
 @ComponentRegistry.register
 class Cannon(Component):
@@ -386,18 +426,26 @@ class GoldContainer(Component):
 
 @ComponentRegistry.register
 class EarnGoldEvent(Component):
-    def __init__(self, amount=0, source=""):
+    def __init__(self, amount=0, source:'Entity | None'=None):
         super().__init__()
         self.amount = amount
         self.source = source
 
-
+@ComponentRegistry.register
+class Farm(Component):
+    def __init__(self):
+        super().__init__()
 
 @ComponentRegistry.register
 class IsDead(Component):
     def __init__(self):
         super().__init__()
 
+@ComponentRegistry.register
+class HitBy(Component):
+    def __init__(self, entity):
+        super().__init__()
+        self.entity = entity
 
 @ComponentRegistry.register
 class Vision(Component):
@@ -409,4 +457,5 @@ class Vision(Component):
 class Perception(Component):
     def __init__(self):
         super().__init__()
-        self.entities: 'list[Entity]' = []
+        self.visible_entities: 'list[Entity] | list[Entity, float]' = []
+        self.cooldown = 0.0

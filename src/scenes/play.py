@@ -1,67 +1,78 @@
 
 
-from Utils.Camera import Camera
-from Utils.EnemyFactory import EnemyFactory
-from Utils.spatialGrid import SpatialGrid
-from entities.Spawn_Patterns.EnemyPatterns import Grid_Enemies, Line_Enemies
-from entities.UI.button import Button
+from components.components import *
+from entities.Utility_Entities.zone import Zone
+from entities.asteriods import Asteriod
+from entities.base import Base
+from entities.player import Player
 from entities.playerPart import PlayerPart
 from entities.projectile_related.projectile import ProjectilePool
-from entities.system_Entities.Spawner import SpawnerEntity
-from entities.system_Entities.camera import CameraEntity
-from entities.base import Base
-from registries.AnimationStateList import AnimationMode
+from entities.Spawn_Patterns.EnemyPatterns import Grid_Enemies, Line_Enemies
+from entities.UI.button import Button
+from entities.Utility_Entities.camera import CameraEntity
+from entities.Utility_Entities.Spawner import SpawnerEntity
+from registries.EntityConfigs import *
 from scenes.scene import Scene
-
-from systems.CleanupSystem import CleanupSystem
-from systems.Game_AutoAimingSystem import AutoAimingSystem
-from systems.Game_goldSystem import Earn_GoldSystem
-from systems.ProjectileSystem import ProjectileSystem
-from systems.RotationSystem import RotationSystem
-from systems.enemyFactorySystem import Enemy_FactorySystem
-from systems.CameraSystem import CameraSystem
-from systems.AnimationSystem import EventCleanerSystem, Events_AnimationSystem, Playback_AnimationSystem, State_AnimationSystem
-from systems.Game_ParentFollowSystem import ParentFollowSystem
-from systems.Game_enemy_AiSystem import AI_DecisionSystem, AI_PerceptionSystem, Enemy_AI_MovementSystem, Enemy_AI_ShootingSystem, Enemy_AI_TargetSystem, GridIndexSystem
-from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
-from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
-from systems.UI.button_displaySystem import ButtonDisplaySystem
+from systems.AnimationSystem import (EventCleanerSystem,
+                                     Events_AnimationSystem,
+                                     Playback_AnimationSystem,
+                                     State_AnimationSystem)
+from systems.Game_AsteriodSystem import Asteriod_ZoneSystem, Asteriods_ManagementSystem
 from systems.camera_zoomSystem import CameraZoomSystem
-from systems.healthBar_displaySystem import HealthBar_DisplaySystem
-from systems.world_renderSystem import WorldRenderSystem
-from systems.Game_inputSystem import InputSystem
-from systems.UI.commandSystem import CommandSystem
-from systems.movementSystem import MovementSystem
-from systems.collisionSystem import CollisionSystem
-from systems.shootingSystem import ShootingSystem
+from systems.CameraSystem import CameraSystem
+from systems.CleanupSystem import CleanupSystem
 from systems.collider_cleanerSystem import CollisionCleanupSystem
-from systems.lifetimeSystem import LifetimeSystem
-from systems.projectile_movementSystem import ProjectileMovementSystem
-from systems.projectile_behaviourSystem import ProjectileBehaviourSystem
+from systems.collisionSystem import CollisionSystem
 from systems.damageSystem import DamageSystem
-from systems.healthSystem import HealthSystem
 from systems.debugers.collideRectDebug import DebugCollisionRenderSystem
 from systems.debugers.healthDraw_DebugerSystem import HealthDraw
 from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
-
-from components.components import *
-
-from entities.player import Player
+from systems.Game_SpawnerSystem import Asteriods_SpawningSystem, Enemy_SpawningSystem
+from systems.Game_AutoAimingSystem import AutoAimingSystem, AutoFireSystem
+from systems.Game_enemy_AiSystem import (AI_DecisionSystem,
+                                         AI_PerceptionSystem,
+                                         Enemy_AI_MovementSystem,
+                                         Enemy_AI_ShootingSystem,
+                                         Enemy_AI_TargetSystem,
+                                         GridIndexSystem)
+from systems.Game_goldSystem import Earn_GoldSystem
+from systems.Game_inputSystem import InputSystem
+from systems.Game_ParentFollowSystem import ParentFollowSystem
+from systems.headsUpDisplaySystem import HeadsUpDisplaySystem
+from systems.healthBar_displaySystem import HealthBar_DisplaySystem
+from systems.healthSystem import HealthSystem
+from systems.lifetimeSystem import LifetimeSystem
+from systems.movementSystem import MovementSystem
+from systems.projectile_behaviourSystem import ProjectileBehaviourSystem
+from systems.projectile_movementSystem import ProjectileMovementSystem
+from systems.ProjectileSystem import ProjectileSystem
+from systems.RotationSystem import RotationSystem
+from systems.shootingSystem import ShootingSystem
 from systems.transform_cameraSystem import CameraTransformSystem
+from systems.UI.button_displaySystem import ButtonDisplaySystem
+from systems.UI.commandSystem import CommandSystem
+from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
+from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
+from systems.world_renderSystem import WorldRenderSystem
+from Utils.Camera import Camera
+from Utils.EnemyFactory import EnemyFactory
+from Utils.spatialGrid import SpatialGrid
 
 
 class PlayScene(Scene):
     def __init__(self, game) -> None:
         super().__init__(game)
 
-        self.camera = Camera()
+        self.camera: Camera = Camera()
         self.enemyFactory = EnemyFactory(self)
         self.proj_pool = ProjectilePool(500)
 
         self.collision_grid = SpatialGrid(50)
         self.player_grid = SpatialGrid(50)
         self.enemy_grid = SpatialGrid(50)
+        self.asteriod_grid =SpatialGrid(50)
 
+        self.player_Entity: Player = None
 
     def on_Create(self):
         self.systems = [
@@ -73,6 +84,7 @@ class PlayScene(Scene):
             CommandSystem(self),
             ShootingSystem(self),
             AutoAimingSystem(self),
+            AutoFireSystem(self),
             Events_AnimationSystem(self),
             State_AnimationSystem(self),
 
@@ -94,81 +106,32 @@ class PlayScene(Scene):
             Earn_GoldSystem(self),
             Playback_AnimationSystem(self),
 
+            Asteriods_ManagementSystem(self),
+
             LifetimeSystem(self),
             CleanupSystem(self),
             EventCleanerSystem(self),
 
             CameraSystem(self),
 
-            Enemy_FactorySystem(self),
+            Enemy_SpawningSystem(self),
+            Asteriods_SpawningSystem(self),
             ButtonDisplaySystem(self),
             CameraTransformSystem(self),
 
-            DebugCollisionRenderSystem(self, enabled=True),
+            # DebugCollisionRenderSystem(self, enabled=True),
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
             OnScreenDebugSystem(self),
 
             HealthBar_DisplaySystem(self),
+            HeadsUpDisplaySystem(self),
             ProjectileSystem(self),
             RotationSystem(self),
+
             WorldRenderSystem(self),  # Uses ViewPosition
+            # Asteriod_ZoneSystem(self),
+
         ]
-
-        self.playerConfig = {
-            "Pos": (100, 200),
-            "Sprite": "player",
-            "Anim": {
-                "player-idle": Anim([], [(0, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
-                # "player-move-left": Anim([], [(96,0,48,48), (48,0,48,48), (0,0,48,48)], 0, 0.1, AnimationMode.NORMAL),
-                # "player-move-right": Anim([], [(96,0,48,48), (144,0,48,48), (192,0,48,48)], 0, 0.1, AnimationMode.NORMAL)
-            },
-            "col": (48, 48),
-            "Vel": 200,
-        }
-
-        self.boosterConfig = {
-            "Pos": (100, 100),
-            "Sprite": "booster",
-            "Anim": {
-                "booster-idle": Anim([], [(0, 0, 48, 48), (48, 0, 48, 48), (96, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
-                "booster-move": Anim([], [(0, 48, 48, 48), (48, 48, 48, 48), (96, 48, 48, 48), (144, 48, 48, 48)], 0, 0.2, AnimationMode.LOOP)
-            },
-            "col": (48, 48),
-        }
-
-        self.cannonConfig = {
-            "Pos": (100, 100),
-            "Sprite": "player_cannon",
-            "Anim": {
-                "player_cannon-idle": Anim([], [(0, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
-                "player_cannon-shoot": Anim([], [(0, 0, 48, 48), (48, 0, 48, 48), (96, 0, 48, 48), (144, 0, 48, 48), (192, 0, 48, 48), (240, 0, 48, 48), (288, 0, 48, 48)], 0, 0.07, AnimationMode.LOOP),
-                "player_cannon-move": Anim([], [(0, 0, 48, 48)], 0, 0.2, AnimationMode.LOOP),
-            },
-            "col": (48, 48),
-        }
-
-        self.PlayerBaseConfig = {
-            "Position": (100, 100),
-            "Spritesheet": "ship",
-            "Animation": {
-                "ship-idle": Anim([], [(0,0,48,48)], 0, 0.2, AnimationMode.LOOP)
-            }, 
-            "Size": (48,48,4),
-            "Faction": "PLAYER"
-        }
-
-        self.EnemyBaseConfig = {
-            "Position": (1500, 100),
-            "Spritesheet": "enemy1",
-            "Animation": {
-                "enemy1-idle": Anim([], [(0,0,32,32)], 0, 0.2, AnimationMode.LOOP)
-            }, 
-            "Size": (32,32,4),
-            "Faction": "ENEMY"
-        }
-
-
-
 
     def on_Enter(self):
         print("On Game")
@@ -183,8 +146,8 @@ class PlayScene(Scene):
         pause.get(Position).x = self.game.screen.display_surface.width / 2 - 25
         pause.get(Position).y = 10
 
-        EnemyBase = Base(self, self.EnemyBaseConfig)
-        Headquarter = Base(self, self.PlayerBaseConfig)
+        EnemyBase = Base(self, EnemyBaseConfig)
+        Headquarter = Base(self, PlayerBaseConfig)
 
         EnemyBase.get(Rotation).angle = math.radians(175)
         # EnemyBase.add(EnemyIntent())
@@ -192,21 +155,34 @@ class PlayScene(Scene):
         Headquarter.get(Collider).width = 50
         Headquarter.get(Collider).height = 50
 
-        Ship_Cannon = PlayerPart(self, config=self.cannonConfig)
-        Ship_main = Player(self, config=self.playerConfig)
-        Ship_Booster = PlayerPart(self, config=self.boosterConfig)
+        Ship_Cannon = PlayerPart(self, config=cannonConfig)
+        Ship_main = Player(self, config=playerConfig)
+        Ship_Booster = PlayerPart(self, config=boosterConfig)
         Ship_Booster.get(Parent).entity = Ship_main
         Ship_Cannon.get(Parent).entity = Ship_main
         Ship_Cannon.add(Cannon(0.5))
         Ship_Cannon.add(AutoAim(7))
         Ship_Cannon.add(ShootIntent())
+        Ship_Cannon.add(Perception())
 
-        gridEnemy = SpawnerEntity(self, Grid_Enemies(
-            (1500, 100), (3, 3), Headquarter, 32))
-        gridEnemy2 = SpawnerEntity(self, Grid_Enemies(
-            (1500, 100), (3, 3), Headquarter, 62))
+        zone1 = Zone(self, 1, 50, (1000, 0), (300, 10000))
+        zone2 = Zone(self, 2, 10, (-100,0), (800, 10000))
+        zone3 = Zone(self, 3, 30, (590, 0), (610, 10000))
+        zone4 = Zone(self, 4, 30, (1440,0), (610, 10000))
+        zone5 = Zone(self, 5, 10, (2100,0), (800, 10000))
+        
+
+        asteriodSpawner = SpawnerEntity(self)
+        asteriodSpawner.add(AsteriodSpawner())
+
+        enemySpawner = SpawnerEntity(self)
+        enemySpawner.add(EnemySpawner(Grid_Enemies((2000, 0), (3,3), Headquarter, 5)))
+
+        # ast = Asteriod(self, Asteriod1)
+        # ast.get(Position).set(pygame.Vector2(0,0))
 
         self.camera.target = Ship_main
+        self.player_Entity = Ship_main
 
         self.entities.append(Ship_Cannon)
         self.entities.append(Ship_main)
@@ -214,8 +190,16 @@ class PlayScene(Scene):
         self.entities.append(Headquarter)
         self.entities.append(EnemyBase)
 
-        self.entities.append(gridEnemy)
-        self.entities.append(gridEnemy2)
+
+        # self.entities.append(ast)
+        self.entities.append(zone1)
+        self.entities.append(zone2)
+        self.entities.append(zone3)
+        self.entities.append(zone4)
+        self.entities.append(zone5)
+
+        self.entities.append(asteriodSpawner)        
+        self.entities.append(enemySpawner)        
 
         self.entities.append(cam)
         self.entities.append(pause)
@@ -239,6 +223,15 @@ class PlayScene(Scene):
             DebugCollisionRenderSystem,
             HealthDraw,
             OnScreenDebugSystem,
+            GridIndexSystem,
+
+            AI_PerceptionSystem,
+            AI_DecisionSystem,
+
+            Enemy_AI_MovementSystem,
+            Enemy_AI_ShootingSystem,
+            Enemy_AI_TargetSystem,
+            Asteriods_SpawningSystem,
         ]
 
     def on_Resume(self):

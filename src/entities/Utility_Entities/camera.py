@@ -11,4 +11,4 @@ class CameraEntity(Entity):
         super().__init__(scene)
         self.alive = True
         self.add(Zoom())
-        self.add(SystemEntity())
+        self.add(UtilityEntity())

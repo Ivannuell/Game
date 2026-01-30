@@ -30,4 +30,5 @@ class RotationSystem(System):
                 # interpolate
                 t = 1 - math.exp(-ROTATION_SMOOTHNESS * dt)
                 rot.visual_deg = lerp_angle(rot.visual_deg, rot.angleOfAttack, t)
+                rot.visual_deg = round(rot.visual_deg, 5)
 

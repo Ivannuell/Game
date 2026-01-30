@@ -64,3 +64,23 @@ create 2 grids for where enemies are and players
 check the grids
 
 May help the performance if the enemy already change its target from the main target once it should be skipped from checking again. Or if the main target and target is not tahe same skip the narrowphase check.
+
+
+
+
+key feature
+
+- The base can summon ships 
+- A farming and attack drones 
+    > A farming drone will only scan for asteriods or farm entities
+    > attack drones can switch to either persiu player or attack base
+        > If no nearby players around choose to attack mainTarget
+        > If there is a nearby player check whether if nearby or main target is closer then attack the closest
+
+
+- Place Asteriods accross the map bias in the center
+    I created zones where asteriods will be spawned
+    each can spawn different numberse of asteriods
+
+    the center will have most asteriods then gets lesser the farther from the center
+    

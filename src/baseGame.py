@@ -40,12 +40,10 @@ class BaseGame:
         if self.screen:
             self.screen.show()
 
-        self.initialize()
-
-    def initialize(self):
-        self.scene_manager.push(SceneList.PRELOAD)
 
     def start(self):
+        self.scene_manager.push(SceneList.PRELOAD)
+        
         while True:
             self.delta_time = self.clock.tick(self.fps) / 1000
 

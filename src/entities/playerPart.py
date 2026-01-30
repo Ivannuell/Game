@@ -18,12 +18,12 @@ class PlayerPart(Entity):
         self.add(InputControlled())
         self.add(Collider())
         self.add(Velocity())
-        self.add(Sprite())
-        self.add(Animation(
-            spritesheet=config["Sprite"],
-            animation=config["Anim"]
-        ))
-        self.add(AnimationState())
+        # self.add(Sprite())
+        # self.add(Animation(
+        #     spritesheet=config["Sprite"],
+        #     animation=config["Anim"]
+        # ))
+        # self.add(AnimationState())
         self.add(FactionIdentity("PLAYER"))
         self.add(CollisionIdentity(
             role="PLAYERPART",

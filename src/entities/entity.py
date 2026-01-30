@@ -18,7 +18,7 @@ class Entity:
         self.scene: 'Scene' = scene
         
 
-    def add(self, component):
+    def add(self, component, replace=False):
         if self.components is None:
             return
         

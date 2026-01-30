@@ -6,6 +6,7 @@ class Projectile:
         "damage",
         "alive",
         "range_left",
+        "owner"
     )
 
     def __init__(self):
@@ -15,7 +16,7 @@ class ProjectilePool:
     def __init__(self, size):
         self.pool = [Projectile() for _ in range(size)]
 
-    def spawn(self, x, y, vx, vy, faction, damage, max_range):
+    def spawn(self, x, y, vx, vy, faction, damage, max_range, owner):
         for p in self.pool:
             if not p.alive:
                 p.x = x
@@ -26,6 +27,7 @@ class ProjectilePool:
                 p.damage = damage
                 p.range_left = max_range
                 p.alive = True
+                p.owner = owner
                 return p
         return None
 

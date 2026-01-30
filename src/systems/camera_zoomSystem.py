@@ -15,25 +15,23 @@ class CameraZoomSystem(System):
         super().__init__(scene)
 
     def update(self, entities: 'list[Entity]', dt):
-        for entity in entities:
-            if entity.has(Zoom):
-                zoom = entity.get(Zoom)
+        zoom = self.scene.camera
 
-                # Mouse wheel input is discrete
-                if self.input_manager.wheel_delta > 0:
-                    zoom.target_zoom *= zoom.zoom_step
-                elif self.input_manager.wheel_delta < 0:
-                    zoom.target_zoom /= zoom.zoom_step
+        # Mouse wheel input is discrete
+        if self.input_manager.wheel_delta > 0:
+            zoom.target_zoom *= zoom.zoom_step
+        elif self.input_manager.wheel_delta < 0:
+            zoom.target_zoom /= zoom.zoom_step
 
-                # Clamp target zoom
-                zoom.target_zoom = clamp_value(zoom.target_zoom, zoom.min_zoom, zoom.max_zoom)
+        # Clamp target zoom
+        zoom.target_zoom = clamp_value(zoom.target_zoom, zoom.min_zoom, zoom.max_zoom)
 
-                # Smooth zoom
-                zoom.zoom += (zoom.target_zoom - zoom.zoom) * 9 * dt
+        # Smooth zoom
+        zoom.zoom += (zoom.target_zoom - zoom.zoom) * 9 * dt
 
-                # Snap prevention
-                if abs(zoom.zoom - zoom.target_zoom) < 1e-3:
-                    zoom.zoom = zoom.target_zoom
+        # Snap prevention
+        if abs(zoom.zoom - zoom.target_zoom) < 1e-3:
+            zoom.zoom = zoom.target_zoom
 
             # Reset wheel delta after processing
         self.input_manager.wheel_delta = 0

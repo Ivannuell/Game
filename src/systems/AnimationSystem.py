@@ -1,4 +1,4 @@
-from entities.system_Entities.animationPlayer import AnimationEvent
+from entities.Utility_Entities.animationPlayer import AnimationEvent
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -29,13 +29,13 @@ class State_AnimationSystem(System):
             state = entity.get(AnimationState)
             state.current = AnimationStateList.IDLE
 
-            # if entity.has(InputControlled, MovementIntent):
-            #     intent = entity.get(MovementIntent)
+            if entity.has(InputControlled, MovementIntent):
+                intent = entity.get(MovementIntent)
 
-            #     if intent.rotate_left:
-            #         state.current = AnimationStateList.MOVE_LEFT
-            #     if intent.rotate_right:
-            #         state.current = AnimationStateList.MOVE_RIGHT
+                if intent.rotate_left:
+                    state.current = AnimationStateList.MOVE_LEFT
+                if intent.rotate_right:
+                    state.current = AnimationStateList.MOVE_RIGHT
 
             if entity.has(AnimationPlayer):
                 state = entity.get(AnimationState)

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from entities.entity import Entity
     from scenes.scene import Scene
 
-from entities.system_Entities.executable import Executable
+from entities.Utility_Entities.executable import Executable
 from Game_Managers.scene_Manager import SceneList
 from systems.system import System
 from components.components import *

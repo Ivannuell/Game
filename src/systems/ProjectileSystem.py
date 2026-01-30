@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class ProjectileSystem(System):
     def __init__(self, scene: 'PlayScene'):
         super().__init__(scene)
-        self.zoom = 1
+        # self.zoom = scene.camera.zoom
         self.center =  (scene.game.screen.display_surface.width /2, scene.game.screen.display_surface.height /2 + 500)
         self.sprite = scene.asset_manager.get_asset('projectile')
 
@@ -57,21 +57,16 @@ class ProjectileSystem(System):
     def on_hit(self, projectile, target_entity):
         target_entity.add(DamageEvent(
             amount=projectile.damage,
-            source=projectile.faction
+            source=projectile.owner
         ))
 
         target_entity.add(Play_CollisionImpact_Event(projectile.x, projectile.y))
 
     def render(self, entities, screen):
-        for e in entities:
-            if e.has(Zoom):
-                self.zoom = e.get(Zoom).zoom
-                break
-
-
+        zoom = self.scene.camera.zoom
         cos_r = math.cos(-self.scene.camera.rotation) 
         sin_r = math.sin(-self.scene.camera.rotation) 
-        zoomed_sprite = pygame.transform.scale_by(self.sprite, self.zoom) 
+        zoomed_sprite = pygame.transform.scale_by(self.sprite, zoom) 
 
         hw = self.sprite.get_width() * 0.5
         hh = self.sprite.get_height() * 0.5
@@ -84,8 +79,8 @@ class ProjectileSystem(System):
                 cam_x = dx * cos_r - dy * sin_r
                 cam_y = dx * sin_r + dy * cos_r
 
-                screen_x = cam_x * self.zoom + self.center[0]
-                screen_y = cam_y * self.zoom + self.center[1] - 500
+                screen_x = cam_x * zoom + self.center[0]
+                screen_y = cam_y * zoom + self.center[1] - 500
 
                 screen.display_surface.blit(zoomed_sprite, (screen_x - hw, screen_y - hh))
 

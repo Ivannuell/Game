@@ -20,8 +20,10 @@ class DamageSystem(System):
         for entity in damagables:
             source = entity.get(DamageEvent)
 
-            if source.source != entity.get(FactionIdentity).faction:
+            if source.source.get(FactionIdentity).faction != entity.get(FactionIdentity).faction:
                 entity.get(Health).health -= source.amount
+                entity.add(HitBy(source.source))
+
                 entity.remove(DamageEvent)
 
 

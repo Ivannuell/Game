@@ -60,6 +60,7 @@ class ShootingSystem(System):
                     vx=math.cos(angle) * speed,
                     vy=math.sin(angle) * speed,
                     faction=faction,
+                    owner=shooter,
                     damage=damage,
                     max_range=1200
                 )

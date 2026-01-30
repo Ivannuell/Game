@@ -24,11 +24,12 @@ class AssetsManager:
             self.assets_dir, 'Projectile01.png'
         )
 
+        assteriod = os.path.join(self.assets_dir, 'Asteroids-Sheet.png')
         enemy1 = os.path.join(self.assets_dir, 'fighter1.png')
         explosion = os.path.join(self.assets_dir, 'Explosion01-Sheet.png')
-        # player = os.path.join(self.assets_dir, 'Player01-Sheet.png')
-        player = os.path.join(self.assets_dir, 'Ship1.png')
+        # player = os.path.join(self.assets_dir, 'Ship1.png')
         player_cannon = os.path.join(self.assets_dir, 'Main Ship - Weapons - Auto Cannon.png')
+        player = os.path.join(self.assets_dir, 'Player01-Sheet.png')
         
         self.add_asset('booster', Spritesheet(booster))
         self.add_asset('ship', Spritesheet(ship))
@@ -36,6 +37,7 @@ class AssetsManager:
         self.add_asset('enemy1', Spritesheet(enemy1))
         self.add_asset('projectile', pygame.image.load(bullet).convert_alpha())
         self.add_asset('Explosion1', Spritesheet(explosion))
+        self.add_asset('Asteriod', Spritesheet(assteriod))
         self.add_asset('player', Spritesheet(player))
         self.add_asset('player_cannon', Spritesheet(player_cannon))
 

@@ -14,11 +14,9 @@ class WorldRenderSystem(System):
 
     def render(self, entities: 'list[Entity]', screen):
         visibles = []
-        camera: Zoom
-        for e in entities:
-            if e.has(Zoom):
-                camera = e.get(Zoom)
+        Camera_View = self.scene.camera
 
+        for e in entities:
             if e.has(Sprite, ViewPosition):
                 visibles.append(e)
 
@@ -26,19 +24,21 @@ class WorldRenderSystem(System):
         for e in visibles: 
             image = e.get(Sprite).image
             view = e.get(ViewPosition)
+            
+            if not screen.display_surface.get_rect().collidepoint((view.x, view.y)):
+                continue
 
             if e.has(Rotation):
                 rot = e.get(Rotation)
                 image = pygame.transform.rotate(image, rot.visual_deg)
 
-            image = pygame.transform.scale_by(image, camera.zoom)
-            screen_center = screen.display_surface.get_rect().center
+            image = self.scale_image(image, Camera_View.zoom)
 
-            screen_x = view.x * camera.zoom + screen_center[0]
-            screen_y = view.y * camera.zoom + screen_center[1]
-
-            rect = image.get_rect(center=(screen_x, screen_y))
+            rect = image.get_rect(center=(view.x, view.y))
             screen.display_surface.blit(image, rect)
 
+    @lru_cache
+    def scale_image(self, image, zoom):
+        return pygame.transform.scale_by(image, zoom)
 
 

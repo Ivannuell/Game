@@ -19,14 +19,25 @@ class HealthSystem(System):
                 continue
 
             health = entity.get(Health).health
+
             if health <= 0:
-                if entity.has(EnemyIntent, Gold):
+                if entity.has(Gold, HitBy):
                     gold = entity.get(Gold).amount
+                    hitBy = entity.get(HitBy).entity
 
                     earn_gold = Entity(self.scene)
-                    earn_gold.add(EarnGoldEvent(gold))
+                    earn_gold.add(EarnGoldEvent(gold, hitBy))
                     events.append(earn_gold)
 
+                    entity.remove(HitBy)
+
+                if entity.has(ZoneId):
+                    zone = entity.get(ZoneId).id
+                    farm = Entity(self.scene)
+                    farm.add(FarmDestroyed(zone))
+                    events.append(farm)
+
+                entity.add(IsDead())
                 entity.add(Destroy())
 
 

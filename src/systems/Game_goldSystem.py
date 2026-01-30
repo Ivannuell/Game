@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from entities.entity import Entity
     from scenes.play import PlayScene
 
-from components.components import Destroy, EarnGoldEvent, GoldContainer
+from components.components import *
 from systems.system import System
 
 
@@ -14,23 +14,30 @@ class Earn_GoldSystem(System):
         super().__init__(scene)
 
     def update(self, entities: 'list[Entity]', dt: float):
-        player: Player | None = None
+        has_goldContainers = []
+        gold_events = []
 
         for entity in entities:
             if entity.has(GoldContainer):
-                player = entity
-                break
+                has_goldContainers.append(entity)
 
-        if player is None:
-            return
-        
-        for entity in entities:
             if entity.has(EarnGoldEvent):
-                entity.add(Destroy())
-                container = player.get(GoldContainer)
-                gold_earned = entity.get(EarnGoldEvent).amount
+                gold_events.append(entity)
+        
+        for earnGold in gold_events:
+            for entity in has_goldContainers:
+                event = earnGold.get(EarnGoldEvent)
+                source = event.source
+                amount = event.amount
 
-                container.gold += gold_earned
+                if source.has(Parent):
+                    source = source.get(Parent).entity
+
+                if source is entity:
+                    source.get(GoldContainer).gold += amount
+                    earnGold.add(Destroy())
+
+
 
 
 

@@ -5,7 +5,7 @@ import pygame
 from Utils.helper import SPRITE_FORWARD_OFFSET, point_towards
 from components.components import Position
 from registries.EnemyList import EnemyList
-from systems.enemyFactorySystem import SpawnEvent
+from systems.Game_SpawnerSystem import SpawnEvent
 
 class SpawnPattern(ABC):
     @abstractmethod

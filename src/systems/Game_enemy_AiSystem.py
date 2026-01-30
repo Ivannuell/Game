@@ -1,6 +1,7 @@
 
 
 import math
+import random
 from turtle import position
 
 from Utils.helper import ENEMY_ACCELARATION, move_towards, point_towards
@@ -55,8 +56,13 @@ class GridIndexSystem(System):
         super().__init__(scene)
         self.player_grid = scene.player_grid
         self.enemy_grid = scene.enemy_grid
+        self.asteriod_grid = scene.asteriod_grid
 
     def update(self, entities: 'list[Entity]', dt):
+        self.enemy_grid.entity_count = 0
+        self.player_grid.entity_count = 0
+        self.asteriod_grid.entity_count = 0
+
         for e in entities:
             if not e.has(FactionIdentity, Position, Collider):
                 continue
@@ -67,8 +73,13 @@ class GridIndexSystem(System):
 
             if faction == "ENEMY":
                 self.enemy_grid.insert(e, pos, col)
+                self.enemy_grid.entity_count += 1
             elif faction == "PLAYER":
                 self.player_grid.insert(e, pos, col)
+                self.player_grid.entity_count += 1
+            elif faction == "FARM":
+                self.asteriod_grid.insert(e, pos, col)
+                self.asteriod_grid.entity_count += 1
 
 
 class AI_PerceptionSystem(System):
@@ -76,38 +87,53 @@ class AI_PerceptionSystem(System):
         super().__init__(scene)
         self.enemy_grid = scene.enemy_grid
         self.player_grid = scene.player_grid
+        self.asteriod_grid = scene.asteriod_grid
         self.frame_index = 0
+        self.time = 0
 
     def update(self, entities: 'list[Entity]', dt: float):
         self.frame_index += 1
-
+        
         for i, e in enumerate(entities):
             if not e.has(Position, Vision, Perception, FactionIdentity, Target):
                 continue
 
-            # Time slicing (1/5 per frame)
-            if i % 5 != self.frame_index % 5:
+            perception = e.get(Perception)
+            target = e.get(Target)
+
+            # Time slice: 1/5 of entities per frame
+            if i % 10 != self.frame_index % 10:
+                continue
+
+            perception.cooldown -= dt
+            if perception.cooldown > 0:
+                continue
+
+            if target.target is not target.prev_target:
                 continue
 
             self.update_perception(e)
+            perception.cooldown = random.randint(1, 2) * 0.1
 
     def update_perception(self, entity: 'Entity'):
         pos = entity.get(Position)
-        faction = entity.get(FactionIdentity).faction
         vision = entity.get(Vision)
         perception = entity.get(Perception)
 
-        perception.entities.clear()
+        perception.visible_entities.clear()
 
-        if faction == "ENEMY":
+        if entity.has(Attacker):
             candidates = self.player_grid.query_range(pos.x, pos.y, vision.range)
+        elif entity.has(Farmer):
+            candidates = self.asteriod_grid.query_range(pos.x, pos.y, vision.range)
         else:
             candidates = self.enemy_grid.query_range(pos.x, pos.y, vision.range)
 
         for target in candidates:
             if self.narrowphase_check(entity, target):
-                perception.entities.append(target)
-
+                perception.visible_entities.append(target)
+                if len(perception.visible_entities) >= 3:
+                    continue
 
     def narrowphase_check(self, e, target):
         pos = e.get(Position)
@@ -136,33 +162,80 @@ class AI_DecisionSystem(System):
     def __init__(self, scene) -> None:
         super().__init__(scene)
 
-    def update(self, entities, dt):
+    def update(self, entities: 'list[Entity]', dt):
+        def distance(pos1, pos2):
+            dx = pos1.x - pos2.x
+            dy = pos1.y - pos2.y
+
+            return dx*dx + dy*dy
+        
+            
         for e in entities:
-            if not e.has(Perception, Target):
+            if not e.has(Perception, Target, Attacker):
                 continue
-
-            perception = e.get(Perception)
             target = e.get(Target)
+            visisble_Entities = e.get(Perception).visible_entities
 
-            if perception.entities:
-                target.target = perception.entities[0]
+            target.prev_target = target.target
+
+            if target.Main_target.has(IsDead):
+                if visisble_Entities:
+                    target.Main_target = visisble_Entities[0]
+                e.get(Velocity).speed = 0
+
+            elif visisble_Entities:
+                target.target = visisble_Entities[0]
+                e.get(Velocity).speed = 50
+
             else:
                 target.target = target.Main_target
+
+                
+
+        
 
             
 class Enemy_AI_TargetSystem(System):
     def __init__(self, scene) -> None:
         super().__init__(scene)
+        self.time = 0
 
     def update(self, entities: 'list[Entity]', dt):
-        for e in entities: 
-            if not e.has(EnemyIntent, Target, Rotation):
-                continue
+        self.time += dt
+        if self.time > 0.3:
+            self.time = 0
+            return 
+        
 
-            curr_target = e.get(Target).target.get(Position)
+        for e in entities: 
+            if not e.has(EnemyIntent, Target, Rotation, Velocity):
+                continue
+            
+            target_comp = e.get(Target)
             rot = e.get(Rotation)
             pos = e.get(Position)
 
+            # def is_dead(ent):
+            #     return ent is None or ent.has(IsDead)
+
+            # # --- Target resolution ---
+            # if is_dead(main_target):
+
+            #     if nearby:
+            #         # Retarget to nearest visible entity
+            #         target_comp.prev_target = main_target
+            #         target_comp.target = nearby[0]
+
+            #     else:
+            #         # No targets available → stop
+            #         target_comp.target = None
+            #         velocity.speed = 0
+            #         return  # nothing to aim at
+
+            # --- At this point, target is guaranteed valid ---
+            curr_target = target_comp.target.get(Position)
+
+            # Rotate toward target
             rot.angle = point_towards(pos, curr_target)
 
 

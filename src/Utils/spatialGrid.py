@@ -2,6 +2,7 @@ class SpatialGrid:
     def __init__(self, cell_size):
         self.cell_size = cell_size
         self.cells = {}
+        self.entity_count = 0
 
     def clear(self):
         self.cells.clear()
@@ -52,11 +53,13 @@ class SpatialGrid:
         candidates = []
         cx, cy = self.cell_coords(posx, posy)
 
+        def distance_(dx, dy):
+            return (dx*dx + dy*dy) ** 0.5
+
         for dx in range(-radius, radius+1):
             for dy in range(-radius, radius+1):
-                distance = (dx*dx + dy*dy) ** 0.5
+                distance = distance_(dx, dy)
 
                 if distance <= radius:
                     candidates.append(self.cells.get((cx + dx, cy + dy), []))
-
         return candidates
