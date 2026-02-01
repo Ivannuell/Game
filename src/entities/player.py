@@ -36,6 +36,8 @@ class Player(Entity):
         self.add(Rotation())
         self.add(ViewPosition())
 
+        self.add(GridCell())
+
         self.add(GoldContainer(1000))
 
         self.init_Entity()

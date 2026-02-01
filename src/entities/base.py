@@ -32,5 +32,6 @@ class Base(Entity):
         self.add(Health(1000))
 
         self.add(GoldContainer(10000))
+        self.add(GridCell())
 
         self.init_Entity()

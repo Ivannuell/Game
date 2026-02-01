@@ -1,7 +1,6 @@
 
 
 from components.components import *
-from entities.Utility_Entities.zone import Zone
 from entities.asteriods import Asteriod
 from entities.base import Base
 from entities.player import Player
@@ -11,13 +10,14 @@ from entities.Spawn_Patterns.EnemyPatterns import Grid_Enemies, Line_Enemies
 from entities.UI.button import Button
 from entities.Utility_Entities.camera import CameraEntity
 from entities.Utility_Entities.Spawner import SpawnerEntity
+from entities.Utility_Entities.zone import Zone
+from registries.EnemyList import EnemyList
 from registries.EntityConfigs import *
 from scenes.scene import Scene
 from systems.AnimationSystem import (EventCleanerSystem,
                                      Events_AnimationSystem,
                                      Playback_AnimationSystem,
                                      State_AnimationSystem)
-from systems.Game_AsteriodSystem import Asteriod_ZoneSystem, Asteriods_ManagementSystem
 from systems.camera_zoomSystem import CameraZoomSystem
 from systems.CameraSystem import CameraSystem
 from systems.CleanupSystem import CleanupSystem
@@ -27,10 +27,12 @@ from systems.damageSystem import DamageSystem
 from systems.debugers.collideRectDebug import DebugCollisionRenderSystem
 from systems.debugers.healthDraw_DebugerSystem import HealthDraw
 from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
-from systems.Game_SpawnerSystem import Asteriods_SpawningSystem, Enemy_SpawningSystem
+from systems.Game_AsteriodSystem import (Asteriod_ZoneSystem,
+                                         Asteriods_ManagementSystem)
 from systems.Game_AutoAimingSystem import AutoAimingSystem, AutoFireSystem
-from systems.Game_enemy_AiSystem import (AI_DecisionSystem,
-                                         AI_PerceptionSystem,
+from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem,
+                                         AI_AttackerPerceptionSystem,
+                                         AI_FarmerDecisionSystem,
                                          Enemy_AI_MovementSystem,
                                          Enemy_AI_ShootingSystem,
                                          Enemy_AI_TargetSystem,
@@ -38,6 +40,8 @@ from systems.Game_enemy_AiSystem import (AI_DecisionSystem,
 from systems.Game_goldSystem import Earn_GoldSystem
 from systems.Game_inputSystem import InputSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
+from systems.Game_SpawnerSystem import (Asteriods_SpawningSystem,
+                                        Enemy_SpawningSystem)
 from systems.headsUpDisplaySystem import HeadsUpDisplaySystem
 from systems.healthBar_displaySystem import HealthBar_DisplaySystem
 from systems.healthSystem import HealthSystem
@@ -90,8 +94,9 @@ class PlayScene(Scene):
 
             GridIndexSystem(self),
 
-            AI_PerceptionSystem(self),
-            AI_DecisionSystem(self),
+            AI_AttackerPerceptionSystem(self),
+            AI_AttackerDecisionSystem(self),
+            AI_FarmerDecisionSystem(self),
 
             Enemy_AI_MovementSystem(self),
             Enemy_AI_ShootingSystem(self),
@@ -165,7 +170,7 @@ class PlayScene(Scene):
         Ship_Cannon.add(ShootIntent())
         Ship_Cannon.add(Perception())
 
-        zone1 = Zone(self, 1, 50, (1000, 0), (300, 10000))
+        zone1 = Zone(self, 1, 70, (1000, 0), (300, 10000))
         zone2 = Zone(self, 2, 10, (-100,0), (800, 10000))
         zone3 = Zone(self, 3, 30, (590, 0), (610, 10000))
         zone4 = Zone(self, 4, 30, (1440,0), (610, 10000))
@@ -176,10 +181,12 @@ class PlayScene(Scene):
         asteriodSpawner.add(AsteriodSpawner())
 
         enemySpawner = SpawnerEntity(self)
-        enemySpawner.add(EnemySpawner(Grid_Enemies((2000, 0), (3,3), Headquarter, 5)))
+        enemySpawner.add(EnemySpawner(Line_Enemies(
+            3, EnemyBase.get(Position), 40, 1
+        )))
 
         # ast = Asteriod(self, Asteriod1)
-        # ast.get(Position).set(pygame.Vector2(0,0))
+        # ast.get(Position).set(pygame.Vector2(0,0))wwwww
 
         self.camera.target = Ship_main
         self.player_Entity = Ship_main
@@ -225,8 +232,8 @@ class PlayScene(Scene):
             OnScreenDebugSystem,
             GridIndexSystem,
 
-            AI_PerceptionSystem,
-            AI_DecisionSystem,
+            AI_AttackerPerceptionSystem,
+            AI_AttackerDecisionSystem,
 
             Enemy_AI_MovementSystem,
             Enemy_AI_ShootingSystem,

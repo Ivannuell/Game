@@ -58,32 +58,38 @@ class GridIndexSystem(System):
         self.enemy_grid = scene.enemy_grid
         self.asteriod_grid = scene.asteriod_grid
 
-    def update(self, entities: 'list[Entity]', dt):
-        self.enemy_grid.entity_count = 0
-        self.player_grid.entity_count = 0
-        self.asteriod_grid.entity_count = 0
-
+    def update(self, entities, dt):
         for e in entities:
-            if not e.has(FactionIdentity, Position, Collider):
+            if not e.has(FactionIdentity, Position, Collider, GridCell):
                 continue
 
             faction = e.get(FactionIdentity).faction
-            pos = e.get(Position)
-            col = e.get(Collider)
 
             if faction == "ENEMY":
-                self.enemy_grid.insert(e, pos, col)
-                self.enemy_grid.entity_count += 1
+                grid = self.enemy_grid
             elif faction == "PLAYER":
-                self.player_grid.insert(e, pos, col)
-                self.player_grid.entity_count += 1
+                grid = self.player_grid
             elif faction == "FARM":
-                self.asteriod_grid.insert(e, pos, col)
-                self.asteriod_grid.entity_count += 1
+                grid = self.asteriod_grid
+            else:
+                continue
 
 
-class AI_PerceptionSystem(System):
-    def __init__(self, scene) -> None:
+            pos = e.get(Position)
+            col = e.get(Collider)
+            grid_cells = e.get(GridCell)
+
+            new_cells = grid.compute_cells(pos, col)
+
+            if new_cells != grid_cells.cell:
+                grid.remove_cells(e, grid_cells.cell)
+                grid.insert_cells(e, new_cells)
+                grid_cells.cell = new_cells
+
+
+
+class AI_AttackerPerceptionSystem(System):
+    def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
         self.enemy_grid = scene.enemy_grid
         self.player_grid = scene.player_grid
@@ -120,31 +126,30 @@ class AI_PerceptionSystem(System):
         vision = entity.get(Vision)
         perception = entity.get(Perception)
 
-        perception.visible_entities.clear()
-
-        if entity.has(Attacker):
+        if entity.has(Farmer):
+            return
+        
+        elif entity.has(Attacker):
+            perception.visible_entities.clear()
             candidates = self.player_grid.query_range(pos.x, pos.y, vision.range)
-        elif entity.has(Farmer):
-            candidates = self.asteriod_grid.query_range(pos.x, pos.y, vision.range)
         else:
+            perception.visible_entities.clear()
             candidates = self.enemy_grid.query_range(pos.x, pos.y, vision.range)
 
         for target in candidates:
             if self.narrowphase_check(entity, target):
                 perception.visible_entities.append(target)
-                if len(perception.visible_entities) >= 3:
-                    continue
 
     def narrowphase_check(self, e, target):
+        if e is None or target is None:
+            return False
+        
         pos = e.get(Position)
         tpos = target.get(Position)
         vision = e.get(Vision)
 
         dx = tpos.x - pos.x
         dy = tpos.y - pos.y
-
-        # print(dx*dx + dy*dy)
-        # print(vision.range * vision.range)
 
         if dx*dx + dy*dy > (vision.range*50) * (vision.range*50):
             return False
@@ -158,18 +163,12 @@ class AI_PerceptionSystem(System):
         return True
 
             
-class AI_DecisionSystem(System):
+class AI_AttackerDecisionSystem(System):
     def __init__(self, scene) -> None:
         super().__init__(scene)
 
     def update(self, entities: 'list[Entity]', dt):
-        def distance(pos1, pos2):
-            dx = pos1.x - pos2.x
-            dy = pos1.y - pos2.y
 
-            return dx*dx + dy*dy
-        
-            
         for e in entities:
             if not e.has(Perception, Target, Attacker):
                 continue
@@ -190,9 +189,42 @@ class AI_DecisionSystem(System):
             else:
                 target.target = target.Main_target
 
+         
+class AI_FarmerDecisionSystem(System):
+    def __init__(self, scene) -> None:
+        super().__init__(scene)
+        self.asteriod_grid = scene.asteriod_grid
+
+    def update(self, entities: 'list[Entity]', dt):
+        # self.asteriod_grid.clear()
+        for e in entities:
+            if e.has(Perception, Vision, Farmer, Target):
+                target = e.get(Target)
+                visible = e.get(Perception)
+                pos = e.get(Position)
+
+                if target.target and not target.target in entities:
+                    target.target = None
+
+                if target.target is None:
+                    target.target = self.asteriod_grid.find_nearest(pos.x, pos.y)
+
+
+
+
+               
+
+
+
+
+
+
+
+
+
                 
 
-        
+
 
             
 class Enemy_AI_TargetSystem(System):
@@ -233,6 +265,9 @@ class Enemy_AI_TargetSystem(System):
             #         return  # nothing to aim at
 
             # --- At this point, target is guaranteed valid ---
+            if target_comp.target is None:
+                continue
+
             curr_target = target_comp.target.get(Position)
 
             # Rotate toward target

@@ -24,10 +24,11 @@ class Asteriod(Entity):
             layer=[CollisionID.Farm],
             mask=[CollisionID.Enemies, CollisionID.Players, CollisionID.Projectiles]
         ))
-        self.add(Velocity(10))
+        # self.add(Velocity(10))
         self.add(CollidedWith())
         self.add(Gold(100))
         self.add(Health(200))
+        self.add(GridCell())
 
         self.add(Farm())
 

@@ -33,5 +33,7 @@ class PlayerPart(Entity):
         self.add(CollidedWith())
         self.add(Rotation())
 
+        self.add(GridCell())
+
         self.init_Entity()
                    

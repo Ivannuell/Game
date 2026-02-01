@@ -3,7 +3,7 @@ import math
 from typing import Sequence
 
 
-ACCELERATION = 200
+ACCELERATION = 1000
 FRICTION = 1000
 ENEMY_ACCELARATION = 200
 
@@ -12,7 +12,7 @@ MIN_SPEED = 100
 
 ROTATION_SMOOTHNESS = 9
 
-ROT_SPEED = 0.4
+ROT_SPEED = 0.6
 
 def clamp_value(value, minimum, maximum): 
     return max(minimum, min(value, maximum))

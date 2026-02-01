@@ -37,6 +37,24 @@ class HealthSystem(System):
                     farm.add(FarmDestroyed(zone))
                     events.append(farm)
 
+                if entity.has(FactionIdentity):
+                    faction = entity.get(FactionIdentity).faction  
+
+                    if faction == "ENEMY":
+                        grid = self.scene.enemy_grid
+                    elif faction == "PLAYER":
+                        grid = self.scene.player_grid
+                    elif faction == "FARM":
+                        grid = self.scene.asteriod_grid
+                    else:
+                        continue
+
+                    if entity.has(GridCell):
+                        cells = entity.get(GridCell).cell
+                        if cells is not None:
+                            grid.remove_cells(entity, cells)
+
+
                 entity.add(IsDead())
                 entity.add(Destroy())
 

@@ -25,6 +25,9 @@ collision_pairs = {
     ("PROJECTILE", "PLAYERPART"),
     ("PLAYERPART", "PROJECTILE"),
 
+    ("PROJECTILE", "FARM"),
+    ("FARM", "PROJECTILE"),
+
     ("PLAYER", "BASE"),
     ("BASE", "PLAYER"),
     ("PLAYER", "FARM"),
@@ -49,7 +52,7 @@ class CollisionSystem(System):
 
         self.dyn_rects.clear()
         self.stat_rects.clear()
-        self.scene.collision_grid.clear()
+        # self.scene.collision_grid.clear()
 
         for e in entities:
             if e.has(Collider) and not e.has(Velocity):
@@ -84,15 +87,33 @@ class CollisionSystem(System):
         for e in self.stat_rects:
             pos = e[1]
             col = e[2]
-            self.scene.collision_grid.insert(e[0], pos, col)
+            grid_cells = e[0].get(GridCell)
+
+            new_cells = self.scene.collision_grid.compute_cells(pos, col)
+            
+            if not grid_cells.cell:
+                self.scene.collision_grid.insert_cells(e[0], new_cells)
+                grid_cells.cell = new_cells
+            elif new_cells != grid_cells.cell:
+                self.scene.collision_grid.remove_cells(e[0], grid_cells.cell)
+                self.scene.collision_grid.insert_cells(e[0], new_cells)
+                grid_cells.cell = new_cells
 
         for e in self.dyn_rects:
             pos = e[1]
             col = e[3]
-            self.scene.collision_grid.insert(e[0], pos, col)
+            grid_cells = e[0].get(GridCell)
 
-            checked = set()
+            new_cells = self.scene.collision_grid.compute_cells(pos, col)
+            if not grid_cells.cell:
+                self.scene.collision_grid.insert_cells(e[0], new_cells)
+                grid_cells.cell = new_cells
+            elif new_cells != grid_cells.cell:
+                self.scene.collision_grid.remove_cells(e[0], grid_cells.cell)
+                self.scene.collision_grid.insert_cells(e[0], new_cells)
+                grid_cells.cell = new_cells
 
+        checked = set()
         for e1, pos1, vel1, col1, cid1, faction1 in self.dyn_rects:
             for other in self.scene.collision_grid.query_neighbors(pos1.x, pos1.y):
                 if e1 is other:

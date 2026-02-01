@@ -43,7 +43,7 @@ class Enemy_SpawningSystem(System):
         enemy = self.scene.enemyFactory.create(event.spawn)
 
         enemy_pos = enemy.get(Position)
-        enemy.add(Target(event.target))
+        # enemy.add(Target(event.target))
 
         enemy_pos.set(event.position)
         enemy.get(Rotation).angle = event.direction
@@ -66,6 +66,8 @@ class Asteriods_SpawningSystem(System):
 
             if zone.count != zone.maxCount:
                 ast = Asteriod(self.scene, Asteriod1)
+                # print(ast.get(FactionIdentity).faction)
+
                 ast.add(ZoneId(zone.id))
                 ast.get(Position).set(pygame.Vector2(*self.spawn_at(zone.pos[0], zone.size[0])))
                 asteriods.append(ast)

@@ -36,10 +36,17 @@ class ProjectileSystem(System):
                 continue
 
             # Collision (narrow target set)
-            for target in self.scene.collision_grid.query_point(p.x, p.y):
+            for target in self.scene.enemy_grid.query_point(p.x, p.y):
                 if target.get(FactionIdentity).faction == p.faction:
                     continue
+                if self.hit(p, target):
+                    self.on_hit(p, target)
+                    p.alive = False
+                    break
 
+            for target in self.scene.asteriod_grid.query_point(p.x, p.y):
+                if target.get(FactionIdentity).faction == p.faction:
+                    continue
                 if self.hit(p, target):
                     self.on_hit(p, target)
                     p.alive = False

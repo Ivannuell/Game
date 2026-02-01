@@ -18,12 +18,24 @@ class EnemyFactory:
             e.add(ManualAim(angle))
             e.add(Vision(10))
             e.add(Perception())
-            # e.add(Attacker())
-            e.add(Farmer())
+            e.add(Attacker())
+            # e.add(Farmer())
             
             e.add(Gold(10))
 
             return e
 
         elif enemy == EnemyList.Farmer:
-            e = Enemy(self.scene, farmer_EnemyConfig)
+            e = Enemy(self.scene, normal_EnemyConfig)
+            angle = e.get(Rotation).angle
+
+            e.add(Cannon(0.5))
+            e.add(ManualAim(angle))
+            e.add(Vision(10))
+            e.add(Perception())
+            e.add(Farmer())
+            e.add(Target(None))
+
+            e.add(GoldContainer(1000))
+
+            return e

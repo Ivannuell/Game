@@ -22,11 +22,13 @@ class Enemy(Entity):
         self.add(Rotation())
         self.add(ViewPosition())
 
+        self.add(GridCell())
+
         self.add(FactionIdentity("ENEMY"))
         self.add(CollisionIdentity(
             role="ENEMY",
             layer = [CollisionID.Enemies],
-            mask = [CollisionID.Players, CollisionID.Projectiles, CollisionID.Enemies]
+            mask = [CollisionID.Players, CollisionID.Projectiles, CollisionID.Enemies, CollisionID.Farm]
         ))
 
         self.init_Entity()

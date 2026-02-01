@@ -51,7 +51,7 @@ class ShootingSystem(System):
             if faction == "PLAYER":
                 damage = 50
             elif faction == "ENEMY":
-                damage = 10
+                damage = 100
 
             if cannon.cooldown():
                 self.scene.proj_pool.spawn(

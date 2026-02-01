@@ -219,11 +219,16 @@ class CollisionIdentity(Component):
 class UiElement(Component):
     def __init__(self) -> None:
         super().__init__()
-
+@ComponentRegistry.register
 class UtilityEntity(Component):
     def __init__(self) -> None:
         super().__init__()
 
+@ComponentRegistry.register
+class GridCell(Component):
+    def __init__(self) -> None:
+        super().__init__()
+        self.cell = set()
 
 @ComponentRegistry.register
 class PointerState(Component):
@@ -279,7 +284,7 @@ class FactionIdentity(Component):
 @ComponentRegistry.register
 class MovementIntent(Component):
     def __init__(self):
-        super().__init__
+        super().__init__()
         self.move_x = 0
         self.move_y = 0
         self.rotate_left = False

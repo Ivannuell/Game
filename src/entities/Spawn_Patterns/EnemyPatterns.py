@@ -22,7 +22,7 @@ class SpawnPattern(ABC):
         pass
 
 class Line_Enemies(SpawnPattern):
-    def __init__(self, count, start, spacing, interval,game, target=None):
+    def __init__(self, count, start, spacing, interval, target=None):
         self.count = count
         self.start = start
         self.spacing = spacing
@@ -30,7 +30,6 @@ class Line_Enemies(SpawnPattern):
         self.timer = 0
         self.spawned = 0
         self.target = target
-        self.game = game
 
     def reset(self):
         return super().reset()
@@ -45,15 +44,17 @@ class Line_Enemies(SpawnPattern):
         events = []
         while self.spawned <= self.count and self.timer >= self.interval:
             pos = pygame.Vector2(
-                self.start.y + self.spawned * self.spacing,
-                self.start.x
+                self.start.x + self.spawned * self.spacing,
+                self.start.y
             )
 
             
             spawn = SpawnEvent()
-            spawn.spawn = EnemyList.Normal
+            spawn.spawn = EnemyList.Farmer
             spawn.position = pos
-
+            # spawn.direction = point_towards(pos)
+            
+            spawn.direction = 2
             if self.target:
                 dx = self.target.x - self.start.x
                 dy = self.start.y - self.target.y  # invert Y
@@ -70,13 +71,14 @@ class Line_Enemies(SpawnPattern):
 
 
 class Grid_Enemies(SpawnPattern):
-    def __init__(self, startPos:tuple[int, int], gridSize: tuple[int, int], target, spacing):
+    def __init__(self, startPos:tuple[int, int], gridSize: tuple[int, int], target, spacing, EnemyType: EnemyList):
         self.timer = 0
         self.spawned = 0
         self.gridx, self.gridy = gridSize
         self.startPos = startPos
         self.target = target
         self.spacing = spacing
+        self.EnemyType = EnemyType
 
     def is_done(self) -> bool:
         return self.spawned >= self.gridx * self.gridy
@@ -95,7 +97,7 @@ class Grid_Enemies(SpawnPattern):
                 target_pos = self.target.get(Position)
 
                 enemy = SpawnEvent()
-                enemy.spawn = EnemyList.Normal
+                enemy.spawn = self.EnemyType
                 enemy.position = pygame.Vector2(
                     self.startPos[0] + x * self.spacing, 
                     self.startPos[1] + y * self.spacing
