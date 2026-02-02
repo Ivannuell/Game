@@ -47,33 +47,12 @@ class CollisionSystem(System):
     def update(self, entities: list['Entity'], dt):
         colliders = []
         self.rect_cache = {}
-        # self.scene.collision_grid.cells = {}
 
         for e in entities:
-            if e.has(Collider, GridCell):
-                colliders.append(e)
+            if not e.has(FactionIdentity, Position, Collider, GridCell):
+                continue
 
-            if e.has(CollidedWith):
-                e.get(CollidedWith).entities.clear()
-
-        
-        for e in colliders:
-            pos = e.get(Position)
-            col = e.get(Collider)
-            grid_cells = e.get(GridCell)
-
-
-            new_cells = self.scene.collision_grid.compute_cells(pos, col)
-            grid_cells = e.get(GridCell)
-       
-
-            if grid_cells.cell is None:
-                self.scene.collision_grid.insert_cells(e, new_cells)
-                grid_cells.cell = new_cells
-            elif new_cells != grid_cells.cell:
-                self.scene.collision_grid.remove_cells(e, grid_cells.cell)
-                self.scene.collision_grid.insert_cells(e, new_cells)
-                grid_cells.cell = new_cells
+            colliders.append(e)
 
 
         dynamic = []

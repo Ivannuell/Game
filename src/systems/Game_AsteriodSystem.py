@@ -25,16 +25,26 @@ class Asteriods_ManagementSystem(System):
             if e.has(FarmDestroyed):
               farmDestroyed.append(e)  
 
-        for e in entities:
-            if not e.has(ZoneComponent):
-                continue
+        for events in farmDestroyed:
+            event = events.get(FarmDestroyed)
 
-            zone = e.get(ZoneComponent)
-            for events in farmDestroyed:
-                event = events.get(FarmDestroyed)
-                if event.id == zone.id:
+            for e in entities:
+                if not e.has(ZoneComponent):
+                    continue
+
+                zone = e.get(ZoneComponent)
+
+                if event.id != zone.id:
+                    continue
+
+                if zone.count > 0:
                     zone.count -= 1
+
+                if not events.has(Destroy):
                     events.add(Destroy())
+
+                events.remove(FarmDestroyed)  # 🔑 consume
+
                 
             
         

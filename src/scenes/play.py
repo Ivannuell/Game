@@ -18,6 +18,7 @@ from systems.AnimationSystem import (EventCleanerSystem,
                                      Events_AnimationSystem,
                                      Playback_AnimationSystem,
                                      State_AnimationSystem)
+from systems.GridSystem import Grid_CleanupSystem, Grid_IndexSystem
 from systems.camera_zoomSystem import CameraZoomSystem
 from systems.CameraSystem import CameraSystem
 from systems.CleanupSystem import CleanupSystem
@@ -35,8 +36,7 @@ from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem,
                                          AI_FarmerDecisionSystem,
                                          Enemy_AI_MovementSystem,
                                          Enemy_AI_ShootingSystem,
-                                         Enemy_AI_TargetSystem,
-                                         GridIndexSystem)
+                                         Enemy_AI_TargetSystem)
 from systems.Game_goldSystem import Earn_GoldSystem
 from systems.Game_inputSystem import InputSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
@@ -71,10 +71,10 @@ class PlayScene(Scene):
         self.enemyFactory = EnemyFactory(self)
         self.proj_pool = ProjectilePool(500)
 
-        self.collision_grid = SpatialGrid(50)
-        self.player_grid = SpatialGrid(50)
-        self.enemy_grid = SpatialGrid(50)
-        self.asteriod_grid =SpatialGrid(50)
+        self.collision_grid = SpatialGrid(64)
+        # self.player_grid = SpatialGrid(50)
+        # self.enemy_grid = SpatialGrid(50)
+        # self.asteriod_grid =SpatialGrid(64)
 
         self.player_Entity: Player = None
 
@@ -92,12 +92,12 @@ class PlayScene(Scene):
             Events_AnimationSystem(self),
             State_AnimationSystem(self),
 
-            GridIndexSystem(self),
+            Grid_IndexSystem(self),
             CollisionSystem(self),
-            Asteriods_SpawningSystem(self),
+            Asteriods_SpawningSystem(self), 
 
-            AI_AttackerPerceptionSystem(self),
-            AI_AttackerDecisionSystem(self),
+            # AI_AttackerPerceptionSystem(self),
+            # AI_AttackerDecisionSystem(self),
             AI_FarmerDecisionSystem(self),
 
             Enemy_AI_MovementSystem(self),
@@ -115,7 +115,7 @@ class PlayScene(Scene):
             Asteriods_ManagementSystem(self),
 
             LifetimeSystem(self),
-            CleanupSystem(self),
+            Grid_CleanupSystem(self),
             EventCleanerSystem(self),
 
             CameraSystem(self),
@@ -126,6 +126,7 @@ class PlayScene(Scene):
 
             # DebugCollisionRenderSystem(self, enabled=True),
             # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
+            CleanupSystem(self),
             OnScreenDebugSystem(self),
 
             HealthBar_DisplaySystem(self),
@@ -230,7 +231,7 @@ class PlayScene(Scene):
             DebugCollisionRenderSystem,
             HealthDraw,
             OnScreenDebugSystem,
-            GridIndexSystem,
+            Grid_IndexSystem,
 
             AI_AttackerPerceptionSystem,
             AI_AttackerDecisionSystem,

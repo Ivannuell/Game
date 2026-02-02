@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from entities.entity import Entity
     from Utils.spritesheet import _Anim
     from entities.Spawn_Patterns.EnemyPatterns import SpawnPattern
+    from Utils.spatialGrid import SpatialGrid
 
 class ComponentRegistry:
     _components = {}
@@ -226,17 +227,17 @@ class UtilityEntity(Component):
 
 @ComponentRegistry.register
 class GridCell(Component):
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__()
-        self.cell = set()
+        self.by_grid: dict[object, list[tuple[int,int]]] = {}
+        self.alive = True
+
 
 @ComponentRegistry.register
 class PointerState(Component):
     def __init__(self):
         super().__init__()
         self.hovering = False
-
-        # entity-specific press ownership
         self.pressed = False  
 
         # one-frame events
@@ -356,8 +357,10 @@ class AsteriodSpawner(Component):
 class ZoneComponent(Component):
     def __init__(self,id, maxcount, pos, size) -> None:
         super().__init__()
-        self.maxCount = maxcount
         self.count = 0
+        self.maxCount = maxcount
+        self.spawn_delay = 0.1
+        self.timer = 0.0
         self.pos = pos
         self.size = size
         self.id = id

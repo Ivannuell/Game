@@ -34,47 +34,56 @@ class Enemy_SpawningSystem(System):
             pattern.update_step(dt)
 
             for event in pattern.get_spawn_events():
-                entities.append(self.spawnEnemy(event))
+                self.scene.entity_Manager.add(self.spawnEnemy(event))
 
             if pattern.is_done():
                 entity.add(Destroy())
+
+        self.scene.entity_Manager.commit()
 
     def spawnEnemy(self, event: SpawnEvent):
         enemy = self.scene.enemyFactory.create(event.spawn)
 
         enemy_pos = enemy.get(Position)
-        # enemy.add(Target(event.target))
-
         enemy_pos.set(event.position)
         enemy.get(Rotation).angle = event.direction
 
         return enemy
 
 
-class Asteriods_SpawningSystem(System):
+class _Asteriods_SpawningSystem(System):
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
 
-    def update(self, entities: 'list[Entity]', dt):
-        asteriods = []
+    def update(self, entities, dt):
+        new_asteroids = []
 
         for e in entities:
             if not e.has(ZoneComponent):
                 continue
 
             zone = e.get(ZoneComponent)
+            zone.timer += dt
 
-            if zone.count != zone.maxCount:
-                ast = Asteriod(self.scene, Asteriod1)
-                # print(ast.get(FactionIdentity).faction)
-                
+            if zone.count >= zone.maxCount:
+                continue
 
-                ast.add(ZoneId(zone.id))
-                ast.get(Position).set(pygame.Vector2(*self.spawn_at(zone.pos[0], zone.size[0])))
-                asteriods.append(ast)
-                zone.count += 1
+            if zone.timer < zone.spawn_delay:
+                continue
 
-        entities.extend(asteriods)
+            zone.timer = 0.0  # reset timer
+
+            ast = Asteriod(self.scene, Asteriod1)
+            ast.add(ZoneId(zone.id))
+            ast.get(Position).set(
+                pygame.Vector2(*self.spawn_at(zone.pos[0], zone.size[0]))
+            )
+
+            new_asteroids.append(ast)
+            zone.count += 1
+
+        entities.extend(new_asteroids)
+
 
     def spawn_at(self, x, w):
         rand_x = random.randint(x, x + w)

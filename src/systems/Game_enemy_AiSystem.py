@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from scenes.scene import Scene
     from scenes.play import PlayScene
 
+from Utils.spatialGrid import SpatialGrid
 from components.components import *
 from systems.system import System
 
@@ -51,51 +52,9 @@ class Enemy_AI_ShootingSystem(System):
                 entity.get(ShootIntent).fired = True
                 
 
-class GridIndexSystem(System):
-    def __init__(self, scene) -> None:
-        super().__init__(scene)
-        self.player_grid = scene.player_grid
-        self.enemy_grid = scene.enemy_grid
-        self.asteriod_grid = scene.asteriod_grid
-
-    def update(self, entities, dt):
-        for e in entities:
-            if not e.has(FactionIdentity, Position, Collider, GridCell):
-                continue
-
-            
-
-            faction = e.get(FactionIdentity).faction
-
-            if faction == "ENEMY":
-                grid = self.enemy_grid
-            elif faction == "PLAYER":
-                grid = self.player_grid
-            elif faction == "FARM":
-                grid = self.asteriod_grid
-            else:
-                continue
-
-
-            pos = e.get(Position)
-            col = e.get(Collider)
-            grid_cells = e.get(GridCell)
-
-            new_cells = grid.compute_cells(pos, col)
-
-            if new_cells != grid_cells.cell:
-                grid.remove_cells(e, grid_cells.cell)
-                grid.insert_cells(e, new_cells)
-                grid_cells.cell = new_cells
-
-
-
 class AI_AttackerPerceptionSystem(System):
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
-        self.enemy_grid = scene.enemy_grid
-        self.player_grid = scene.player_grid
-        self.asteriod_grid = scene.asteriod_grid
         self.frame_index = 0
         self.time = 0
 
@@ -130,13 +89,13 @@ class AI_AttackerPerceptionSystem(System):
 
         if entity.has(Farmer):
             return
+        candidates = []
+        perception.visible_entities.clear()
         
-        elif entity.has(Attacker):
-            perception.visible_entities.clear()
-            candidates = self.player_grid.query_range(pos.x, pos.y, vision.range)
-        else:
-            perception.visible_entities.clear()
-            candidates = self.enemy_grid.query_range(pos.x, pos.y, vision.range)
+        if e.has(Attacker):
+            for e in self.scene.collision_grid.query_range(pos.x, pos.y, vision.range):
+            
+                candidates.append
 
         for target in candidates:
             if self.narrowphase_check(entity, target):
@@ -175,17 +134,19 @@ class AI_AttackerDecisionSystem(System):
             if not e.has(Perception, Target, Attacker):
                 continue
             target = e.get(Target)
-            visisble_Entities = e.get(Perception).visible_entities
+            all_visible_Entities = e.get(Perception).visible_entities
+
+            visible_Entities = [e for e in all_visible_Entities if e.has(Attacker)]
 
             target.prev_target = target.target
 
             if target.Main_target.has(IsDead):
-                if visisble_Entities:
-                    target.Main_target = visisble_Entities[0]
+                if visible_Entities:
+                    target.Main_target = visible_Entities[0]
                 e.get(Velocity).speed = 0
 
-            elif visisble_Entities:
-                target.target = visisble_Entities[0]
+            elif visible_Entities:
+                target.target = visible_Entities[0]
                 e.get(Velocity).speed = 50
 
             else:
@@ -195,10 +156,8 @@ class AI_AttackerDecisionSystem(System):
 class AI_FarmerDecisionSystem(System):
     def __init__(self, scene) -> None:
         super().__init__(scene)
-        self.asteriod_grid = scene.asteriod_grid
 
     def update(self, entities: 'list[Entity]', dt):
-        # self.asteriod_grid.clear()
         for e in entities:
             if e.has(Perception, Vision, Farmer, Target):
                 target = e.get(Target)
@@ -209,7 +168,7 @@ class AI_FarmerDecisionSystem(System):
                     target.target = None
 
                 if target.target is None:
-                    target.target = self.asteriod_grid.find_nearest(pos.x, pos.y)
+                    target.target = self.scene.collision_grid.find_nearest(pos.x, pos.y, require_component=Farm)
 
 
 

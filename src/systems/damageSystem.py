@@ -11,7 +11,7 @@ class DamageSystem(System):
         super().__init__(scene)
 
     def update(self, entities: list["Entity"], dt):
-        damagables: list[Entity] = []
+        damagables: 'list[Entity]' = []
 
         for entity in entities:
             if entity.has(Health, DamageEvent):
@@ -24,7 +24,7 @@ class DamageSystem(System):
                 entity.get(Health).health -= source.amount
                 entity.add(HitBy(source.source))
 
-                entity.remove(DamageEvent)
+                self.scene.entity_Manager.remove(entity)
 
 
         

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from scenes.scene import Scene
 
 
-from components.components import Destroy, Projectile
+from components.components import Destroy, IsDead
 from systems.system import System
 
 

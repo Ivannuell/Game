@@ -36,7 +36,7 @@ class AutoAimingSystem(System):
         
         self.time += dt
 
-        self.enemy_inRange_grid.clear()
+        self.enemy_inRange_grid.cells = {}
         auto_cannons: list[Entity] = []
 
         for e in entities:
@@ -51,7 +51,7 @@ class AutoAimingSystem(System):
                 pos = e.get(Position)
                 col = e.get(Collider)
 
-                self.enemy_inRange_grid.insert(e, pos, col)
+                self.enemy_inRange_grid._insert(e, pos, col)
         
         
         for cannon in auto_cannons:
@@ -60,7 +60,7 @@ class AutoAimingSystem(System):
             cannon_perception = cannon.get(Perception)
             enemy_inRange = []
 
-            cannon_perception.visible_entities.clear()
+            cannon_perception.visible_entities = []
             
             for enemy in self.enemy_inRange_grid.query_range(cannon_pos.x, cannon_pos.y, cannon_AimRange.range):
 

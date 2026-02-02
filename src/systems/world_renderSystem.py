@@ -37,7 +37,6 @@ class WorldRenderSystem(System):
             rect = image.get_rect(center=(view.x, view.y))
             screen.display_surface.blit(image, rect)
 
-    @lru_cache
     def scale_image(self, image, zoom):
         return pygame.transform.scale_by(image, zoom)
 
