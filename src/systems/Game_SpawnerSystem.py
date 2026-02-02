@@ -67,6 +67,7 @@ class Asteriods_SpawningSystem(System):
             if zone.count != zone.maxCount:
                 ast = Asteriod(self.scene, Asteriod1)
                 # print(ast.get(FactionIdentity).faction)
+                
 
                 ast.add(ZoneId(zone.id))
                 ast.get(Position).set(pygame.Vector2(*self.spawn_at(zone.pos[0], zone.size[0])))

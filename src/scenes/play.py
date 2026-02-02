@@ -93,6 +93,8 @@ class PlayScene(Scene):
             State_AnimationSystem(self),
 
             GridIndexSystem(self),
+            CollisionSystem(self),
+            Asteriods_SpawningSystem(self),
 
             AI_AttackerPerceptionSystem(self),
             AI_AttackerDecisionSystem(self),
@@ -105,7 +107,6 @@ class PlayScene(Scene):
             MovementSystem(self),
 
             ParentFollowSystem(self),
-            CollisionSystem(self),
             DamageSystem(self),
             HealthSystem(self),
             Earn_GoldSystem(self),
@@ -120,7 +121,6 @@ class PlayScene(Scene):
             CameraSystem(self),
 
             Enemy_SpawningSystem(self),
-            Asteriods_SpawningSystem(self),
             ButtonDisplaySystem(self),
             CameraTransformSystem(self),
 

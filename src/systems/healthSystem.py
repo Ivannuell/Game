@@ -53,7 +53,7 @@ class HealthSystem(System):
                         cells = entity.get(GridCell).cell
                         if cells is not None:
                             grid.remove_cells(entity, cells)
-
+                            self.scene.collision_grid.remove_cells(entity, cells)
 
                 entity.add(IsDead())
                 entity.add(Destroy())

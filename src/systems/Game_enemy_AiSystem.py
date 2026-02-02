@@ -63,6 +63,8 @@ class GridIndexSystem(System):
             if not e.has(FactionIdentity, Position, Collider, GridCell):
                 continue
 
+            
+
             faction = e.get(FactionIdentity).faction
 
             if faction == "ENEMY":

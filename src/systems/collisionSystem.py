@@ -3,6 +3,7 @@ from turtle import Vec2D
 import pygame
 
 from components.components import *
+from entities.asteriods import Asteriod
 from entities.enemy import Enemy
 from systems.system import System
 
@@ -42,90 +43,64 @@ class CollisionSystem(System):
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
         self.rect_cache = {}
-        self.dyn_rects = []
-        self.stat_rects = []
 
     def update(self, entities: list['Entity'], dt):
-        static_colliders = []
-        dynamic_colliders = []
+        colliders = []
         self.rect_cache = {}
-
-        self.dyn_rects.clear()
-        self.stat_rects.clear()
-        # self.scene.collision_grid.clear()
+        # self.scene.collision_grid.cells = {}
 
         for e in entities:
-            if e.has(Collider) and not e.has(Velocity):
-                static_colliders.append(e)
-            else:
-                dynamic_colliders.append(e)
+            if e.has(Collider, GridCell):
+                colliders.append(e)
 
             if e.has(CollidedWith):
                 e.get(CollidedWith).entities.clear()
 
-        self.stat_rects = [
-            [e,
-             e.get(Position),
-             e.get(Collider),
-             e.get(CollisionIdentity),
-             e.get(FactionIdentity).faction]
-            for e in static_colliders
-                if e.has(Position, Collider, CollisionIdentity, FactionIdentity)
-        ]
-
-        self.dyn_rects = [
-            [e,
-             e.get(Position),
-             e.get(Velocity),
-             e.get(Collider),
-             e.get(CollisionIdentity),
-             e.get(FactionIdentity).faction]
-            for e in dynamic_colliders
-            if e.has(Position, Velocity, Collider, CollisionIdentity, FactionIdentity)]
         
+        for e in colliders:
+            pos = e.get(Position)
+            col = e.get(Collider)
+            grid_cells = e.get(GridCell)
 
-        for e in self.stat_rects:
-            pos = e[1]
-            col = e[2]
-            grid_cells = e[0].get(GridCell)
-
-            new_cells = self.scene.collision_grid.compute_cells(pos, col)
-            
-            if not grid_cells.cell:
-                self.scene.collision_grid.insert_cells(e[0], new_cells)
-                grid_cells.cell = new_cells
-            elif new_cells != grid_cells.cell:
-                self.scene.collision_grid.remove_cells(e[0], grid_cells.cell)
-                self.scene.collision_grid.insert_cells(e[0], new_cells)
-                grid_cells.cell = new_cells
-
-        for e in self.dyn_rects:
-            pos = e[1]
-            col = e[3]
-            grid_cells = e[0].get(GridCell)
 
             new_cells = self.scene.collision_grid.compute_cells(pos, col)
-            if not grid_cells.cell:
-                self.scene.collision_grid.insert_cells(e[0], new_cells)
+            grid_cells = e.get(GridCell)
+       
+
+            if grid_cells.cell is None:
+                self.scene.collision_grid.insert_cells(e, new_cells)
                 grid_cells.cell = new_cells
             elif new_cells != grid_cells.cell:
-                self.scene.collision_grid.remove_cells(e[0], grid_cells.cell)
-                self.scene.collision_grid.insert_cells(e[0], new_cells)
+                self.scene.collision_grid.remove_cells(e, grid_cells.cell)
+                self.scene.collision_grid.insert_cells(e, new_cells)
                 grid_cells.cell = new_cells
+
+
+        dynamic = []
+        for e in colliders:
+            if e.has(Velocity):
+                dynamic.append(e)
+
 
         checked = set()
-        for e1, pos1, vel1, col1, cid1, faction1 in self.dyn_rects:
-            for other in self.scene.collision_grid.query_neighbors(pos1.x, pos1.y):
-                if e1 is other:
+        for e in dynamic:
+            pos = e.get(Position)
+            for other in self.scene.collision_grid.query_neighbors(pos.x, pos.y):
+                if e is other:
                     continue
 
-                pair = tuple(sorted((id(e1), id(other))))
+                pair = tuple(sorted((id(e), id(other))))
                 if pair in checked:
                     continue
                 checked.add(pair)
 
                 if not other.has(Position, Collider, CollisionIdentity, FactionIdentity):
                     continue
+
+                pos1 = e.get(Position)
+                col1 = e.get(Collider)
+                cid1 = e.get(CollisionIdentity)
+                vel1 = e.get(Velocity)
 
 
                 pos2 = other.get(Position)
@@ -142,25 +117,25 @@ class CollisionSystem(System):
                 if not self.is_valid_pair(cid1.role, cid2.role):
                     continue
 
-                if not self.rects_collide(e1, pos1, col1, other, pos2, col2):
+                if not self.rects_collide(e, pos1, col1, other, pos2, col2):
                     continue
 
                 # --- RESOLUTION DECISION ---
                 if other.has(Velocity):
                     vel2 = other.get(Velocity)
                     self.resolve_dynamic_dynamic(
-                        e1, other,
+                        e, other,
                         pos1, vel1, col1,
                         pos2, vel2, col2
                     )
                 else:
                     self.resolve_dynamic_static(
-                        e1, other,
+                        e, other,
                         pos1, vel1, col1,
                         pos2, col2
                     )
 
-                self.register_colliders(e1, other)
+                self.register_colliders(e, other)
 
 
     @staticmethod
