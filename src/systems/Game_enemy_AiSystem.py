@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from scenes.scene import Scene
     from scenes.play import PlayScene
 
-from Utils.spatialGrid import SpatialGrid
+from Utils._spatialGrid import SpatialGrid
 from components.components import *
 from systems.system import System
 
@@ -168,7 +168,7 @@ class AI_FarmerDecisionSystem(System):
                     target.target = None
 
                 if target.target is None:
-                    target.target = self.scene.collision_grid.find_nearest(pos.x, pos.y, require_component=Farm)
+                    target.target = self.scene._grid.find_nearest(pos.x, pos.y, require_component=Farm)
 
 
 

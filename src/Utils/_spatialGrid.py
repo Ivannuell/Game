@@ -87,8 +87,6 @@ class SpatialGrid:
         return tuple(cells)
 
 
-
-
     def get_Candidates(self):
         return [(pos, entity) for pos, entity in self.cells.items()]
 

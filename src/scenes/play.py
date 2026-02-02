@@ -1,24 +1,21 @@
 
 
 from components.components import *
-from entities.asteriods import Asteriod
 from entities.base import Base
 from entities.player import Player
 from entities.playerPart import PlayerPart
 from entities.projectile_related.projectile import ProjectilePool
-from entities.Spawn_Patterns.EnemyPatterns import Grid_Enemies, Line_Enemies
+from entities.Spawn_Patterns.EnemyPatterns import Line_Enemies
 from entities.UI.button import Button
 from entities.Utility_Entities.camera import CameraEntity
 from entities.Utility_Entities.Spawner import SpawnerEntity
 from entities.Utility_Entities.zone import Zone
-from registries.EnemyList import EnemyList
 from registries.EntityConfigs import *
 from scenes.scene import Scene
 from systems.AnimationSystem import (EventCleanerSystem,
                                      Events_AnimationSystem,
                                      Playback_AnimationSystem,
                                      State_AnimationSystem)
-from systems.GridSystem import Grid_CleanupSystem, Grid_IndexSystem
 from systems.camera_zoomSystem import CameraZoomSystem
 from systems.CameraSystem import CameraSystem
 from systems.CleanupSystem import CleanupSystem
@@ -28,8 +25,7 @@ from systems.damageSystem import DamageSystem
 from systems.debugers.collideRectDebug import DebugCollisionRenderSystem
 from systems.debugers.healthDraw_DebugerSystem import HealthDraw
 from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
-from systems.Game_AsteriodSystem import (Asteriod_ZoneSystem,
-                                         Asteriods_ManagementSystem)
+from systems.Game_AsteriodSystem import Asteriods_ManagementSystem
 from systems.Game_AutoAimingSystem import AutoAimingSystem, AutoFireSystem
 from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem,
                                          AI_AttackerPerceptionSystem,
@@ -40,8 +36,8 @@ from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem,
 from systems.Game_goldSystem import Earn_GoldSystem
 from systems.Game_inputSystem import InputSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
-from systems.Game_SpawnerSystem import (Asteriods_SpawningSystem,
-                                        Enemy_SpawningSystem)
+from systems.Game_SpawnerSystem import (Enemy_SpawningSystem, Farm_SpawningSystem)
+from systems.GridSystem import Grid_IndexSystem
 from systems.headsUpDisplaySystem import HeadsUpDisplaySystem
 from systems.healthBar_displaySystem import HealthBar_DisplaySystem
 from systems.healthSystem import HealthSystem
@@ -58,9 +54,9 @@ from systems.UI.commandSystem import CommandSystem
 from systems.UI.UI_button_inputSystem import UI_Button_InputSystem
 from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.world_renderSystem import WorldRenderSystem
+from Utils.spatialGrid import SpatialGrid
 from Utils.Camera import Camera
 from Utils.EnemyFactory import EnemyFactory
-from Utils.spatialGrid import SpatialGrid
 
 
 class PlayScene(Scene):
@@ -71,7 +67,7 @@ class PlayScene(Scene):
         self.enemyFactory = EnemyFactory(self)
         self.proj_pool = ProjectilePool(500)
 
-        self.collision_grid = SpatialGrid(64)
+        self._grid = SpatialGrid(64)
         # self.player_grid = SpatialGrid(50)
         # self.enemy_grid = SpatialGrid(50)
         # self.asteriod_grid =SpatialGrid(64)
@@ -92,12 +88,11 @@ class PlayScene(Scene):
             Events_AnimationSystem(self),
             State_AnimationSystem(self),
 
-            Grid_IndexSystem(self),
-            CollisionSystem(self),
-            Asteriods_SpawningSystem(self), 
+            Farm_SpawningSystem(self),
+            Enemy_SpawningSystem(self),
 
-            # AI_AttackerPerceptionSystem(self),
-            # AI_AttackerDecisionSystem(self),
+            CollisionSystem(self),
+
             AI_FarmerDecisionSystem(self),
 
             Enemy_AI_MovementSystem(self),
@@ -115,28 +110,26 @@ class PlayScene(Scene):
             Asteriods_ManagementSystem(self),
 
             LifetimeSystem(self),
-            Grid_CleanupSystem(self),
             EventCleanerSystem(self),
 
             CameraSystem(self),
 
-            Enemy_SpawningSystem(self),
-            ButtonDisplaySystem(self),
             CameraTransformSystem(self),
-
-            # DebugCollisionRenderSystem(self, enabled=True),
-            # HealthDraw(Projectiles=False, Entity=True, Orbit=False),
-            CleanupSystem(self),
-            OnScreenDebugSystem(self),
-
-            HealthBar_DisplaySystem(self),
-            HeadsUpDisplaySystem(self),
-            ProjectileSystem(self),
             RotationSystem(self),
 
-            WorldRenderSystem(self),  # Uses ViewPosition
-            # Asteriod_ZoneSystem(self),
 
+            Grid_IndexSystem(self),
+
+            CleanupSystem(self),
+
+            ButtonDisplaySystem(self),
+            HealthBar_DisplaySystem(self),
+            HeadsUpDisplaySystem(self),
+
+            ProjectileSystem(self),
+            WorldRenderSystem(self),
+
+            OnScreenDebugSystem(self),
         ]
 
     def on_Enter(self):
@@ -172,11 +165,10 @@ class PlayScene(Scene):
         Ship_Cannon.add(Perception())
 
         zone1 = Zone(self, 1, 70, (1000, 0), (300, 10000))
-        zone2 = Zone(self, 2, 10, (-100,0), (800, 10000))
+        # zone2 = Zone(self, 2, 10, (-100, 0), (800, 10000))
         zone3 = Zone(self, 3, 30, (590, 0), (610, 10000))
-        zone4 = Zone(self, 4, 30, (1440,0), (610, 10000))
-        zone5 = Zone(self, 5, 10, (2100,0), (800, 10000))
-        
+        zone4 = Zone(self, 4, 30, (1440, 0), (610, 10000))
+        # zone5 = Zone(self, 5, 10, (2100, 0), (800, 10000))
 
         asteriodSpawner = SpawnerEntity(self)
         asteriodSpawner.add(AsteriodSpawner())
@@ -198,16 +190,15 @@ class PlayScene(Scene):
         self.entities.append(Headquarter)
         self.entities.append(EnemyBase)
 
-
         # self.entities.append(ast)
         self.entities.append(zone1)
-        self.entities.append(zone2)
+        # self.entities.append(zone2)
         self.entities.append(zone3)
         self.entities.append(zone4)
-        self.entities.append(zone5)
+        # self.entities.append(zone5)
 
-        self.entities.append(asteriodSpawner)        
-        self.entities.append(enemySpawner)        
+        self.entities.append(asteriodSpawner)
+        self.entities.append(enemySpawner)
 
         self.entities.append(cam)
         self.entities.append(pause)
@@ -239,7 +230,6 @@ class PlayScene(Scene):
             Enemy_AI_MovementSystem,
             Enemy_AI_ShootingSystem,
             Enemy_AI_TargetSystem,
-            Asteriods_SpawningSystem,
         ]
 
     def on_Resume(self):

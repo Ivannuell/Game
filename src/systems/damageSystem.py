@@ -24,7 +24,7 @@ class DamageSystem(System):
                 entity.get(Health).health -= source.amount
                 entity.add(HitBy(source.source))
 
-                self.scene.entity_Manager.remove(entity)
+                entity.remove(DamageEvent)
 
 
         

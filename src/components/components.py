@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from entities.entity import Entity
     from Utils.spritesheet import _Anim
     from entities.Spawn_Patterns.EnemyPatterns import SpawnPattern
-    from Utils.spatialGrid import SpatialGrid
+    from Utils._spatialGrid import SpatialGrid
 
 class ComponentRegistry:
     _components = {}
@@ -231,6 +231,7 @@ class GridCell(Component):
         super().__init__()
         self.by_grid: dict[object, list[tuple[int,int]]] = {}
         self.alive = True
+        self.cells = set()
 
 
 @ComponentRegistry.register
@@ -359,7 +360,7 @@ class ZoneComponent(Component):
         super().__init__()
         self.count = 0
         self.maxCount = maxcount
-        self.spawn_delay = 0.1
+        self.spawn_delay = 0.05
         self.timer = 0.0
         self.pos = pos
         self.size = size

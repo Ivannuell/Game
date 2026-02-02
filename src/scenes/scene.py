@@ -4,6 +4,8 @@ import pygame
 from abc import abstractmethod, ABC
 from typing import TYPE_CHECKING
 
+from Game_Managers.entity_Manager import EntityManager
+
 
 if TYPE_CHECKING:
     from Utils.systemProfiler_overlay import DebugOverlaySystem
@@ -19,6 +21,7 @@ class Scene(ABC):
         self.systems = []
         self.disabledSystems = []
 
+        self.entity_manager = EntityManager(self.entities)
         self.game = game
         self.asset_manager: 'AssetsManager' = game.asset_manager
         self.input_manager: 'InputManager' = game.input_manager
@@ -61,6 +64,8 @@ class Scene(ABC):
                 system.update(self.entities, dt)
                 elapsed = (time.perf_counter() - start) * 1000  # ms
                 self.profiler.record(system.__class__.__name__, elapsed)
+        
+        self.entity_manager.commit()
 
     def render(self, screen):
         for system in self.systems:

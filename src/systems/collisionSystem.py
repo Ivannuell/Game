@@ -43,6 +43,7 @@ class CollisionSystem(System):
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
         self.rect_cache = {}
+        self.grid = scene._grid
 
     def update(self, entities: list['Entity'], dt):
         colliders = []
@@ -64,7 +65,7 @@ class CollisionSystem(System):
         checked = set()
         for e in dynamic:
             pos = e.get(Position)
-            for other in self.scene.collision_grid.query_neighbors(pos.x, pos.y):
+            for other in self.grid.query_neighbors(pos.x, pos.y):
                 if e is other:
                     continue
 

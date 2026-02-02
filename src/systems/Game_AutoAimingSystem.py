@@ -4,7 +4,7 @@
 import pygame
 from Utils.helper import point_towards
 from components.components import *
-from Utils.spatialGrid import SpatialGrid
+from Utils._spatialGrid import SpatialGrid
 from systems.system import System
 
 from typing import TYPE_CHECKING

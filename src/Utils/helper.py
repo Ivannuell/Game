@@ -3,7 +3,7 @@ import math
 from typing import Sequence
 
 
-ACCELERATION = 1000
+ACCELERATION = 400
 FRICTION = 1000
 ENEMY_ACCELARATION = 200
 

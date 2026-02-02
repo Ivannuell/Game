@@ -34,12 +34,10 @@ class Enemy_SpawningSystem(System):
             pattern.update_step(dt)
 
             for event in pattern.get_spawn_events():
-                self.scene.entity_Manager.add(self.spawnEnemy(event))
+                self.scene.entity_manager.add(self.spawnEnemy(event))
 
             if pattern.is_done():
                 entity.add(Destroy())
-
-        self.scene.entity_Manager.commit()
 
     def spawnEnemy(self, event: SpawnEvent):
         enemy = self.scene.enemyFactory.create(event.spawn)
@@ -49,6 +47,57 @@ class Enemy_SpawningSystem(System):
         enemy.get(Rotation).angle = event.direction
 
         return enemy
+
+class Farm_SpawningSystem(System):
+    def update(self, entities, dt):
+        for z in entities:
+            if not z.has(ZoneComponent):
+                continue
+
+            zone = z.get(ZoneComponent)
+            current = self.count_farms_in_zone(entities, zone.id)
+
+            if current >= zone.maxCount:
+                continue
+
+            zone.timer += dt
+            if zone.timer < zone.spawn_delay:
+                continue
+
+            zone.timer = 0
+            farm = Asteriod(self.scene, Asteriod1)
+            farm.add(ZoneId(zone.id))
+
+            farm.get(Position).set(
+                pygame.Vector2(*self.spawn_at(zone.pos[0], zone.size[0]))
+            )
+
+            self.scene.entity_manager.add(farm)
+
+
+    def count_farms_in_zone(self, entities, zone_id):
+        return sum(
+            1 for e in entities
+            if e.has(Farm, ZoneId) and e.get(ZoneId).id == zone_id
+        )
+    
+    def spawn_at(self, x, w):
+        rand_x = random.randint(x - x//2, x + w)
+        rand_y = random.randint(-4500, 4500)
+
+        return rand_x, rand_y
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class _Asteriods_SpawningSystem(System):

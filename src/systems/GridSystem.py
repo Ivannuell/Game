@@ -6,13 +6,16 @@ if TYPE_CHECKING:
     from scenes.scene import Scene
     from entities.entity import Entity
 
+from icecream import ic
+
 class Grid_IndexSystem(System):
     def update(self, entities, dt):
+        grid = self.scene._grid
+
         for e in entities:
             if not e.has(Position, Collider, GridCell):
                 continue
 
-            grid = self.scene._grid
             pos = e.get(Position)
             col = e.get(Collider)
             gc = e.get(GridCell)
@@ -40,7 +43,7 @@ class _Grid_CleanupSystem(System):
 
             if not gc.alive and gc.by_grid:
                 for grid, cells in gc.by_grid.items():
-                    grid.remove_cells(e, cells)
+                    grid.remove(e, cells)
 
                 gc.by_grid.clear()
 

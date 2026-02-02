@@ -50,7 +50,7 @@ class Asteriods_ManagementSystem(System):
         
 
 
-class Asteriod_ZoneSystem(System):
+class _Asteriod_ZoneSystem(System):
     def __init__(self, scene):
         super().__init__(scene)
 
