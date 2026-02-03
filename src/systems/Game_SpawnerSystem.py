@@ -50,6 +50,9 @@ class Spaceship_SpawningSystem(System):
         spaceship.get(FactionIdentity).faction = event.faction
         spaceship.get(CollisionIdentity).role = event.faction
 
+        if event.faction == "ENEMY":
+            spaceship.add(EnemyIntent())
+
         return spaceship
 
 class Farm_SpawningSystem(System):

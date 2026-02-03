@@ -279,7 +279,10 @@ class Spawner(Component):
     def __init__(self):
         super().__init__()
         
-
+@ComponentRegistry.register
+class Bot(Component):
+    def __init__(self):
+        super().__init__()
 
 
 @ComponentRegistry.register
@@ -303,6 +306,8 @@ class MovementIntent(Component):
         self.move_y = 0
         self.rotate_left = False
         self.rotate_right = False
+
+
 
 @ComponentRegistry.register
 class Clickable(Component):

@@ -27,7 +27,7 @@ class Enemy_AI_MovementSystem(System):
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
-            if entity.has(EnemyIntent, MovementIntent, Position, Velocity):
+            if entity.has(Bot, MovementIntent, Position, Velocity):
                 pos = entity.get(Position)
                 rotation = entity.get(Rotation)
                 vel = entity.get(Velocity)
@@ -47,7 +47,7 @@ class Enemy_AI_ShootingSystem(System):
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
-            if entity.has(EnemyIntent, ShootIntent, Position):
+            if entity.has(Bot, ShootIntent, Position):
                 entity.get(ShootIntent).fired = True
                 
 class Enemy_AI_TargetSystem(System):
@@ -63,7 +63,7 @@ class Enemy_AI_TargetSystem(System):
         
 
         for e in entities: 
-            if not e.has(EnemyIntent, Target, Rotation, Velocity):
+            if not e.has(Bot, Target, Rotation, Velocity):
                 continue
             
             target_comp = e.get(Target)

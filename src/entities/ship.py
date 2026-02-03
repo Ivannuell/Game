@@ -14,11 +14,11 @@ class Spaceship(Entity):
 
         self.add(CollidedWith())
         self.add(Sprite())
-        self.add(EnemyIntent())
         self.add(MovementIntent())
         self.add(ShootIntent())
         self.add(Rotation())
         self.add(ViewPosition())
+        self.add(Bot())
 
         self.add(GridCell())
 
