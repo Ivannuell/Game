@@ -9,14 +9,15 @@ class SpawnEvent:
     direction: float | None = None
     delay: float = 0.0
     target: 'Entity'
+    faction: 'str'
 
 class SpawnerEntity(Entity):
-    def __init__(self, scene):
+    def __init__(self, scene, faction):
         super().__init__(scene)
         self.alive = True
         self.add(UtilityEntity())
-        # self.add(EnemySpawner(pattern))
-
+        self.add(FactionIdentity(faction))
+        self.add(Spawner())
 
 
 

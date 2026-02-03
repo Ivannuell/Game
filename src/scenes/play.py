@@ -5,11 +5,12 @@ from entities.base import Base
 from entities.player import Player
 from entities.playerPart import PlayerPart
 from entities.projectile_related.projectile import ProjectilePool
-from entities.Spawn_Patterns.EnemyPatterns import Line_Enemies
+from entities.Spawn_Patterns.EnemyPatterns import Line_Entities
 from entities.UI.button import Button
 from entities.Utility_Entities.camera import CameraEntity
 from entities.Utility_Entities.Spawner import SpawnerEntity
 from entities.Utility_Entities.zone import Zone
+from registries.EnemyList import EnemyList
 from registries.EntityConfigs import *
 from scenes.scene import Scene
 from systems.AnimationSystem import (EventCleanerSystem,
@@ -28,7 +29,6 @@ from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
 from systems.Game_AsteriodSystem import Asteriods_ManagementSystem
 from systems.Game_AutoAimingSystem import AutoAimingSystem, AutoFireSystem
 from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem,
-                                         AI_AttackerPerceptionSystem,
                                          AI_FarmerDecisionSystem,
                                          Enemy_AI_MovementSystem,
                                          Enemy_AI_ShootingSystem,
@@ -36,7 +36,7 @@ from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem,
 from systems.Game_goldSystem import Earn_GoldSystem
 from systems.Game_inputSystem import InputSystem
 from systems.Game_ParentFollowSystem import ParentFollowSystem
-from systems.Game_SpawnerSystem import (Enemy_SpawningSystem, Farm_SpawningSystem)
+from systems.Game_SpawnerSystem import (Spaceship_SpawningSystem, Farm_SpawningSystem)
 from systems.GridSystem import Grid_IndexSystem
 from systems.headsUpDisplaySystem import HeadsUpDisplaySystem
 from systems.healthBar_displaySystem import HealthBar_DisplaySystem
@@ -56,7 +56,7 @@ from systems.UI.UI_Pointer_inputSystem import UI_Pointer_InputSystem
 from systems.world_renderSystem import WorldRenderSystem
 from Utils.spatialGrid import SpatialGrid
 from Utils.Camera import Camera
-from Utils.EnemyFactory import EnemyFactory
+from Utils.spaceshipFactory import SpaceshipFactory
 
 
 class PlayScene(Scene):
@@ -64,13 +64,10 @@ class PlayScene(Scene):
         super().__init__(game)
 
         self.camera: Camera = Camera()
-        self.enemyFactory = EnemyFactory(self)
+        self.spaceshipFactory = SpaceshipFactory(self)
         self.proj_pool = ProjectilePool(500)
 
         self._grid = SpatialGrid(64)
-        # self.player_grid = SpatialGrid(50)
-        # self.enemy_grid = SpatialGrid(50)
-        # self.asteriod_grid =SpatialGrid(64)
 
         self.player_Entity: Player = None
 
@@ -89,11 +86,12 @@ class PlayScene(Scene):
             State_AnimationSystem(self),
 
             Farm_SpawningSystem(self),
-            Enemy_SpawningSystem(self),
+            Spaceship_SpawningSystem(self),
 
             CollisionSystem(self),
 
             AI_FarmerDecisionSystem(self),
+            AI_AttackerDecisionSystem(self),
 
             Enemy_AI_MovementSystem(self),
             Enemy_AI_ShootingSystem(self),
@@ -170,16 +168,16 @@ class PlayScene(Scene):
         zone4 = Zone(self, 4, 30, (1440, 0), (610, 10000))
         # zone5 = Zone(self, 5, 10, (2100, 0), (800, 10000))
 
-        asteriodSpawner = SpawnerEntity(self)
-        asteriodSpawner.add(AsteriodSpawner())
-
-        enemySpawner = SpawnerEntity(self)
-        enemySpawner.add(EnemySpawner(Line_Enemies(
-            3, EnemyBase.get(Position), 40, 1
+        enemySpawner = SpawnerEntity(self, "ENEMY")
+        enemySpawner.add(EntitySpawner(Line_Entities(
+            30, EnemyBase.get(Position), 40, 1, EnemyList.Farmer
         )))
 
-        # ast = Asteriod(self, Asteriod1)
-        # ast.get(Position).set(pygame.Vector2(0,0))wwwww
+        allySpawner = SpawnerEntity(self, "PLAYER")
+        allySpawner.add(EntitySpawner(Line_Entities(
+            30, Headquarter.get(Position), 0, 0.5, EnemyList.Farmer
+        )))
+
 
         self.camera.target = Ship_main
         self.player_Entity = Ship_main
@@ -197,8 +195,8 @@ class PlayScene(Scene):
         self.entities.append(zone4)
         # self.entities.append(zone5)
 
-        self.entities.append(asteriodSpawner)
         self.entities.append(enemySpawner)
+        self.entities.append(allySpawner)
 
         self.entities.append(cam)
         self.entities.append(pause)
@@ -223,8 +221,6 @@ class PlayScene(Scene):
             HealthDraw,
             OnScreenDebugSystem,
             Grid_IndexSystem,
-
-            AI_AttackerPerceptionSystem,
             AI_AttackerDecisionSystem,
 
             Enemy_AI_MovementSystem,

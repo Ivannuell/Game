@@ -83,4 +83,20 @@ key feature
     each can spawn different numberse of asteriods
 
     the center will have most asteriods then gets lesser the farther from the center
-    
+
+
+
+
+
+
+PROBLEMS FOUND
+
+- When scanning for new nearest entity
+    all entities tries to run the find_nearest function all at once causes a frame spike
+
+    solution i think
+     - Make every farm only be targeted by one farmer.
+
+- When restarting
+    Need to pause and reset systems accordingly when restarting
+     5

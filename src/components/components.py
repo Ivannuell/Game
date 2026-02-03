@@ -274,6 +274,12 @@ class Rotation(Component):
     def set_target(self):
         self.angleOfAttack -= SPRITE_FORWARD_OFFSET
 
+@ComponentRegistry.register
+class Spawner(Component):
+    def __init__(self):
+        super().__init__()
+        
+
 
 
 @ComponentRegistry.register
@@ -325,11 +331,11 @@ class EnemyIntent(Component):
 
 @ComponentRegistry.register
 class Target(Component):
-    def __init__(self, target) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.prev_target = target
-        self.target = target
-        self.Main_target = target
+        self.prev_target = None
+        self.target = None
+        self.Main_target = None
     
 
 @ComponentRegistry.register
@@ -343,7 +349,7 @@ class Zoom(Component):
         self.zoom_step = 1.1
         
 @ComponentRegistry.register
-class EnemySpawner(Component):
+class EntitySpawner(Component):
     def __init__(self, pattern) -> None:
         super().__init__()
         self.pattern: 'SpawnPattern' = pattern
@@ -468,3 +474,4 @@ class Perception(Component):
         super().__init__()
         self.visible_entities: 'list[Entity] | list[Entity, float]' = []
         self.cooldown = 0.0
+        self.time = 0.2

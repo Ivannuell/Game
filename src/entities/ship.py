@@ -1,11 +1,9 @@
 from entities.entity import Entity
 from components.components import *
 
-class Enemy(Entity):
+class Spaceship(Entity):
     def __init__(self, scene, config={}):
         super().__init__(scene)
-
-        self.__qualname__ = "Enemy"
 
         self.add(Animation(config["Animation"]["animation"], config["Animation"]["spritesheet"]))
         self.add(Position(config["Position"][0], config["Position"][1]))
@@ -24,9 +22,9 @@ class Enemy(Entity):
 
         self.add(GridCell())
 
-        self.add(FactionIdentity("ENEMY"))
+        self.add(FactionIdentity(""))
         self.add(CollisionIdentity(
-            role="ENEMY",
+            role="",
             layer = [CollisionID.Enemies],
             mask = [CollisionID.Players, CollisionID.Projectiles, CollisionID.Enemies, CollisionID.Farm]
         ))

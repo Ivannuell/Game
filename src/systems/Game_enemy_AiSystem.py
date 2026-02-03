@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from entities.enemy import Enemy
+    from entities.ship import Spaceship
     from entities.entity import Entity
     from scenes.scene import Scene
     from scenes.play import PlayScene
@@ -41,7 +41,6 @@ class Enemy_AI_MovementSystem(System):
                 pos.x += vel.x * dt
                 pos.y += vel.y * dt
 
-
 class Enemy_AI_ShootingSystem(System):
     def __init__(self, scene: 'Scene') -> None:
         super().__init__(scene)
@@ -51,8 +50,94 @@ class Enemy_AI_ShootingSystem(System):
             if entity.has(EnemyIntent, ShootIntent, Position):
                 entity.get(ShootIntent).fired = True
                 
+class Enemy_AI_TargetSystem(System):
+    def __init__(self, scene) -> None:
+        super().__init__(scene)
+        self.time = 0
 
-class AI_AttackerPerceptionSystem(System):
+    def update(self, entities: 'list[Entity]', dt):
+        self.time += dt
+        if self.time > 0.3:
+            self.time = 0
+            return 
+        
+
+        for e in entities: 
+            if not e.has(EnemyIntent, Target, Rotation, Velocity):
+                continue
+            
+            target_comp = e.get(Target)
+            rot = e.get(Rotation)
+            pos = e.get(Position)
+
+            if target_comp.target is None:
+                continue
+
+            curr_target = target_comp.target.get(Position)
+
+            rot.angle = point_towards(pos, curr_target)
+
+
+class AI_AttackerDecisionSystem(System):
+    def __init__(self, scene) -> None:
+        super().__init__(scene)
+        self.grid = scene._grid
+
+    def update(self, entities: 'list[Entity]', dt):
+        for e in entities:
+            if not e.has(Attacker, Perception):
+                continue
+
+            target = e.get(Target)
+            pos = e.get(Position)
+            perception = e.get(Perception)
+            
+            perception.cooldown += dt
+            if target.target is None:
+                if not perception.cooldown >= perception.time:
+                    continue
+
+                perception.cooldown = 0.0
+                target.target = self.grid.find_nearest(pos.x, pos.y, predicate=lambda e: 
+                                                    e.has(FactionIdentity) and e.get(FactionIdentity).faction == "PLAYER")
+            
+            elif target.target.has(IsDead):
+                target.target = None
+            
+         
+class AI_FarmerDecisionSystem(System):
+    def __init__(self, scene) -> None:
+        super().__init__(scene)
+        self.grid = scene._grid
+
+    def update(self, entities: 'list[Entity]', dt):
+        for e in entities:
+            if e.has(Perception, Vision, Farmer, Target):
+                target = e.get(Target)
+                pos = e.get(Position)
+                perception = e.get(Perception)
+
+                perception.cooldown += dt
+                if target.target is None:
+                    if not perception.cooldown >= perception.time:
+                        continue
+                    
+                    perception.cooldown = 0.0
+                    target.target = self.grid.find_nearest(pos.x, pos.y, require_component=Farm)
+                
+                elif target.target.has(IsDead):
+                    target.target = None
+                    perception.cooldown = -random.uniform(0.0, perception.time)
+           
+
+
+
+
+
+        
+
+
+class _AI_AttackerPerceptionSystem(System):
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
         self.frame_index = 0
@@ -124,7 +209,7 @@ class AI_AttackerPerceptionSystem(System):
         return True
 
             
-class AI_AttackerDecisionSystem(System):
+class _AI_AttackerDecisionSystem(System):
     def __init__(self, scene) -> None:
         super().__init__(scene)
 
@@ -151,94 +236,6 @@ class AI_AttackerDecisionSystem(System):
 
             else:
                 target.target = target.Main_target
-
-         
-class AI_FarmerDecisionSystem(System):
-    def __init__(self, scene) -> None:
-        super().__init__(scene)
-
-    def update(self, entities: 'list[Entity]', dt):
-        for e in entities:
-            if e.has(Perception, Vision, Farmer, Target):
-                target = e.get(Target)
-                visible = e.get(Perception)
-                pos = e.get(Position)
-
-                if target.target and not target.target in entities:
-                    target.target = None
-
-                if target.target is None:
-                    target.target = self.scene._grid.find_nearest(pos.x, pos.y, require_component=Farm)
-
-
-
-
-               
-
-
-
-
-
-
-
-
-
-                
-
-
-
-            
-class Enemy_AI_TargetSystem(System):
-    def __init__(self, scene) -> None:
-        super().__init__(scene)
-        self.time = 0
-
-    def update(self, entities: 'list[Entity]', dt):
-        self.time += dt
-        if self.time > 0.3:
-            self.time = 0
-            return 
-        
-
-        for e in entities: 
-            if not e.has(EnemyIntent, Target, Rotation, Velocity):
-                continue
-            
-            target_comp = e.get(Target)
-            rot = e.get(Rotation)
-            pos = e.get(Position)
-
-            # def is_dead(ent):
-            #     return ent is None or ent.has(IsDead)
-
-            # # --- Target resolution ---
-            # if is_dead(main_target):
-
-            #     if nearby:
-            #         # Retarget to nearest visible entity
-            #         target_comp.prev_target = main_target
-            #         target_comp.target = nearby[0]
-
-            #     else:
-            #         # No targets available → stop
-            #         target_comp.target = None
-            #         velocity.speed = 0
-            #         return  # nothing to aim at
-
-            # --- At this point, target is guaranteed valid ---
-            if target_comp.target is None:
-                continue
-
-            curr_target = target_comp.target.get(Position)
-
-            # Rotate toward target
-            rot.angle = point_towards(pos, curr_target)
-
-
-
-
-        
-
 
 
 

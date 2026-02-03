@@ -17,7 +17,7 @@ from components.components import *
 from systems.system import System
 
 
-class Enemy_SpawningSystem(System):
+class Spaceship_SpawningSystem(System):
 
     def __init__(self, scene: 'PlayScene') -> None:
         super().__init__(scene)
@@ -25,28 +25,32 @@ class Enemy_SpawningSystem(System):
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
 
-            if not entity.has(EnemySpawner):
+            if not entity.has(Spawner):
                 continue
 
-            spawner = entity.get(EnemySpawner)
+            spawner = entity.get(EntitySpawner)
+            faction = entity.get(FactionIdentity).faction
+
             pattern = spawner.pattern
 
             pattern.update_step(dt)
 
             for event in pattern.get_spawn_events():
-                self.scene.entity_manager.add(self.spawnEnemy(event))
+                event.faction = faction
+                self.scene.entity_manager.add(self.spawnSpaceship(event))
 
             if pattern.is_done():
                 entity.add(Destroy())
 
-    def spawnEnemy(self, event: SpawnEvent):
-        enemy = self.scene.enemyFactory.create(event.spawn)
+    def spawnSpaceship(self, event: SpawnEvent):
+        spaceship = self.scene.spaceshipFactory.create(event.spawn)
 
-        enemy_pos = enemy.get(Position)
-        enemy_pos.set(event.position)
-        enemy.get(Rotation).angle = event.direction
+        spaceship.get(Position).set(event.position)
+        spaceship.get(Rotation).angle = event.direction
+        spaceship.get(FactionIdentity).faction = event.faction
+        spaceship.get(CollisionIdentity).role = event.faction
 
-        return enemy
+        return spaceship
 
 class Farm_SpawningSystem(System):
     def update(self, entities, dt):

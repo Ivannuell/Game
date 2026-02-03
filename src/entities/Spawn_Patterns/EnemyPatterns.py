@@ -21,8 +21,8 @@ class SpawnPattern(ABC):
     def get_spawn_events(self) -> list:
         pass
 
-class Line_Enemies(SpawnPattern):
-    def __init__(self, count, start, spacing, interval, target=None):
+class Line_Entities(SpawnPattern):
+    def __init__(self, count, start, spacing, interval, enemyType, target=None):
         self.count = count
         self.start = start
         self.spacing = spacing
@@ -30,6 +30,7 @@ class Line_Enemies(SpawnPattern):
         self.timer = 0
         self.spawned = 0
         self.target = target
+        self.enemyType = enemyType
 
     def reset(self):
         return super().reset()
@@ -47,10 +48,9 @@ class Line_Enemies(SpawnPattern):
                 self.start.x + self.spawned * self.spacing,
                 self.start.y
             )
-
-            
+     
             spawn = SpawnEvent()
-            spawn.spawn = EnemyList.Farmer
+            spawn.spawn = self.enemyType
             spawn.position = pos
             # spawn.direction = point_towards(pos)
             
@@ -70,7 +70,7 @@ class Line_Enemies(SpawnPattern):
         return events
 
 
-class Grid_Enemies(SpawnPattern):
+class Grid_Entities(SpawnPattern):
     def __init__(self, startPos:tuple[int, int], gridSize: tuple[int, int], target, spacing, EnemyType: EnemyList):
         self.timer = 0
         self.spawned = 0
