@@ -121,12 +121,12 @@ class PlayScene(Scene):
             CleanupSystem(self),
 
             ButtonDisplaySystem(self),
-            HealthBar_DisplaySystem(self),
             HeadsUpDisplaySystem(self),
 
-            ProjectileSystem(self),
             WorldRenderSystem(self),
 
+            HealthBar_DisplaySystem(self),
+            ProjectileSystem(self),
             OnScreenDebugSystem(self),
         ]
 
@@ -169,14 +169,16 @@ class PlayScene(Scene):
         # zone5 = Zone(self, 5, 10, (2100, 0), (800, 10000))
 
         enemySpawner = SpawnerEntity(self, "ENEMY")
-        enemySpawner.add(EntitySpawner(Line_Entities(
-            30, EnemyBase.get(Position), 40, 1, EnemyList.Farmer
-        )))
+        enemySpawner.add(EntitySpawner([
+            # Line_Entities(10, EnemyBase.get(Position), 0, 0.5, EnemyList.Farmer),
+            Line_Entities(2, EnemyBase.get(Position), 0, 1, EnemyList.Normal, Headquarter)
+            ]))
 
         allySpawner = SpawnerEntity(self, "PLAYER")
-        allySpawner.add(EntitySpawner(Line_Entities(
-            30, Headquarter.get(Position), 0, 0.5, EnemyList.Farmer
-        )))
+        allySpawner.add(EntitySpawner([
+            # Line_Entities(10, Headquarter.get(Position), 0, 0.5, EnemyList.Farmer),
+            Line_Entities(5 , Headquarter.get(Position), 0, 1, EnemyList.Normal, EnemyBase)
+            ]) )
 
 
         self.camera.target = Ship_main
@@ -193,7 +195,7 @@ class PlayScene(Scene):
         # self.entities.append(zone2)
         self.entities.append(zone3)
         self.entities.append(zone4)
-        # self.entities.append(zone5)
+        # self.entities.append(zone5)W
 
         self.entities.append(enemySpawner)
         self.entities.append(allySpawner)

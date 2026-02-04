@@ -1,5 +1,5 @@
 from components.components import *
-from entities.ship import Spaceship
+from entities.spaceship import Spaceship
 from registries.AnimationStateList import AnimationMode
 from registries.EnemyList import EnemyList
 from registries.EntityConfigs import *

@@ -10,27 +10,33 @@ if TYPE_CHECKING:
 class HealthBar_DisplaySystem(System):
     def __init__(self, scene: 'Scene') -> None:
         super().__init__(scene)
-        game_screen = scene.game.screen.display_surface
-        game_screen_rect = game_screen.get_rect()
-        
-        self.tiny_font = pygame.font.Font(None, 20)
-        self.health_bar_con = pygame.Rect(30, game_screen_rect.height - 50, 300, 20)
-        self.health_bar = self.health_bar_con.copy()
-        self.health_bar_con.size = (self.health_bar_con.width + 3, self.health_bar_con.height + 3)
-        self.health_bar_con.y -= 1.5
-
-        self.health_con = self.health_bar_con.width / 100
 
 
     def render(self, entities: list[Entity], screen):
-        for entity in entities:
-            if entity.has(HeadQuarter) and not entity.has(EnemyIntent):
-                health = entity.get(Health)
+        BAR_WIDTH = 20
+        BAR_HEIGHT = 1
+        Y_OFFSET = 4  # space below entity
 
-                self.health_bar.width = self.health_con * (health.health / 100) * 10
+        for e in entities:
+            if e.has(Farm):
+                continue
+            if not e.has(Health, ViewPosition, Collider):
+                continue
 
-                health_text = self.tiny_font.render(f"{health.health}/{health.full_health}", False, 'white')
-                pygame.draw.rect(screen.display_surface, 'red', self.health_bar, 0, 5)
-                pygame.draw.rect(screen.display_surface, 'white', self.health_bar_con, 1, 5)
-                screen.display_surface.blit(health_text, (self.health_bar_con.x + 20, self.health_bar_con.y - 10))
+            pos = e.get(ViewPosition)
+            col = e.get(Collider)
+            health = e.get(Health)
+
+            # Clamp health percent
+            percent = max(0.0, min(health.health / health.max_health, 1.0))
+
+            x = pos.x - BAR_WIDTH / 2
+            y = pos.y + col.height / 2 + Y_OFFSET
+
+            back_rect = pygame.Rect(x, y, BAR_WIDTH, BAR_HEIGHT)
+            fill_rect = pygame.Rect(x, y, BAR_WIDTH * percent, BAR_HEIGHT)
+
+            pygame.draw.rect(screen.display_surface, (255, 0, 0), back_rect, 1)
+            pygame.draw.rect(screen.display_surface, (0, 255, 0), fill_rect)
+
 

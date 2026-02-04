@@ -29,6 +29,7 @@ class Asteriod(Entity):
         self.add(Gold(100))
         self.add(Health(200))
         self.add(GridCell())
+        self.add(TargetedBy())
 
         self.add(Farm())
 

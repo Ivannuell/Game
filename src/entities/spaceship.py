@@ -19,6 +19,7 @@ class Spaceship(Entity):
         self.add(Rotation())
         self.add(ViewPosition())
         self.add(Bot())
+        self.add(TargetedBy())
 
         self.add(GridCell())
 

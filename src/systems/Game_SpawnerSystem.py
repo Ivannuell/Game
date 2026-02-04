@@ -28,19 +28,20 @@ class Spaceship_SpawningSystem(System):
             if not entity.has(Spawner):
                 continue
 
-            spawner = entity.get(EntitySpawner)
-            faction = entity.get(FactionIdentity).faction
+            patterns = entity.get(EntitySpawner).patterns
 
-            pattern = spawner.pattern
+            for pattern in patterns:
+                faction = entity.get(FactionIdentity).faction
+                # pattern = spawner.pattern
 
-            pattern.update_step(dt)
+                pattern.update_step(dt)
 
-            for event in pattern.get_spawn_events():
-                event.faction = faction
-                self.scene.entity_manager.add(self.spawnSpaceship(event))
+                for event in pattern.get_spawn_events():
+                    event.faction = faction
+                    self.scene.entity_manager.add(self.spawnSpaceship(event))
 
-            if pattern.is_done():
-                entity.add(Destroy())
+                if pattern.is_done():
+                    entity.add(Destroy())
 
     def spawnSpaceship(self, event: SpawnEvent):
         spaceship = self.scene.spaceshipFactory.create(event.spawn)
@@ -52,6 +53,9 @@ class Spaceship_SpawningSystem(System):
 
         if event.faction == "ENEMY":
             spaceship.add(EnemyIntent())
+
+        if event.target:
+            spaceship.get(Target).Main_target = event.target
 
         return spaceship
 

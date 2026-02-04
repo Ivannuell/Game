@@ -99,3 +99,62 @@ class SpatialGrid:
                 return nearest
 
             r += 1
+
+
+
+
+    def _find_nearest(
+            self,
+            x, y,
+            min_radius=0,
+            require_component=None,
+            predicate=None,
+        ):
+            if not self.cells:
+                return None   # 🔑 hard guard
+
+            cx, cy = self.cell_coords(x, y)
+
+            nearest = None
+            nearest_dist_sq = float("inf")
+
+            # ---- HARD STOP: maximum possible radius ----
+            max_r = 0
+            for gx, gy in self.cells.keys():
+                max_r = max(max_r, abs(gx - cx), abs(gy - cy))
+
+            r = min_radius
+
+            while r <= max_r:
+                found_in_ring = False
+
+                for dx in range(-r, r + 1):
+                    for dy in range(-r, r + 1):
+                        if abs(dx) != r and abs(dy) != r:
+                            continue
+
+                        cell = self.cells.get((cx + dx, cy + dy))
+                        if not cell:
+                            continue
+
+                        for e in cell:
+                            if require_component and not e.has(require_component):
+                                continue
+                            if predicate and not predicate(e):
+                                continue
+
+                            pos = e.get(Position)
+                            d2 = (pos.x - x) ** 2 + (pos.y - y) ** 2
+
+                            if d2 < nearest_dist_sq:
+                                nearest = e
+                                nearest_dist_sq = d2
+                                found_in_ring = True
+
+                if found_in_ring:
+                    return nearest
+
+                r += 1
+
+            # 🔑 Nothing valid found anywhere
+            return None

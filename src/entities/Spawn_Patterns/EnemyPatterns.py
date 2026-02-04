@@ -54,13 +54,12 @@ class Line_Entities(SpawnPattern):
             spawn.position = pos
             # spawn.direction = point_towards(pos)
             
+            spawn.target = self.target
             spawn.direction = 2
+            
             if self.target:
-                dx = self.target.x - self.start.x
-                dy = self.start.y - self.target.y  # invert Y
-
-                angle = math.atan2(dy, dx)
-                spawn.direction = angle
+                pos = self.target.get(Position)
+                spawn.direction = point_towards(self.start, pos)
 
             events.append(spawn)
 

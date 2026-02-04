@@ -172,7 +172,7 @@ class Health(Component):
     def __init__(self, health):
         super().__init__()
         self.health = health
-        self.full_health = health
+        self.max_health = health
 
 @ComponentRegistry.register
 class Damage(Component):
@@ -233,6 +233,13 @@ class GridCell(Component):
         self.alive = True
         self.cells = set()
 
+
+@ComponentRegistry.register
+class TargetedBy(Component):
+    def __init__(self) -> None:
+        super().__init__()
+        self.entities = []
+        self.maxSize = 1
 
 @ComponentRegistry.register
 class PointerState(Component):
@@ -355,9 +362,9 @@ class Zoom(Component):
         
 @ComponentRegistry.register
 class EntitySpawner(Component):
-    def __init__(self, pattern) -> None:
+    def __init__(self, patterns) -> None:
         super().__init__()
-        self.pattern: 'SpawnPattern' = pattern
+        self.patterns: 'list[SpawnPattern]' = patterns
 
 @ComponentRegistry.register
 class AsteriodSpawner(Component):

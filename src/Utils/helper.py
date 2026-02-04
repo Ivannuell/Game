@@ -25,6 +25,9 @@ def clamp_min_speed(vx, vy, min_speed):
     scale = min_speed / speed
     return vx * scale, vy * scale
 
+def get_distance(e1, e2):
+        return (e1.x + e2.x)**2 + (e1.y + e2.y)**2
+
 
 def move_towards(current, target, max_delta):
     if current < target:

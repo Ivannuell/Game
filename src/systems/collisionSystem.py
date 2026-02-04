@@ -4,7 +4,7 @@ import pygame
 
 from components.components import *
 from entities.asteriods import Asteriod
-from entities.ship import Spaceship
+from entities.spaceship import Spaceship
 from systems.system import System
 
 from typing import TYPE_CHECKING

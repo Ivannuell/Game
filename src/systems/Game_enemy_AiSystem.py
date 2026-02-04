@@ -4,13 +4,13 @@ import math
 import random
 from turtle import position
 
-from Utils.helper import ENEMY_ACCELARATION, move_towards, point_towards
+from Utils.helper import ENEMY_ACCELARATION, get_distance, move_towards, point_towards
 
 from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from entities.ship import Spaceship
+    from entities.spaceship import Spaceship
     from entities.entity import Entity
     from scenes.scene import Scene
     from scenes.play import PlayScene
@@ -83,26 +83,96 @@ class AI_AttackerDecisionSystem(System):
         super().__init__(scene)
         self.grid = scene._grid
 
-    def update(self, entities: 'list[Entity]', dt):
+    def update(self, entities, dt):
         for e in entities:
-            if not e.has(Attacker, Perception):
+            if not e.has(Attacker, Perception, Target, Position, FactionIdentity, Vision):
                 continue
 
             target = e.get(Target)
             pos = e.get(Position)
             perception = e.get(Perception)
-            
+            faction = e.get(FactionIdentity).faction
+            vision = e.get(Vision) 
+
             perception.cooldown += dt
+
+            # ---- Normalize dead targets ----
+            main_dead = (
+                target.Main_target
+                and (target.Main_target.has(IsDead) or target.Main_target.has(Destroy))
+            )
+
+            curr_dead = (
+                target.target
+                and (target.target.has(IsDead) or target.target.has(Destroy))
+            )
+
+            # Case 1: BOTH dead → do NOTHING
+            if main_dead and curr_dead:
+                continue
+
+            # Remove only the dead one
+            if curr_dead:
+                target.target = None
+
+            # ---- Range check ----
+            # if target.target and target.Main_target:
+            #     if not (target.target.has(IsDead) or target.target.has(Destroy)):
+
+            #         curr_pos = target.target.get(Position)
+            #         dx = curr_pos.x - pos.x
+            #         dy = curr_pos.y - pos.y
+            #         dist_sq = dx*dx + dy*dy
+
+            #         if dist_sq > (vision.range * self.grid.cell_size):
+            #             # Prefer Main_target if it is valid
+            #             if not (
+            #                 target.Main_target.has(IsDead)
+            #                 or target.Main_target.has(Destroy)
+            #             ):
+            #                 target.target = target.Main_target
+            #                 continue   # 🔑 stop further processing this frame
+
+
+            # ---- No retarget allowed until cooldown ----
+            if target.target is None and perception.cooldown < perception.time:
+                continue
+
+            opp = "ENEMY" if faction == "PLAYER" else "PLAYER"
+
+            # ---- Acquire / refresh target ----
             if target.target is None:
-                if not perception.cooldown >= perception.time:
+                perception.cooldown = 0.0
+
+                # find_nearest will not stop until something is found
+                found = self.grid.find_nearest(
+                    pos.x, pos.y,
+                    predicate=lambda ent:
+                        ent.has(FactionIdentity)
+                        and not ent.has(IsDead)
+                        and not ent.has(Destroy)
+                        and ent.get(FactionIdentity).faction == opp
+                )
+
+                if found is None:
+                    perception.cooldown = -perception.time
                     continue
 
-                perception.cooldown = 0.0
-                target.target = self.grid.find_nearest(pos.x, pos.y, predicate=lambda e: 
-                                                    e.has(FactionIdentity) and e.get(FactionIdentity).faction == "PLAYER")
-            
-            elif target.target.has(IsDead):
-                target.target = None
+                target.target = found
+
+
+            # ---- Compare against Main_target (if alive) ----
+            if target.Main_target and not main_dead:
+                main_pos = target.Main_target.get(Position)
+                curr_pos = target.target.get(Position)
+
+                dm = (main_pos.x - pos.x) ** 2 + (main_pos.y - pos.y) ** 2
+                dc = (curr_pos.x - pos.x) ** 2 + (curr_pos.y - pos.y) ** 2
+
+                if dm < dc:
+                    target.target = target.Main_target
+
+      
             
          
 class AI_FarmerDecisionSystem(System):
@@ -123,11 +193,16 @@ class AI_FarmerDecisionSystem(System):
                         continue
                     
                     perception.cooldown = 0.0
-                    target.target = self.grid.find_nearest(pos.x, pos.y, require_component=Farm)
+                    target.target = self.grid.find_nearest(pos.x, pos.y, predicate= lambda e: 
+                                                           e.has(Farm, TargetedBy) and len(e.get(TargetedBy).entities) <= e.get(TargetedBy).maxSize)
+
+                    targeted = target.target.get(TargetedBy)
+                    targeted.entities.append(e)
                 
                 elif target.target.has(IsDead):
                     target.target = None
                     perception.cooldown = -random.uniform(0.0, perception.time)
+
            
 
 
