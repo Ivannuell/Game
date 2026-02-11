@@ -16,7 +16,7 @@ class SpaceshipFactory:
             angle = e.get(Rotation).angle
             e.add(Cannon(1))
             e.add(ManualAim(angle))
-            e.add(Vision(10))
+            e.add(Vision(5))
             e.add(Perception())
             e.add(Attacker())
             e.add(Target())
@@ -31,11 +31,11 @@ class SpaceshipFactory:
 
             e.add(Cannon(0.5))
             e.add(ManualAim(angle))
-            e.add(Vision(10))
+            e.add(Vision(2))
             e.add(Perception())
             e.add(Farmer())
             e.add(Target())
 
-            e.add(GoldContainer(1000))
+            e.add(GoldContainer(300))
 
             return e

@@ -41,7 +41,8 @@ class Spaceship_SpawningSystem(System):
                     self.scene.entity_manager.add(self.spawnSpaceship(event))
 
                 if pattern.is_done():
-                    entity.add(Destroy())
+                    # entity.add(Destroy())
+                    entity.remove(pattern)
 
     def spawnSpaceship(self, event: SpawnEvent):
         spaceship = self.scene.spaceshipFactory.create(event.spawn)

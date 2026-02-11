@@ -16,6 +16,7 @@ collision_pairs = {
     ("PLAYER", "ENEMY"),
     ("ENEMY", "PLAYER"),
     ("ENEMY", "ENEMY"),
+    ("PLAYER", "PLAYER"),
 
     ("PROJECTILE", "PLAYER"),
     ("PLAYER", "PROJECTILE"),

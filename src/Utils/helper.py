@@ -26,7 +26,17 @@ def clamp_min_speed(vx, vy, min_speed):
     return vx * scale, vy * scale
 
 def get_distance(e1, e2):
-        return (e1.x + e2.x)**2 + (e1.y + e2.y)**2
+    """
+    Gets the position of two entities and returns their distance in squared
+    
+    :param e1: Description
+    :param e2: Description
+    """    
+
+    dx = e1.x - e2.x
+    dy = e1.y - e2.y
+
+    return dx*dx + dy*dy
 
 
 def move_towards(current, target, max_delta):

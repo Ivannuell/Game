@@ -32,7 +32,7 @@ from systems.debugers.healthDraw_DebugerSystem import HealthDraw
 from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
 from systems.Game_AsteriodSystem import Asteriods_ManagementSystem
 from systems.Game_AutoAimingSystem import AutoAimingSystem, AutoFireSystem
-from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem,
+from systems.Game_enemy_AiSystem import (AI_AttackerDecisionSystem, AI_Farmer_Gold_DecisionSystem,
                                          AI_FarmerDecisionSystem,
                                          Enemy_AI_MovementSystem,
                                          Enemy_AI_ShootingSystem,
@@ -74,6 +74,10 @@ class PlayScene(Scene):
         self._grid = SpatialGrid(64)
 
         self.player_Entity: Player = None
+        self.base_spawner = None
+
+        self.enemy_base = None
+        self.ally_base = None
 
         self.ui_manager.register('pause', Pause_Menu(self.ui_manager, self.command_manager, (200, 200, 300, 500)))
 
@@ -97,6 +101,7 @@ class PlayScene(Scene):
             CollisionSystem(self),
 
             AI_FarmerDecisionSystem(self),
+            AI_Farmer_Gold_DecisionSystem(self),
             AI_AttackerDecisionSystem(self),
 
             Enemy_AI_MovementSystem(self),
@@ -146,7 +151,6 @@ class PlayScene(Scene):
         Headquarter = Base(self, PlayerBaseConfig)
 
         EnemyBase.get(Rotation).angle = math.radians(175)
-        # EnemyBase.add(EnemyIntent())
 
         Headquarter.get(Collider).width = 50
         Headquarter.get(Collider).height = 50
@@ -169,19 +173,23 @@ class PlayScene(Scene):
 
         enemySpawner = SpawnerEntity(self, "ENEMY")
         enemySpawner.add(EntitySpawner([
-            # Line_Entities(10, EnemyBase.get(Position), 0, 0.5, EnemyList.Farmer),
-            Line_Entities(2, EnemyBase.get(Position), 0, 1, EnemyList.Normal, Headquarter)
+            Line_Entities(10, EnemyBase.get(Position), 0, 0.5, EnemyList.Farmer),
+            # Line_Entities(2, EnemyBase.get(Position), 0, 1, EnemyList.Normal, Headquarter)
             ]))
 
         allySpawner = SpawnerEntity(self, "PLAYER")
         allySpawner.add(EntitySpawner([
             # Line_Entities(10, Headquarter.get(Position), 0, 0.5, EnemyList.Farmer),
-            Line_Entities(5 , Headquarter.get(Position), 0, 1, EnemyList.Normal, EnemyBase)
+            # Line_Entities(1 , Headquarter.get(Position), 0, 1, EnemyList.Normal, EnemyBase)
             ]) )
 
 
         self.camera.target = Ship_main
         self.player_Entity = Ship_main
+        self.base_spawner = allySpawner
+
+        self.enemy_base = EnemyBase
+        self.ally_base = Headquarter
 
         self.entities.append(Ship_Cannon)
         self.entities.append(Ship_main)

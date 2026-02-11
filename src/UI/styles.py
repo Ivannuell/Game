@@ -1,4 +1,7 @@
+import pygame
 from UI.uiStyle import UIStyle
+
+pygame.font.init()
 
 
 INVENTORY_STYLE = UIStyle(
@@ -13,5 +16,6 @@ SHOP_STYLE = UIStyle(
     border_color=(180, 140, 60),
     hover_color=(100, 70, 30),
     text_color=(255, 220, 160),
-    border_width=0
+    border_width=0,
+    font=pygame.Font(None, 20)
 )

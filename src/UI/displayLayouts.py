@@ -14,8 +14,6 @@ class GridLayout:
         return x, y
 
 
-
-
 class VBoxLayout:
     def __init__(self, start_pos, spacing):
         self.x, self.y = start_pos

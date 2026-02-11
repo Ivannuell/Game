@@ -6,6 +6,7 @@ from UI.Widgets.window import Window
 from UI.Widgets.button import Button
 from UI.displayLayouts import GridLayout
 from UI.styles import SHOP_STYLE
+from registries.EnemyList import EnemyList
 
 
 class Pause_Menu(Menu):
@@ -28,6 +29,7 @@ class Pause_Menu(Menu):
         for i in range(30):
             layout = GridLayout((10, 50), 6, 10)
             size = (20, 20)
+            num = i
 
             self.widgets.append(
                 Button(
@@ -35,5 +37,6 @@ class Pause_Menu(Menu):
                     pos=layout.position(i, size),
                     size=size,
                     style=SHOP_STYLE,
-                    on_click=lambda: print(i+1)
+                    text=num,
+                    on_click=lambda: command_manager.send("SPAWN", EnemyList.Farmer)
                 ))

@@ -4,6 +4,8 @@ import math
 import random
 from turtle import position
 
+from icecream import ic
+
 from Utils.helper import ENEMY_ACCELARATION, get_distance, move_towards, point_towards
 
 from typing import TYPE_CHECKING
@@ -27,10 +29,21 @@ class Enemy_AI_MovementSystem(System):
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
-            if entity.has(Bot, MovementIntent, Position, Velocity):
+            if entity.has(Bot, MovementIntent, Position, Velocity, Target, Vision):
                 pos = entity.get(Position)
                 rotation = entity.get(Rotation)
                 vel = entity.get(Velocity)
+                target = entity.get(Target)
+                vision = entity.get(Vision)
+
+                if not target.target is None:
+                    distance = get_distance(pos, target.target.get(Position))
+
+                    if distance < (vision.range * self.scene._grid.cell_size)**2:
+                        vel.speed = 0
+                    else:
+                        vel.speed = vel._normal_speed
+
 
                 targetx = math.cos(rotation.angle) * vel.speed
                 targety = math.sin(rotation.angle) * vel.speed
@@ -47,9 +60,26 @@ class Enemy_AI_ShootingSystem(System):
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
-            if entity.has(Bot, ShootIntent, Position):
-                entity.get(ShootIntent).fired = True
+            if entity.has(Bot, ShootIntent, Position, Target, Vision):
+                target = entity.get(Target)
+                if target.target is None:
+                    continue
+
+                vision = entity.get(Vision)
+                pos = entity.get(Position)
+                target_pos = target.target.get(Position)
+
+                distance = get_distance(pos, target_pos)
+
+                # ic(distance)
+                # ic((vision.range * self.scene._grid.cell_size)**2)
+                # print("-----")
+
+                if distance < (vision.range * self.scene._grid.cell_size)**2:
+                    entity.get(ShootIntent).fired = True
                 
+
+
 class Enemy_AI_TargetSystem(System):
     def __init__(self, scene) -> None:
         super().__init__(scene)
@@ -92,7 +122,6 @@ class AI_AttackerDecisionSystem(System):
             pos = e.get(Position)
             perception = e.get(Perception)
             faction = e.get(FactionIdentity).faction
-            vision = e.get(Vision) 
 
             perception.cooldown += dt
 
@@ -171,9 +200,7 @@ class AI_AttackerDecisionSystem(System):
 
                 if dm < dc:
                     target.target = target.Main_target
-
-      
-            
+          
          
 class AI_FarmerDecisionSystem(System):
     def __init__(self, scene) -> None:
@@ -194,7 +221,8 @@ class AI_FarmerDecisionSystem(System):
                     
                     perception.cooldown = 0.0
                     target.target = self.grid.find_nearest(pos.x, pos.y, predicate= lambda e: 
-                                                           e.has(Farm, TargetedBy) and len(e.get(TargetedBy).entities) <= e.get(TargetedBy).maxSize)
+                                                           e.has(Farm, TargetedBy) 
+                                                           and len(e.get(TargetedBy).entities) <= e.get(TargetedBy).maxSize)
 
                     targeted = target.target.get(TargetedBy)
                     targeted.entities.append(e)
@@ -204,6 +232,32 @@ class AI_FarmerDecisionSystem(System):
                     perception.cooldown = -random.uniform(0.0, perception.time)
 
            
+class AI_Farmer_Gold_DecisionSystem(System):
+    def __init__(self, scene) -> None:
+        super().__init__(scene)
+        self.grid = scene._grid
+
+    def update(self, entities: 'list[Entity]', dt):
+        for e in entities:
+            if e.has(Vision, Farmer, Target, GoldContainer, FactionIdentity):
+                target = e.get(Target)
+                pos = e.get(Position)
+                vision = e.get(Vision)
+                gold_con = e.get(GoldContainer)
+                faction = e.get(FactionIdentity).faction
+
+                base = self.scene.ally_base if faction == "PLAYER" else self.scene.enemy_base
+
+                if gold_con.gold >= gold_con.gold_capacity:
+                    target.target = base
+
+                    if get_distance(pos, base.get(Position)) < (vision.range * self.scene._grid.cell_size) ** 2:
+                        self.scene.command_manager.send("GOLD_DELIVERED", (gold_con.gold, base))
+                        target.target = None
+                        gold_con.gold = 0
+
+
+
 
 
 

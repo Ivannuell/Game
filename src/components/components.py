@@ -43,6 +43,8 @@ class CommandType(Enum):
     PAUSE = auto()
     RESUME = auto()
     RESTART = auto()
+    SPAWN_NORMAL = auto()
+    EARN_GOLD = auto()
 
 class Anim:
     def __init__(self, frames, frame_coords, frame_index, frame_duration, mode):
@@ -125,6 +127,7 @@ class Velocity(Component):
         self.x: float = 0
         self.y: float = 0
         self.speed = speed
+        self._normal_speed = speed
 
 @ComponentRegistry.register
 class Sprite(Component):

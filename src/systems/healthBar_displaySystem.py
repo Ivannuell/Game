@@ -1,6 +1,7 @@
 from components.components import *
 from entities.entity import Entity
 from systems.system import System
+import pygame
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -10,6 +11,7 @@ if TYPE_CHECKING:
 class HealthBar_DisplaySystem(System):
     def __init__(self, scene: 'Scene') -> None:
         super().__init__(scene)
+        self.gold_font = pygame.Font(None, 20)
 
 
     def render(self, entities: list[Entity], screen):
@@ -38,5 +40,11 @@ class HealthBar_DisplaySystem(System):
 
             pygame.draw.rect(screen.display_surface, (255, 0, 0), back_rect, 1)
             pygame.draw.rect(screen.display_surface, (0, 255, 0), fill_rect)
+
+            # if not e.has(GoldContainer):
+            #     continue
+
+            # text = self.gold_font.render(f"gold: {e.get(GoldContainer).gold}", False, 'gold')
+            # screen.display_surface.blit(text, back_rect.bottomleft)
 
 
