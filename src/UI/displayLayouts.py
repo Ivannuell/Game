@@ -7,9 +7,10 @@ class GridLayout:
     def position(self, index, size):
         col = index % self.cols
         row = index // self.cols
+        width, height = size
 
-        x = self.start_x + col * (size + self.spacing)
-        y = self.start_y + row * (size + self.spacing)
+        x = self.start_x + col * (width + self.spacing)
+        y = self.start_y + row * (height + self.spacing)
         return x, y
 
 

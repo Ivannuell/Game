@@ -27,13 +27,11 @@ class BaseGame:
     
         self.asset_manager: AssetsManager = AssetsManager()
         self.input_manager: InputManager = InputManager()
-        self.ui_manager = UIManager()
 
         self.profiler = SystemProfiler()
         self.profiler_overlay = DebugOverlaySystem(self.profiler)
         
         self.scene_manager = SceneManager(self)
-        self.command_manager = CommandManager(self.scene_manager)
         
     def set_screen(self, screen: "Screen"):
         if self.screen:
@@ -47,25 +45,19 @@ class BaseGame:
 
     def start(self):
         self.scene_manager.push(SceneList.PRELOAD)
-
-        self.ui_manager.register('pause', Pause_Menu(self.ui_manager, self.command_manager, (200, 200, 300, 500)))
         
         while True:
             self.delta_time = self.clock.tick(self.fps) / 1000
             events = pygame.event.get()
 
             self.scene_manager.handle_input(events)
-            self.ui_manager.handle_event(events)
             
             self.scene_manager.update(self.delta_time)
-            self.ui_manager.update(self.delta_time)
 
             self.scene_manager.render(self.screen)
-            self.ui_manager.draw(self.screen)
-
-            self.command_manager.flush()
 
             self.profiler_overlay.update()
             self.profiler_overlay.render(self.screen.display_surface) # type: ignore
 
-            if self.screen is not None: self.screen.draw()
+            if self.screen is not None: 
+                self.screen.draw()

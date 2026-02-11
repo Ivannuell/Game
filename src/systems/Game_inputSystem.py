@@ -38,10 +38,12 @@ class InputSystem(System):
 
         # TESTING
         if pygame.K_ESCAPE in self.input_manager.keys_pressed:
-            cmd = Executable(self.scene)
-            cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
-            self.scene.entity_manager.add(cmd)
-            self.input_manager.keys_down.remove(pygame.K_ESCAPE)
+            self.scene.command_manager.send("PAUSE")
+
+            # cmd = Executable(self.scene)
+            # cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
+            # self.scene.entity_manager.add(cmd)
+            # self.input_manager.keys_down.remove(pygame.K_ESCAPE)
 
 
         if pygame.K_F3 in self.input_manager.keys_pressed:

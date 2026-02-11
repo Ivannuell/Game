@@ -90,8 +90,11 @@ class SceneManager:
 
         for scene in reversed(self._stack):
             scene.handle_input(events)
+            scene.ui_manager.handle_event(events)
+            scene.command_manager.flush()
             if scene.blocks_input:
                 break
+        
 
     def update(self, dt: float):
         self._do_pending_operations()
@@ -101,9 +104,11 @@ class SceneManager:
 
         for scene in reversed(self._stack):
             scene.update(dt)
+            scene.ui_manager.update(dt)
             if scene.blocks_update:
                 break
 
     def render(self, screen):
         for scene in self._stack:
             scene.render(screen)
+            scene.ui_manager.draw(screen)

@@ -1,7 +1,6 @@
 
 from typing import TYPE_CHECKING, Type, TypeVar
 from components.components import *
-from scenes.scene import Scene
 
 
 if TYPE_CHECKING:

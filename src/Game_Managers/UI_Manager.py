@@ -42,4 +42,3 @@ class UIManager:
     def draw(self, screen):
         for m in self.menus.values():
             m.draw(screen)
-            # screen.display_surface.blit(m.surface, m.pos)

@@ -4,6 +4,8 @@ import pygame
 from abc import abstractmethod, ABC
 
 
+from Game_Managers.UI_Manager import UIManager
+from Game_Managers.command_Manager import CommandManager
 from Game_Managers.entity_Manager import EntityManager
 from Game_Managers.floatingWindow_Manager import FloatingWindow_Manager
 
@@ -19,17 +21,20 @@ if TYPE_CHECKING:
 
 class Scene(ABC):
     def __init__(self, game) -> None:
+        self.pause = False
         self.entities = []
         self.systems = []
         self.disabledSystems = []
 
         self.entity_manager = EntityManager(self.entities)
+        self.ui_manager = UIManager()
+        self.command_manager = CommandManager(self)
+
         self.game = game
         self.asset_manager: 'AssetsManager' = game.asset_manager
         self.input_manager: 'InputManager' = game.input_manager
         self.profiler: 'SystemProfiler' = game.profiler
         self.profiler_overlay: 'DebugOverlaySystem' = game.profiler_overlay
-        self.ui_manager = game.ui_manager
     
     @abstractmethod
     def on_Create(self):
@@ -58,9 +63,11 @@ class Scene(ABC):
 
 
     def update(self, dt):
+        
         for system in self.systems:
-            if not system.Enabled:
+            if self.pause and not system.run_on_Pause:
                 continue
+                
 
             if hasattr(system, "update"):
                 start = time.perf_counter()
@@ -73,8 +80,8 @@ class Scene(ABC):
 
     def render(self, screen):
         for system in self.systems:
-            if not system.Enabled:
-                continue
+            # if not system.Enabled:
+            #     continue
 
             if hasattr(system, "render"):
                 start = time.perf_counter()

@@ -1,5 +1,6 @@
 
 
+from UI.Menus.pauseMenu import Pause_Menu
 from components.UI_Components import *
 from components.components import *
 from entities.UI.floatingWindow import FloatingWindow
@@ -73,6 +74,8 @@ class PlayScene(Scene):
         self._grid = SpatialGrid(64)
 
         self.player_Entity: Player = None
+
+        self.ui_manager.register('pause', Pause_Menu(self.ui_manager, self.command_manager, (200, 200, 300, 500)))
 
     def on_Create(self):
         self.systems = [
@@ -202,11 +205,11 @@ class PlayScene(Scene):
 
     def on_Enter(self):
         print("On Game")
-        for system in self.systems:
-            if type(system) in self.disabledSystems:
-                system.Enabled = False
-            else:
-                system.Enabled = True
+        # for system in self.systems:
+        #     if type(system) in self.disabledSystems:
+        #         system.Enabled = False
+        #     else:
+        #         system.Enabled = True
         
 
     def on_Pause(self):
@@ -254,7 +257,6 @@ class PlayScene(Scene):
             RotationSystem,
 
             Grid_IndexSystem,
-
         ]
 
     def on_Resume(self):

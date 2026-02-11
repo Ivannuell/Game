@@ -14,6 +14,7 @@ from systems.system import System
 class CommandSystem(System):
     def __init__(self, scene):
         super().__init__(scene)
+        self.run_on_Pause = True
 
     def update(self, entities: 'list[Entity]', dt):
         for entity in entities:
@@ -29,12 +30,16 @@ class CommandSystem(System):
                     exit()
 
                 elif command.type == CommandType.PAUSE:
-                    self.scene.game.scene_manager.push(command.payload)
+                    self.scene.pause = True
+                    self.scene.ui_manager.show('pause')
+                    # self.scene.game.scene_manager.push(command.payload)
                     self.scene.entity_manager.remove(entity)
 
 
                 elif command.type == CommandType.RESUME:
-                    self.scene.game.scene_manager.pop()
+                    self.scene.pause = False
+                    self.scene.ui_manager.hide('pause')
+                    # self.scene.game.scene_manager.pop()
                     self.scene.entity_manager.remove(entity)
 
                 elif command.type == CommandType.RESTART:

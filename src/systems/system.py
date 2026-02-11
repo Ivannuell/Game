@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 class System:
     def __init__(self, scene) -> None:
         self.Enabled = True
+        self.run_on_Pause = False
         self.scene: 'Scene | PlayScene' = scene
         self.asset_manager: 'AssetsManager' = scene.asset_manager
         self.input_manager: 'InputManager' = scene.input_manager

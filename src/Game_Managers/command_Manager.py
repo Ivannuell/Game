@@ -4,29 +4,25 @@ from entities.Utility_Entities.executable import Executable
         
 
 class CommandManager:
-    def __init__(self, scene_manager):
-        self.scene_manager = scene_manager
+    def __init__(self, scene):
+        self.scene = scene
         self._queue = []
 
     def send(self, command):
         self._queue.append(command)
 
     def flush(self):
-        scene = self.scene_manager.active_scene
-        if not scene:
-            return
-
         for command in self._queue:
             if command == "PAUSE":
-                pauseCommand = Executable(scene)
+                pauseCommand = Executable(self.scene)
                 pauseCommand.add(Command(CommandType.PAUSE))
                 
-                scene.entity_manager.add(pauseCommand)
+                self.scene.entity_manager.add(pauseCommand)
 
             elif command == "RESUME":
-                resumeCommand = Executable(scene)
+                resumeCommand = Executable(self.scene)
                 resumeCommand.add(Command(CommandType.RESUME))
 
-                scene.entity_manager.add(resumeCommand)
+                self.scene.entity_manager.add(resumeCommand)
 
         self._queue.clear()
