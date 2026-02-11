@@ -1,6 +1,8 @@
 
 
+from components.UI_Components import *
 from components.components import *
+from entities.UI.floatingWindow import FloatingWindow
 from entities.base import Base
 from entities.player import Player
 from entities.playerPart import PlayerPart
@@ -17,6 +19,7 @@ from systems.AnimationSystem import (EventCleanerSystem,
                                      Events_AnimationSystem,
                                      Playback_AnimationSystem,
                                      State_AnimationSystem)
+from systems.UI.FloatingWindow_displaySystem import FloatingWindow_System
 from systems.camera_zoomSystem import CameraZoomSystem
 from systems.CameraSystem import CameraSystem
 from systems.CleanupSystem import CleanupSystem
@@ -115,7 +118,6 @@ class PlayScene(Scene):
             CameraTransformSystem(self),
             RotationSystem(self),
 
-
             Grid_IndexSystem(self),
 
             CleanupSystem(self),
@@ -129,12 +131,6 @@ class PlayScene(Scene):
             ProjectileSystem(self),
             OnScreenDebugSystem(self),
         ]
-
-    def on_Enter(self):
-        print("On Game")
-        for system in self.systems:
-            if type(system) in self.disabledSystems:
-                system.Enabled = False
 
         cam = CameraEntity(self)
         pause = Button(self, "PAUSE")
@@ -203,31 +199,62 @@ class PlayScene(Scene):
         self.entities.append(cam)
         self.entities.append(pause)
 
+
+    def on_Enter(self):
+        print("On Game")
+        for system in self.systems:
+            if type(system) in self.disabledSystems:
+                system.Enabled = False
+            else:
+                system.Enabled = True
+        
+
     def on_Pause(self):
         self.disabledSystems = [
-            InputSystem,
+            CameraZoomSystem,
+            UI_Pointer_InputSystem,
+            UI_Button_InputSystem,
+
+            CommandSystem,
             ShootingSystem,
-            MovementSystem,
-            ProjectileBehaviourSystem,
-            ProjectileMovementSystem,
+            AutoAimingSystem,
+            AutoFireSystem,
+            Events_AnimationSystem,
+            State_AnimationSystem,
 
-            LifetimeSystem,
+            Farm_SpawningSystem,
+            Spaceship_SpawningSystem,
 
-            CollisionCleanupSystem,
             CollisionSystem,
 
-            DamageSystem,
-            HealthSystem,
-
-            DebugCollisionRenderSystem,
-            HealthDraw,
-            OnScreenDebugSystem,
-            Grid_IndexSystem,
+            AI_FarmerDecisionSystem,
             AI_AttackerDecisionSystem,
 
             Enemy_AI_MovementSystem,
             Enemy_AI_ShootingSystem,
             Enemy_AI_TargetSystem,
+
+            MovementSystem,
+
+            ParentFollowSystem,
+            DamageSystem,
+            HealthSystem,
+            Earn_GoldSystem,
+            Playback_AnimationSystem,
+
+            Asteriods_ManagementSystem,
+
+            LifetimeSystem,
+            EventCleanerSystem,
+            CleanupSystem,
+
+            CameraSystem,
+
+            CameraTransformSystem,
+            RotationSystem,
+
+            Grid_IndexSystem,
+
         ]
 
     def on_Resume(self):

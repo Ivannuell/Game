@@ -1,6 +1,6 @@
 from enum import Enum
 from types import LambdaType
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from registries.SceneList import SceneList
 from scenes.play import PlayScene
@@ -27,6 +27,12 @@ class SceneManager:
             SceneList.MAIN_MENU: MainMenu(game),
             SceneList.PRELOAD: Preload(game)
         }
+
+    @property
+    def active_scene(self) -> Optional["Scene"]:
+        if not self._stack:
+            return None
+        return self._stack[-1]
         
 
     def push(self, scene: SceneList):

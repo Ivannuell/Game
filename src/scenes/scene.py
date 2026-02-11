@@ -2,11 +2,13 @@
 import time
 import pygame
 from abc import abstractmethod, ABC
-from typing import TYPE_CHECKING
+
 
 from Game_Managers.entity_Manager import EntityManager
+from Game_Managers.floatingWindow_Manager import FloatingWindow_Manager
 
 
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from Utils.systemProfiler_overlay import DebugOverlaySystem
     from Game_Managers.assetManager import AssetsManager
@@ -27,6 +29,7 @@ class Scene(ABC):
         self.input_manager: 'InputManager' = game.input_manager
         self.profiler: 'SystemProfiler' = game.profiler
         self.profiler_overlay: 'DebugOverlaySystem' = game.profiler_overlay
+        self.ui_manager = game.ui_manager
     
     @abstractmethod
     def on_Create(self):
@@ -66,6 +69,7 @@ class Scene(ABC):
                 self.profiler.record(system.__class__.__name__, elapsed)
         
         self.entity_manager.commit()
+        
 
     def render(self, screen):
         for system in self.systems:

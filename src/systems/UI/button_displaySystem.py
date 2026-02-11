@@ -12,6 +12,7 @@ from components.components import Clickable, Position, Size
 
 pygame.font.init()
 font = pygame.Font(None, 50)
+tiny_font = pygame.Font(None, 20)
 
 class ButtonDisplaySystem(System):
     def __init__(self, scene: 'Scene') -> None:
@@ -52,5 +53,12 @@ class ButtonDisplaySystem(System):
                     pygame.draw.rect(screen.display_surface, 'green', rect)
                     text = font.render("||", False, 'black')
                     screen.display_surface.blit(text, (rect.centerx - text.width/2, rect.centery - text.height/2))
+
+                if clickable.buttonID == "HIDE":
+                    pygame.draw.rect(screen.display_surface, 'green', rect)
+                    text = tiny_font.render("Hide", False, 'black')
+                    screen.display_surface.blit(text, (rect.centerx - text.width/2, rect.centery - text.height/2))
+
+                
                     
 

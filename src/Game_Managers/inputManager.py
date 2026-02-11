@@ -7,9 +7,11 @@ class InputManager:
         self.keys_released = set()
         self.mouse_pos = (0, 0)
         self.mouse_buttons = (False, False, False)
+        self.leftButton_pressed = False
         self.wheel_delta = 0
 
     def begin_frame(self):
+        # self.leftButton_pressed = False
         self.keys_pressed.clear()
         self.keys_released.clear()
 

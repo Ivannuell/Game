@@ -1,5 +1,9 @@
 import math
 
+from icecream import ic
+
+from components.UI_Components import Window
+from entities.UI.floatingWindow import FloatingWindow
 from entities.player import Player
 from Utils.helper import ROT_SPEED
 
@@ -33,11 +37,12 @@ class InputSystem(System):
                 shooters.append(entity)
 
         # TESTING
-        if pygame.K_ESCAPE in self.input_manager.keys_down:
+        if pygame.K_ESCAPE in self.input_manager.keys_pressed:
             cmd = Executable(self.scene)
             cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))
-            entities.append(cmd)
+            self.scene.entity_manager.add(cmd)
             self.input_manager.keys_down.remove(pygame.K_ESCAPE)
+
 
         if pygame.K_F3 in self.input_manager.keys_pressed:
             self.profiler_overlay.toggle()

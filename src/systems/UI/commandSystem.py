@@ -30,11 +30,12 @@ class CommandSystem(System):
 
                 elif command.type == CommandType.PAUSE:
                     self.scene.game.scene_manager.push(command.payload)
-                    entities.remove(entity)
+                    self.scene.entity_manager.remove(entity)
+
 
                 elif command.type == CommandType.RESUME:
                     self.scene.game.scene_manager.pop()
-                    entities.remove(entity)
+                    self.scene.entity_manager.remove(entity)
 
                 elif command.type == CommandType.RESTART:
                     self.scene.game.scene_manager.pop()
