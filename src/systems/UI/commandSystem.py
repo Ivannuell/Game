@@ -51,7 +51,7 @@ class CommandSystem(System):
 
                     self.scene.base_spawner.add(
                         EntitySpawner([
-                            Line_Entities(1, Position(0, 100),
+                            Line_Entities(0, Position(0, 100),
                                           0, 0.5, spawn, self.scene.enemy_base),
                         ])
                     )
