@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from components.data_compnents import Item
 from entities.Spawn_Patterns.EnemyPatterns import Line_Entities
 from entities.Utility_Entities.Spawner import SpawnerEntity
 from registries.EnemyList import EnemyList
@@ -41,18 +42,29 @@ class CommandSystem(System):
                     self.scene.ui_manager.hide('pause')
 
                 elif command.type == CommandType.SPAWN_NORMAL:
-                    enemy = command.payload
+                    if command.payload == "Farmer":
+                        spawn = EnemyList.Farmer
+                    elif command.payload == "Attacker":
+                        spawn = EnemyList.Normal
+                    else:
+                        spawn = EnemyList.Farmer
 
                     self.scene.base_spawner.add(
                         EntitySpawner([
                             Line_Entities(1, Position(0, 100),
-                                          0, 0.5, enemy),
+                                          0, 0.5, spawn, self.scene.enemy_base),
                         ])
                     )
 
                 elif command.type == CommandType.EARN_GOLD:
                     gold, owner = command.payload
                     owner.get(GoldContainer).gold += gold
+
+                elif command.type == CommandType.OPEN_SHOP:
+                    self.scene.ui_manager.toggle('shop', payload=[
+                            Item(name="Farmer", price=100),
+                            Item(name="Attacker", price=150),
+                          ])
                 
                 else:
                     print(f"Command {command.command} could not be determined")

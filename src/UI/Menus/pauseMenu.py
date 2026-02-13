@@ -13,6 +13,8 @@ class Pause_Menu(Menu):
     def __init__(self, ui_manager, command_manager, pos=(200, 200), size=(200, 400)):
         super().__init__(pos, size)
 
+        width, height = size
+        
         self.widgets.append(
             Window(self)
         )
@@ -20,23 +22,20 @@ class Pause_Menu(Menu):
         self.widgets.append(
             Button(
                 self,
-                pos=(10, 10),
-                size=(20, 20),
+                pos=(width/2 - (width/3)/2, 20),
+                size=(width/3, 20),
                 style=SHOP_STYLE,
+                text="RESUME",
                 on_click=lambda: command_manager.send("RESUME")),
         )
 
-        for i in range(30):
-            layout = GridLayout((10, 50), 6, 10)
-            size = (20, 20)
-            num = i
-
-            self.widgets.append(
-                Button(
-                    self,
-                    pos=layout.position(i, size),
-                    size=size,
-                    style=SHOP_STYLE,
-                    text=num,
-                    on_click=lambda: command_manager.send("SPAWN", EnemyList.Farmer)
-                ))
+        self.widgets.append(
+            Button(
+                self,
+                pos=(width/2 - (width/3)/2, width/2 - (width/3)/2+20),
+                size=(width/3, 20),
+                style=SHOP_STYLE,
+                text="EXIT",
+                on_click=lambda: command_manager.send("EXIT")
+            )
+        )

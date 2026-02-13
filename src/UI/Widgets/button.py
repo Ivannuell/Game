@@ -1,3 +1,4 @@
+from icecream import ic
 import pygame
 from UI.Widgets.widget import Widget
 from UI.uiStyle import UIStyle
@@ -10,19 +11,18 @@ class Button(Widget):
         self.rect = pygame.Rect(*pos, *size)
         self.on_click = on_click
         self.style = style
-        self.text = text
+        self.text = self.style.font.render(f"{text}", False, 'White')
 
-    def draw(self, screen):
-        text = self.style.font.render(f"{self.text}", False, 'White')
-
+    def draw_self(self, screen):
         pygame.draw.rect(screen, self.style.bg_color, self.rect, self.style.border_width)
-        screen.blit(text, self.rect.topleft)
+        screen.blit(self.text, (self.rect.centerx - self.text.width/2, self.rect.centery - self.text.height/2))
     
-    def update(self, dt):
-        return super().update(dt)
+    def update_self(self, dt):
+        pass
     
-    def handle_event(self, event):
+    def handle_self_event(self, event) -> bool:
         if event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(event.pos):
             if not self.on_click is None:
                 self.on_click()
-                
+                return True
+        return False

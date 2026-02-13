@@ -1,3 +1,4 @@
+from icecream import ic
 import pygame
 
 
@@ -8,9 +9,15 @@ class Menu:
         self.pos = pos
         self._visible = False
         self.widgets = []
+        self.context = None
 
-    def show(self):
+    def show(self, payload):
         self._visible = True
+        self.context = payload
+        self.on_show()
+
+    def on_show(self):
+        pass
 
     def hide(self):
         self._visible = False

@@ -45,6 +45,7 @@ class CommandType(Enum):
     RESTART = auto()
     SPAWN_NORMAL = auto()
     EARN_GOLD = auto()
+    OPEN_SHOP = auto()
 
 class Anim:
     def __init__(self, frames, frame_coords, frame_index, frame_duration, mode):

@@ -22,6 +22,13 @@ class CommandManager:
 
             if command.command == "PAUSE":
                 cmd.add(Command(CommandType.PAUSE))
+            
+            elif command.command == "OPEN":
+                if command.payload == 'shop':
+                    cmd.add(Command(CommandType.OPEN_SHOP))
+            
+            elif command.command == "EXIT":
+                cmd.add(Command(CommandType.EXIT))
 
             elif command.command == "RESUME":
                 cmd.add(Command(CommandType.RESUME))
@@ -33,7 +40,7 @@ class CommandManager:
                 cmd.add(Command(CommandType.EARN_GOLD, command.payload))
             
             else:
-                print(f"Command {command.command} could not be determined")
+                print(f"{self.__class__.__name__} -- Command {command.command} could not be determined")
                 continue
 
             self.scene.entity_manager.add(cmd)

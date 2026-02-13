@@ -74,7 +74,7 @@ class EntityConfig:
 
 
 Asteriod1 = EntityConfig(
-    Position = (500, 500),
+    Position = (-100, -100),
     Spritesheet = "Asteriod",
     Size = (32, 32),
     Animation = {

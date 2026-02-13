@@ -39,6 +39,9 @@ class InputSystem(System):
         # TESTING
         if pygame.K_ESCAPE in self.input_manager.keys_pressed:
             self.scene.command_manager.send("PAUSE")
+        
+        if pygame.K_e in self.input_manager.keys_pressed:
+            self.scene.command_manager.send("OPEN", 'shop')
 
             # cmd = Executable(self.scene)
             # cmd.add(Command(CommandType.PAUSE, SceneList.PAUSE))

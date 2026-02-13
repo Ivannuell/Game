@@ -1,6 +1,7 @@
 
 
 from UI.Menus.pauseMenu import Pause_Menu
+from UI.Menus.shopMenu import Shop_Menu
 from components.UI_Components import *
 from components.components import *
 from entities.UI.floatingWindow import FloatingWindow
@@ -20,15 +21,11 @@ from systems.AnimationSystem import (EventCleanerSystem,
                                      Events_AnimationSystem,
                                      Playback_AnimationSystem,
                                      State_AnimationSystem)
-from systems.UI.FloatingWindow_displaySystem import FloatingWindow_System
 from systems.camera_zoomSystem import CameraZoomSystem
 from systems.CameraSystem import CameraSystem
 from systems.CleanupSystem import CleanupSystem
-from systems.collider_cleanerSystem import CollisionCleanupSystem
 from systems.collisionSystem import CollisionSystem
 from systems.damageSystem import DamageSystem
-from systems.debugers.collideRectDebug import DebugCollisionRenderSystem
-from systems.debugers.healthDraw_DebugerSystem import HealthDraw
 from systems.debugers.onScreen_DebugerSystem import OnScreenDebugSystem
 from systems.Game_AsteriodSystem import Asteriods_ManagementSystem
 from systems.Game_AutoAimingSystem import AutoAimingSystem, AutoFireSystem
@@ -80,6 +77,7 @@ class PlayScene(Scene):
         self.ally_base = None
 
         self.ui_manager.register('pause', Pause_Menu(self.ui_manager, self.command_manager, (200, 200, 300, 500)))
+        self.ui_manager.register('shop', Shop_Menu(self.ui_manager, self.command_manager))
 
     def on_Create(self):
         self.systems = [
